@@ -52,7 +52,7 @@ function haandterValg(valgtForslag) {
         console.log('Adresse-ID:', adresseId);
 
         // I næste skridt: naviger til /ejendom/:id
-        // window.location.href = `/ejendom/${adresseId}`;
+        window.location.href = `/ejendom/${adresseId}`;
 
         return;
     }

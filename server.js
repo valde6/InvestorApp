@@ -39,8 +39,11 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-// Alle /api/ejendomme-endpoints håndteres i routes/ejendomme.js
-//app.use('/api/ejendomme', ejendommeRoutes);
+app.get('/ejendom/:id', (req, res) => {
+    const adresseId = req.params.id;
+    res.render('ejendom', { adresseId });
+});
+
 
 // ============================================
 // START SERVER
