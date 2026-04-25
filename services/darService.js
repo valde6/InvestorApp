@@ -1,4 +1,4 @@
-const DAR_BASE_URL = 'https://services.datafordeler.dk/DAR/DAR_BFE_Public/1/rest/adresseTilHusnummer';
+const DAR_BASE_URL = 'https://services.datafordeler.dk/DAR/DAR/3.0.0/rest/adresseTilHusnummer';
 
 const datafordelerUsername = process.env.DATAFORDELER_USERNAME
 const datafordelerPassword = process.env.DATAFORDELER_PASSWORD
@@ -9,11 +9,16 @@ if (!datafordelerUsername || !datafordelerPassword) {
 };
 
 async function adresseIdTilHusnummerId(adresseId) {
-    const url = `${DAR_BASE_URL}?username=${datafordelerUsename}&password=${datafordelerPassword}&adresseId=${encodeURIComponent(adresseId)}`; //EncodeURI anvendes fordi der ikke toleres mellemrum/specialtegn. Metoden erstatter specialtegn med sikre koder. f.eks. mellemrum bliver til %20
+    const url = `${DAR_BASE_URL}?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&adresseId=${encodeURIComponent(adresseId)}`; //EncodeURI anvendes fordi der ikke toleres mellemrum/specialtegn. Metoden erstatter specialtegn med sikre koder. f.eks. mellemrum bliver til %20
+
+    console.log('DEBUG URL:', url.replace(datafordelerPassword, '***')); // Skjuler password i log
+
 
     const response = await fetch(url);
 
     if (!response.ok) {
+        const fejlTekst = await response.text(); // Hent fejlbeskeden fra serveren
+        console.log('DEBUG fejl-svar fra DAR:', fejlTekst);
         throw new Error(`dar svarede med status ${response.status}`);
     }
 

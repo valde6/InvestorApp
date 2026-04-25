@@ -10,7 +10,9 @@ if (!datafordelerUsername || !datafordelerPassword) {
 };
 
 async function findAdresseData(adresseId) {
-    const url = `${BBR_BASE_URL}?Husnummer=${encodeURIComponent(adresseId)}&username=${datafordelerUsername}&password=${datafordelerPassword}`; //EncodeURI anvendes fordi der ikke toleres mellemrum/specialtegn. Metoden erstatter specialtegn med sikre koder. f.eks. mellemrum bliver til %20
+    const url = `${BBR_BASE_URL}?Husnummer=${encodeURIComponent(adresseId)}&Format=JSON&username=${datafordelerUsername}&password=${datafordelerPassword}`; //EncodeURI anvendes fordi der ikke toleres mellemrum/specialtegn. Metoden erstatter specialtegn med sikre koder. f.eks. mellemrum bliver til %20
+
+    console.log('DEBUG BBR URL:', url.replace(datafordelerPassword, '***'));
 
     const response = await fetch(url);
 
