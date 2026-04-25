@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/valde6/InvestorApp#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "mssql": "^12.5.0"
   }
 }
