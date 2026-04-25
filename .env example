@@ -2,3 +2,6 @@ DB_SERVER=database-2307.database.windows.net
 DB_NAME=free-sql-db-5899869
 DB_USER=adminGroup@database-2307
 DB_PASSWORD=HEMMELIGT_PASSWORD
+
+BBR_USERNAME=ZTEWGMKGFS
+BBR_PASSWORD=din_adgangskode_her
