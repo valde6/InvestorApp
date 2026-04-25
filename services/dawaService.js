@@ -9,7 +9,7 @@ const DAWA_BASE_URL = 'https://api.dataforsyningen.dk';
 // Slår en søgestreng op via DAWA's autocomplete-endpoint.
 // Returnerer en liste af adresseforslag.
 async function søgAdresse(q) {
-    const url = `${DAWA_BASE_URL}/autocomplete?q=${encodeURIComponent(q)}`;
+    const url = `${DAWA_BASE_URL}/autocomplete?q=${encodeURIComponent(q)}`; //EncodeURI anvendes fordi der ikke toleres mellemrum
 
     const response = await fetch(url);
 
