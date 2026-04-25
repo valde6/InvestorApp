@@ -22,22 +22,22 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Servér statiske filer (CSS, client-side JS, billeder) fra public/
-//app.use(express.static('public'));
+app.use(express.static('public'));
 
 //
 app.use('/api/adresser', adresserRoutes);
 
 // Sæt EJS som template engine
-//app.set('view engine', 'ejs');
+app.set('view engine', 'ejs');
 
 // ============================================
 // ROUTES
 // ============================================
 
 // Forsiden — render index.ejs
-//app.get('/', (req, res) => {
-//    res.render('index');
-//});
+app.get('/', (req, res) => {
+    res.render('index');
+});
 
 // Alle /api/ejendomme-endpoints håndteres i routes/ejendomme.js
 //app.use('/api/ejendomme', ejendommeRoutes);

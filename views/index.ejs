@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejendomsinvesterings-app</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Ejendomsinvesterings-app</h1>
+        <p>Søg en adresse og analyser ejendommen som investering</p>
+    </header>
+
+    <main>
+        <section class="soegning">
+            <label for="adresse-input">Adresse:</label>
+            <input 
+                type="text" 
+                id="adresse-input" 
+                placeholder="Skriv en adresse, fx Solbjerg Plads"
+                autocomplete="off"
+            >
+            <ul id="forslag-liste"></ul>
+        </section>
+    </main>
+
+    <script src="/js/sog.js"></script>
+</body>
+</html>
