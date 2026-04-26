@@ -25,7 +25,7 @@ require('dotenv').config(); // Loader .env så process.env virker
 const { adresseIdTilHusnummerId } = require('./services/darService');
 const { findAdresseData } = require('./services/bbrService');
 
-const adresseId = '95697f98-a3d8-44c4-a16f-cddc8d29a3a1'; // Rentemestervej 8, 2400 København NV
+const adresseId = `0a3f50a3-f963-32b8-e044-0003ba298018`//Alberts forældres adresse
 
 async function test() {
     console.log('--- Trin 1: DAR-opslag ---');

@@ -62,3 +62,5 @@ function haandterValg(valgtForslag) {
     inputFelt.focus(); //Flytter cursor tilbage i inputfeltet, så bruger nemmere kan indskrive bolig
     inputFelt.dispatchEvent(new Event('input')); //Kører eventlisteneren igen, så brugeren får den nye liste, ud fra den valgte boligadresse
 }
+
+//Kommentar f.eks. vinkelvej virker ikke ??
