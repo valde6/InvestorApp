@@ -10,6 +10,8 @@ require('dotenv').config();
 //const ejendommeRoutes = require('./routes/ejendomme');
 
 const adresserRoutes = require('./routes/adresser');
+// Importer kortService for at kunne hente koordinater og bygge Skråfoto-URL i /ejendom/:id-routen
+const { hentKoordinater, byggeLuftfotoUrl } = require('./services/kortService');
 
 const investeringscasesRoutes = require('./routes/investeringscases');
 
@@ -43,9 +45,13 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.get('/ejendom/:id', (req, res) => {
+// Henter koordinater fra DAWA baseret på adresse-ID fra URL'en.
+// Bygger en Skråfoto-URL og sender den til ejendom.ejs som kortUrl.
+app.get('/ejendom/:id', async (req, res) => {
     const adresseId = req.params.id;
-    res.render('ejendom', { adresseId });
+    const { lon, lat } = await hentKoordinater(adresseId);
+    const kortUrl = byggeLuftfotoUrl(lon, lat);
+    res.render('ejendom', { adresseId, kortUrl });
 });
 
 

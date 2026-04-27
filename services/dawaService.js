@@ -21,4 +21,5 @@ async function søgAdresse(q) {
     return data;
 }
 
+
 module.exports = { søgAdresse };
