@@ -10,8 +10,8 @@ require('dotenv').config();
 //const ejendommeRoutes = require('./routes/ejendomme');
 
 const adresserRoutes = require('./routes/adresser');
-const { hentKoordinater } = require('./services/dawaService');
-const { byggeLuftfotoUrl } = require('./services/kortService');
+// Importer kortService for at kunne hente koordinater og bygge Skråfoto-URL i /ejendom/:id-routen
+const { hentKoordinater, byggeLuftfotoUrl } = require('./services/kortService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
