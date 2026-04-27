@@ -13,6 +13,11 @@ const adresserRoutes = require('./routes/adresser');
 // Importer kortService for at kunne hente koordinater og bygge Skråfoto-URL i /ejendom/:id-routen
 const { hentKoordinater, byggeLuftfotoUrl } = require('./services/kortService');
 
+// Importer DAR-service til at oversætte adresse-ID til husnummer-ID
+const { adresseIdTilHusnummerId } = require('./services/darService');
+// Importer BBR-service til at hente bygnings- og enhedsdata
+const { findBygninger, findEnheder } = require('./services/bbrService');
+
 const investeringscasesRoutes = require('./routes/investeringscases');
 
 const app = express();
@@ -45,13 +50,27 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-// Henter koordinater fra DAWA baseret på adresse-ID fra URL'en.
-// Bygger en Skråfoto-URL og sender den til ejendom.ejs som kortUrl.
+
+
 app.get('/ejendom/:id', async (req, res) => {
     const adresseId = req.params.id;
+
+    // Hent koordinater fra DAWA og byg Skråfoto-URL til kortvisning
     const { lon, lat } = await hentKoordinater(adresseId);
     const kortUrl = byggeLuftfotoUrl(lon, lat);
-    res.render('ejendom', { adresseId, kortUrl });
+
+    // Oversæt adresse-ID til husnummer-ID via DAR (påkrævet af BBR)
+    const husnummerId = await adresseIdTilHusnummerId(adresseId);
+
+    // Hent bygningsdata fra BBR og tag den første aktive bygning
+    const bygninger = await findBygninger(husnummerId);
+    const bygning = bygninger[0];
+
+    // Hent enhedsdata (boligoplysninger) for den fundne bygning
+    const enheder = await findEnheder(bygning.id_lokalId);
+    const enhed = enheder[0];
+
+    res.render('ejendom', { adresseId, kortUrl, bygning, enhed });
 });
 
 

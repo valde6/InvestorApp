@@ -1,23 +1,51 @@
 <!DOCTYPE html>
 <html lang="da">
+
 <head>
     <meta charset="UTF-8">
     <title>Ejendom</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
     <header>
         <h1>Ejendom</h1>
         <a href="/">← Tilbage til søgning</a>
     </header>
 
-    <main>
+    <main>  
+        <!-- BBR-data hentet via Datafordeler — byggeår, areal og værelser -->
+        <section>
+            <h2>BBR Data</h2>
+            <p><strong>Byggeår:</strong>
+                <%= bygning.byg026Opførelsesår %>
+            </p>
+            <p><strong>Samlet areal:</strong>
+                <%= bygning.byg038SamletBygningsareal %> m²
+            </p>
+            <p><strong>Antal etager:</strong>
+                <%= bygning.byg054AntalEtager %>
+            </p>
+            <p><strong>Boligareal:</strong>
+                <%= enhed.enh026EnhedensSamledeAreal %> m²
+            </p>
+            <p><strong>Antal værelser:</strong>
+                <%= enhed.enh031AntalVærelser %>
+            </p>
+        </section>
+        
         <section>
             <h2>Adresseinformation</h2>
-            <p><strong>Adresse-ID:</strong> <%= adresseId %></p>
+            <p><strong>Adresse-ID:</strong>
+                <%= adresseId %>
+            </p>
             <!-- Viser et interaktivt luftfoto fra Skråfoto centreret om ejendommens koordinater -->
             <iframe src="<%= kortUrl %>" width="100%" height="400" frameborder="0"></iframe>
         </section>
+
+      
+
     </main>
 </body>
+
 </html>

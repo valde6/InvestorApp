@@ -37,15 +37,18 @@ async function hentBbrData(endpoint, queryParams) {
 
 // Hent bygninger for et givent husnummerId
 async function findBygninger(husnummerId) {
-    return await hentBbrData('bygning', { husnummer: husnummerId });
+    return await hentBbrData('bygning', { Husnummer: husnummerId });
 }
 // Hent enheder for et givent husnummerId
 async function findEnheder(bygningsId) {
     return await hentBbrData('enhed', { bygning: bygningsId });
 }
 // Hent grund for et givent grundId
+// TODO: Grundareal returnerer tomt array for denne adressetype.
+// BBR knytter muligvis grunden via jordstykke-relationer i stedet for husnummer-id.
+// Alternativ: hent grundareal fra Dataforsyningens jordstykke-API via matrikelnummer.
 async function findGrund(grundId) {
-    return await hentBbrData('grund', { Id_lokalId: grundId });
+    return await hentBbrData('grund', { id: grundId });
 }
 
 module.exports = { findBygninger, findEnheder, findGrund };
