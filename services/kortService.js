@@ -1,16 +1,10 @@
-const KORT_BASE_URL = 'https://api.dataforsyningen.dk/orto_foraar';
+const SKRAAFOTO_BASE_URL = 'https://skraafoto.dataforsyningen.dk/';
 
-const dataforsyningenToken = process.env.DATAFORSYNINGEN_TOKEN;
-
-if (!dataforsyningenToken) {
-    throw new Error('Datafordeleren-token mangler i .env (DATAFORSYNINGEN_TOKEN)');
-}
-
-// Bygger en URL til et luftfoto-billede centreret om de givne koordinater.
+// Bygger en URL til en Skråfoto-viewer centreret om de givne koordinater.
 // Tager (longitude, latitude) i WGS84 (EPSG:4326).
+// URL'en er beregnet til at blive embedded i et <iframe>.
 function byggeLuftfotoUrl(longitude, latitude) {
-
-    const url = `${KORT_BASE_URL}?token=${dataforsyningenToken}`
+    return `${SKRAAFOTO_BASE_URL}?project=Denmark&lon=${longitude}&lat=${latitude}`;
 }
 
 module.exports = { byggeLuftfotoUrl };
