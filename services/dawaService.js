@@ -21,4 +21,15 @@ async function søgAdresse(q) {
     return data;
 }
 
-module.exports = { søgAdresse };
+// Henter longitude og latitude for et adresse-ID via DAWA.
+// Koordinaterne ligger under adgangsadresse.vejpunkt.koordinater som [lon, lat].
+async function hentKoordinater(adresseId) {
+    const url = `${DAWA_BASE_URL}/adresser/${adresseId}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`DAWA svarede med status ${response.status}`);
+    const data = await response.json();
+    return { lon: data.adgangsadresse.vejpunkt.koordinater[0], lat: data.adgangsadresse.vejpunkt.koordinater[1] };
+}
+
+
+module.exports = { søgAdresse, hentKoordinater };
