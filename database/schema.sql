@@ -1,4 +1,5 @@
 -- Slet tabeller hvis de eksisterer (til genkørsel)
+DROP TABLE IF EXISTS Koebsomkostning;
 DROP TABLE IF EXISTS Driftsomkostning;
 DROP TABLE IF EXISTS Driftsbudget;
 DROP TABLE IF EXISTS Finansiering;
@@ -24,9 +25,22 @@ CREATE TABLE Investeringscase (
     ejendomsprofil_id    INT            NOT NULL,
     navn                 VARCHAR(255)   NOT NULL UNIQUE,
     beskrivelse          VARCHAR(1000),
-    ejendomspris         DECIMAL(15,2)  NOT NULL,
+    ejendomspris          DECIMAL(15,2)  NOT NULL,
+    omkostninger_koeb     DECIMAL(15,2)  NOT NULL,
+    advokat               DECIMAL(15,2)  NOT NULL,
+    tinglysning           DECIMAL(15,2)  NOT NULL,
+    koeberraadgivning     DECIMAL(15,2)  NOT NULL,
     oprettet_dato        DATETIME       NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (ejendomsprofil_id) REFERENCES Ejendomsprofil(ejendomsprofil_id)
+);
+
+-- Ekstra udgifterne til investeringscase (3.1)
+CREATE TABLE Koebsomkostning (
+    koebsomkostning_id   INT           PRIMARY KEY IDENTITY(1,1),
+    investeringscase_id  INT           NOT NULL,
+    beskrivelse          VARCHAR(255)  NOT NULL,
+    beloeb               DECIMAL(15,2) NOT NULL,
+    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
 );
 
 -- Finansiering

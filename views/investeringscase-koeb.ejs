@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Ny investeringscase - Køb</title>
+</head>
+
+<body>
+
+    <h1>Ny investeringscase</h1>
+    <h2>Trin 1 af 5: Køb og renoveringsudgifter</h2>
+
+    <form>
+
+        <h3>Obligatoriske udgifter</h3>
+
+        <label for="ejendomspris">Ejendomspris (kr.)</label>
+        <input type="number" id="ejendomspris" name="ejendomspris" required>
+
+        <label for="omkostninger_koeb">Omkostninger ved køb (kr.)</label>
+        <input type="number" id="omkostninger_koeb" name="omkostninger_koeb" required>
+
+        <label for="advokat">Advokat (kr.)</label>
+        <input type="number" id="advokat" name="advokat" required>
+
+        <label for="tinglysning">Tinglysning (kr.)</label>
+        <input type="number" id="tinglysning" name="tinglysning" required>
+
+        <label for="koeberraadgivning">Køberrådgivning (kr.)</label>
+        <input type="number" id="koeberraadgivning" name="koeberraadgivning" required>
+
+        <h3>Ekstra udgifter</h3>
+        <p>Tilføj eventuelle yderligere udgifter forbundet med købet.</p>
+
+        <div id="ekstra-udgifter">
+            <!-- Her bliver ekstra udgiftslinjer indsat dynamisk -->
+        </div>
+
+        <button type="button" id="tilfoej-udgift">Tilføj udgift</button>
+
+        <hr>
+
+        <button type="submit">Næste trin</button>
+
+    </form>
+
+<script src="/js/investeringscase-koeb.js"></script>
+</body>
+</html>

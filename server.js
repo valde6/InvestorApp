@@ -11,6 +11,8 @@ require('dotenv').config();
 
 const adresserRoutes = require('./routes/adresser');
 
+const investeringscasesRoutes = require('./routes/investeringscases');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -26,6 +28,8 @@ app.use(express.static('public'));
 
 //
 app.use('/api/adresser', adresserRoutes);
+
+app.use('/investeringscases', investeringscasesRoutes);
 
 // Sæt EJS som template engine
 app.set('view engine', 'ejs');

@@ -46,6 +46,7 @@ function visForslag(forslag) {
 function haandterValg(valgtForslag) {
     // Hvis brugeren har valgt en fuldt valideret adresse,
     // er vi færdige med at validere også skal vi gå videre.
+    console.log('DEBUG valgtForslag:', valgtForslag);
     if (valgtForslag.type === 'adresse') {
         const adresseId = valgtForslag.data.id;
         console.log('Valideret adresse valgt:', valgtForslag);
