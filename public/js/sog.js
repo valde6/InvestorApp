@@ -53,7 +53,7 @@ function haandterValg(valgtForslag) {
         console.log('Adresse-ID:', adresseId);
 
         // I næste skridt: naviger til /ejendom/:id Window.location.href =, gør at man navigerer automatisk til siden
-        window.location.href = `/ejendom/${adresseId}`;
+        window.location.href = `/ejendomme/${adresseId}`;
 
         return; //Hopper ud af funktionen så resten ikke bliver kørt
     }

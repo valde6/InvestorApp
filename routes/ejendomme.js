@@ -27,8 +27,14 @@ router.get('/:id', async (req, res) => {
 
         //Denne linje anvendes, idet der i bygningsarrayet kan være flere bygninger. Find finder den bygning i bygninger, der har koden for "bolig", så man
         //F.eks. ikke ender med en carport eller et udehus -> Det slår fejl når man kører resten af funktionerne og prøver ejs.
-        const bygning = bygninger.find(byg => byg.byg021BygningensAnvendelse === "120");
+        const bygning = bygninger.find(byg => {
+            const kode = parseInt(byg.byg021BygningensAnvendelse);
+            return kode >= 110 && kode <= 199;
+        });
 
+        if (!bygning) {
+            return res.status(404).json({ fejl: 'Ingen boligbygning fundet for denne adresse' });
+        }
 
         // Hent enhedsdata (boligoplysninger) for den fundne bygning
         const enheder = await findEnheder(bygning.id_lokalId);
