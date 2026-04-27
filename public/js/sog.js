@@ -59,7 +59,7 @@ function haandterValg(valgtForslag) {
     }
 
     // Ellers: put teksten i input-feltet og trigger ny søgning (Dette er f.eks. hvis brugeren bare har indtastet solbjerg plads -> ikke valid adresse)
-    inputFelt.value = valgtForslag.forslagstekst + ' '; //Sætter den valgte adresse ind i inputfeltet, så man kan "Søge" videre efter en valid adresse
+    inputFelt.value = valgtForslag.tekst;
     inputFelt.focus(); //Flytter cursor tilbage i inputfeltet, så bruger nemmere kan indskrive bolig
     inputFelt.dispatchEvent(new Event('input')); //Kører eventlisteneren igen, så brugeren får den nye liste, ud fra den valgte boligadresse
 }

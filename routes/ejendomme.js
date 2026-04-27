@@ -25,13 +25,15 @@ router.get('/:id', async (req, res) => {
         // Hent bygningsdata fra BBR og tag den første aktive bygning
         const bygninger = await findBygninger(husnummerId);
 
+
         //Denne linje anvendes, idet der i bygningsarrayet kan være flere bygninger. Find finder den bygning i bygninger, der har koden for "bolig", så man
         //F.eks. ikke ender med en carport eller et udehus -> Det slår fejl når man kører resten af funktionerne og prøver ejs.
         const bygning = bygninger.find(byg => {
             const kode = parseInt(byg.byg021BygningensAnvendelse);
-            return kode >= 110 && kode <= 199;
+            return kode >= 110 && kode <= 299;
         });
 
+        //Denne returnerer hvis ikke der kan findes nogle "korrekte" boligtyper. 
         if (!bygning) {
             return res.status(404).json({ fejl: 'Ingen boligbygning fundet for denne adresse' });
         }
