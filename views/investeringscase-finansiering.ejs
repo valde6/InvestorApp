@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Ny investeringscase – Finansiering</title>
+</head>
+<body>
+
+    <h1>Ny investeringscase</h1>
+    <h2>Trin 2 af 5: Finansiering & lånedetaljer</h2>
+
+    <form action="/investeringscases/ny/finansiering" method="POST">
+
+        <input type="hidden" name="investeringscase_id" value="<%= investeringscase_id %>">
+
+        <label for="laanebeloeb">Lånebeløb (kr.)</label>
+        <input type="number" id="laanebeloeb" name="laanebeloeb" required>
+
+        <label for="rente_procent">Rente (%)</label>
+        <input type="number" id="rente_procent" name="rente_procent" step="0.01" required>
+
+        <label for="loebetid_aar">Løbetid (år)</label>
+        <input type="number" id="loebetid_aar" name="loebetid_aar" required>
+
+        <label for="afdragsfri_periode_aar">Afdragsfri periode (år)</label>
+        <input type="number" id="afdragsfri_periode_aar" name="afdragsfri_periode_aar" value="0">
+
+        <label for="laanetype">Lånetype</label>
+        <input type="text" id="laanetype" name="laanetype">
+
+        <hr>
+
+        <button type="submit">Næste trin</button>
+
+    </form>
+
+</body>
+</html>

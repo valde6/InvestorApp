@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Ny investeringscase - Driftsbudget</title>
+</head>
+<body>
+
+    <h1>Ny investeringscase</h1>
+    <h2>Trin 4 af 5: Driftsbudget</h2>
+
+    <form action="/investeringscases/ny/driftsbudget" method="POST">
+
+        <!-- Skjult felt der sender investeringscase_id med til serveren via POST.
+             Værdien sættes ind af EJS via <%= investeringscase_id %> som den modtager fra GET-routen.
+             Brugeren ser ikke feltet, men det er nødvendigt for at vide hvilken case driftsbudgettet tilhører. -->
+        <input type="hidden" name="investeringscase_id" value="<%= investeringscase_id %>">
+
+        <p>Tilføj løbende driftsomkostninger for ejendommen.</p>
+
+        <div id="omkostninger">
+            <!-- Omkostningslinjer indsættes her -->
+        </div>
+
+        <button type="button" id="tilfoej-omkostning">Tilføj omkostning</button>
+
+        <hr>
+
+        <button type="submit">Næste trin</button>
+
+    </form>
+
+    <script src="/js/investeringscase-driftsbudget.js"></script>
+</body>
+</html>

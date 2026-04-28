@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Ny investeringscase - Renovering</title>
+</head>
+<body>
+
+    <h1>Ny investeringscase</h1>
+    <h2>Trin 3 af 5: Renoveringer</h2>
+
+    <form action="/investeringscases/ny/renovering" method="POST">
+
+<!-- Skjult felt der sender investeringscase_id  til serveren via POST.
+     Værdien sættes ind af EJS via <%= investeringscase_id %> som den modtager fra GET-routen.
+     Brugeren ser ikke feltet, men det er nødvendigt for at vide hvilken case renoveringen tilhører. -->
+        <input type="hidden" name="investeringscase_id" value="<%= investeringscase_id %>">
+
+        <p>Tilføj de renoveringer du planlægger for ejendommen.</p>
+
+        <div id="renoveringer">
+            <!-- Renoveringslinjer  her -->
+        </div>
+
+        <button type="button" id="tilfoej-renovering">Tilføj renovering</button>
+
+        <hr>
+
+        <button type="submit">Næste trin</button>
+
+    </form>
+
+    <script src="/js/investeringscase-renovering.js"></script>
+</body>
+</html>

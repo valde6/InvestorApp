@@ -10,7 +10,9 @@
     <h1>Ny investeringscase</h1>
     <h2>Trin 1 af 5: Køb og renoveringsudgifter</h2>
 
-    <form>
+    <form action="/investeringscases/ny/koeb" method="POST">
+        <label for="navn">Navn på investeringscase</label>
+        <input type="text" id="navn" name="navn" required placeholder="fx Min lejlighed på Nørrebro">
 
         <h3>Obligatoriske udgifter</h3>
 

@@ -1,5 +1,7 @@
 -- Slet tabeller hvis de eksisterer (til genkørsel)
+DROP TABLE IF EXISTS Udlejning;
 DROP TABLE IF EXISTS Koebsomkostning;
+DROP TABLE IF EXISTS Renovering;
 DROP TABLE IF EXISTS Driftsomkostning;
 DROP TABLE IF EXISTS Driftsbudget;
 DROP TABLE IF EXISTS Finansiering;
@@ -43,12 +45,22 @@ CREATE TABLE Koebsomkostning (
     FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
 );
 
+-- Renovering (variable renoveringer tilknyttet investeringscase) (3.3)
+CREATE TABLE Renovering (
+    renovering_id        INT           PRIMARY KEY IDENTITY(1,1),
+    investeringscase_id  INT           NOT NULL,
+    beskrivelse          VARCHAR(255)  NOT NULL,
+    beloeb               DECIMAL(15,2) NOT NULL,
+    tidspunkt            DATE          NOT NULL,
+    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
+);
+
 -- Finansiering
 CREATE TABLE Finansiering (
     finansiering_id       INT           PRIMARY KEY IDENTITY(1,1),
     investeringscase_id   INT           NOT NULL,
     laanebeloeb           DECIMAL(15,2) NOT NULL,
-    rente_procent         DECIMAL(5,4)  NOT NULL,
+    rente_procent         DECIMAL(8,4)  NOT NULL,
     loebetid_aar          INT           NOT NULL,
     afdragsfri_periode_aar INT          NOT NULL DEFAULT 0,
     laanetype             VARCHAR(100),
@@ -61,6 +73,15 @@ CREATE TABLE Driftsbudget (
     investeringscase_id  INT           NOT NULL,
     navn                 VARCHAR(255),
     maanedlig_total      DECIMAL(15,2),
+    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
+);
+
+CREATE TABLE Udlejning (
+    udlejning_id         INT           PRIMARY KEY IDENTITY(1,1),
+    investeringscase_id  INT           NOT NULL,
+    maanedlig_leje       DECIMAL(15,2) NOT NULL,
+    udlejningsomkostning DECIMAL(15,2) NOT NULL DEFAULT 0,
+    beskrivelse          VARCHAR(255),
     FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
 );
 

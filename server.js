@@ -23,6 +23,10 @@ const PORT = process.env.PORT || 3000;
 // Tillader at læse JSON i request body (fx fra POST/PUT)
 app.use(express.json());
 
+// express.urlencoded er en middleware, der læser formlardata fra en post-request og omskriver det til læseligt for express.
+// extended: true betyder at den kan håndtere lidt mere komplekse strukturer fx arrays (vores ekstra udgifter)
+app.use(express.urlencoded({ extended: true }));
+
 // Servér statiske filer (CSS, client-side JS, billeder) fra public/
 app.use(express.static('public'));
 

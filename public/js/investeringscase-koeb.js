@@ -30,3 +30,12 @@ tilføjKnap.addEventListener('click', () => {
         nyRække.remove();
     });
 });
+
+//forhindrer bug, der gjorde at man kan skrive bogstavet e (pga videnskab 2e9)
+document.addEventListener('keydown', (event) => { 
+    if (event.key === 'e' || event.key === 'E' || event.key === '+' || event.key === '-') {
+        if (event.target.type === 'number') {
+            event.preventDefault();
+        }
+    }
+});
