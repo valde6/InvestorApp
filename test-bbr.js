@@ -29,9 +29,8 @@ async function test() {
 
     console.log('\n--- Trin 3: BBR Enheder ---');
 
-    // const bygning = bygninger.find(byg => byg.byg021BygningensAnvendelse === "120") <--
-    const bygning = bygninger[0];
-    bygning.ejendomstype = oversætAnvendelse(bygning.byg021BygningensAnvendelse);
+    // const bygning = bygninger.find(byg => byg.byg021BygningensAnvendelse === "120") <-- denne skal ikke bruges da den er specifik for koden 120
+    const bygning = bygninger[0]; // Vælger første bygningsanvendelse uanset kode, da vi ikke ved på forhånd hvilken kode der vil være knyttet til denne adresse. 
     const bygningsId = bygning.id_lokalId;
 
     const enheder = await findEnheder(bygningsId);

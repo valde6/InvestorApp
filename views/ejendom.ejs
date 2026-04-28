@@ -17,23 +17,24 @@
         <!-- BBR-data hentet via Datafordeler — byggeår, areal og værelser -->
         <section>
             <h2>BBR Data</h2>
+            <p><strong>Ejendomstype:</strong> <%= bygning.ejendomstype %></p>
             <p><strong>Byggeår:</strong>
                 <%= bygning.byg026Opførelsesår %>
             </p>
-            <p><strong>Samlet areal:</strong>
+            <p><strong>Samlet areal:</strong> // Samlet bygningsareal for hele ejendommen, inkl. alle bygninger
                 <%= bygning.byg038SamletBygningsareal %> m²
             </p>
             <p><strong>Antal etager:</strong>
                 <%= bygning.byg054AntalEtager %>
             </p>
-            <p><strong>Boligareal:</strong>
+            <p><strong>Boligareal:</strong> // Boligareal for den specifikke enhed, altså et plan
                 <%= enhed.enh026EnhedensSamledeAreal %> m²
             </p>
             <p><strong>Antal værelser:</strong>
                 <%= enhed.enh031AntalVærelser %>
             </p>
         </section>
-        
+
         <section>
             <h2>Adresseinformation</h2>
             <p><strong>Adresse-ID:</strong>
