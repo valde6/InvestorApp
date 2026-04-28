@@ -50,9 +50,6 @@ function oversætAnvendelse(kode) {
         "220": "Kontor, handel, lager",
         "230": "Hotel, restaurant",
         "290": "Anden erhvervsmæssig anvendelse",
-        "910": "Garage",
-        "920": "Carport",
-        "930": "Udhus"
     };
     return typer[kode] || `Ukendt type (${kode})`;
 }
@@ -61,11 +58,11 @@ function oversætAnvendelse(kode) {
 // findbygninger finder nu også ejendomstype og tilføjer det som felt i bygning-objektet, så vi kan bruge det i vores frontend senere.
 async function findBygninger(husnummerId) {
     const bygninger = await hentBbrData('bygning', { Husnummer: husnummerId });
-    const bygning = bygninger[0];
-    bygning.ejendomstype = oversætAnvendelse(bygning.byg021BygningensAnvendelse);
+    bygninger.forEach(byg => {
+        byg.ejendomstype = oversætAnvendelse(byg.byg021BygningensAnvendelse);
+    });
     return bygninger;
 }
-
 
 // Hent enheder for et givent husnummerId
 async function findEnheder(bygningsId) {
