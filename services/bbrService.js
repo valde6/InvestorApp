@@ -54,7 +54,7 @@ function oversætAnvendelse(kode) {
     return typer[kode] || `Ukendt type (${kode})`;
 }
 
-// Hent bygninger for et givent husnummerId og oversæt begningstype til læsbar form
+// Hent bygninger for et givent husnummerId og oversæt bygningstype til læsbar form
 // findbygninger finder nu også ejendomstype og tilføjer det som felt i bygning-objektet, så vi kan bruge det i vores frontend senere.
 async function findBygninger(husnummerId) {
     const bygninger = await hentBbrData('bygning', { Husnummer: husnummerId });
