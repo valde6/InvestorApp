@@ -29,7 +29,9 @@ async function test() {
 
     console.log('\n--- Trin 3: BBR Enheder ---');
 
-    const bygning = bygninger.find(byg => byg.byg021BygningensAnvendelse === "120")
+    // const bygning = bygninger.find(byg => byg.byg021BygningensAnvendelse === "120") <--
+    const bygning = bygninger[0];
+    bygning.ejendomstype = oversætAnvendelse(bygning.byg021BygningensAnvendelse);
     const bygningsId = bygning.id_lokalId;
 
     const enheder = await findEnheder(bygningsId);
