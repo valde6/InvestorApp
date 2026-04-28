@@ -1,3 +1,4 @@
+const { pool, poolConnect, sql } = require('../services/db');
 const express = require('express');
 const router = express.Router();
 
@@ -46,7 +47,23 @@ router.get('/:id', async (req, res) => {
         const enheder = await findEnheder(bygning.id_lokalId);
         const enhed = enheder[0];
 
-        res.render('ejendom', { adresseId, kortUrl, bygning, enhed, adresse });
+        // Gem eller find eksisterende ejendomsprofil i databasen
+        await poolConnect;
+        const profileRequest = pool.request();
+        profileRequest.input('adresse', sql.VarChar, adresse);
+        profileRequest.input('ejendomstype', sql.VarChar, bygning.byg021BygningensAnvendelse);
+        profileRequest.input('byggeaar', sql.Int, bygning.byg026Opførelsesår || null);
+        profileRequest.input('boligareal_m2', sql.Int, enhed?.enh026EnhedensSamledeAreal || null);
+        profileRequest.input('antal_vaerelser', sql.Int, enhed?.enh031AntalVærelser || null);
+
+        const profileResult = await profileRequest.query(`
+            INSERT INTO Ejendomsprofil (adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser)
+            OUTPUT INSERTED.ejendomsprofil_id
+            VALUES (@adresse, @ejendomstype, @byggeaar, @boligareal_m2, @antal_vaerelser)
+        `);
+        const ejendomsprofil_id = profileResult.recordset[0].ejendomsprofil_id;
+
+        res.render('ejendom', { adresseId, kortUrl, bygning, enhed, adresse, ejendomsprofil_id });
     } catch (error) {
         console.error('Fejl i /ejendomme/:id', error);
         res.status(500).json({ fejl: 'Kunne ikke hente ejendomsdata' });
