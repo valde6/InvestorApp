@@ -17,12 +17,16 @@ class Finansiering {
     }
 
     // Beregner månedlig ydelse (kun rente i afdragsfri periode, ellers annuitet)
+
     maanedligYdelse() {
-        const r = this.maanedligRente();
+        const r = this.renteProcent / 12; 
         const n = this.loebetidAar * 12;
-        // Annuitetsformel: M = L * r / (1 - (1+r)^-n)
-        return this.laanebeloeb * r / (1 - Math.pow(1 + r, -n));
+
+        if (r === 0) return this.laanebeloeb / n; // særtilfælde
+
+        return this.laanebeloeb * (r / (1 - Math.pow(1 + r, -n)));
     }
+
 
     // Beregner total renteomkostning over hele lånets løbetid
     totalRenteomkostning() {
@@ -32,3 +36,4 @@ class Finansiering {
 }
 
 module.exports = Finansiering;
+
