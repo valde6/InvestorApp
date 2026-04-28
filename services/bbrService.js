@@ -35,10 +35,35 @@ async function hentBbrData(endpoint, queryParams) {
 
 // --- Offentlige funktioner ---
 
-// Hent bygninger for et givent husnummerId
-async function findBygninger(husnummerId) {
-    return await hentBbrData('bygning', { Husnummer: husnummerId });
+// Oversætter BBR's anvendelseskode til læsbar ejendomstype
+function oversætAnvendelse(kode) {
+    const typer = {
+        "110": "Stuehus til landbrugsejendom",
+        "120": "Fritliggende enfamiliehus",
+        "130": "Række-, kæde- eller dobbelthus",
+        "140": "Etagebolig",
+        "150": "Kollegium",
+        "160": "Døgninstitution",
+        "190": "Anden helårsbeboelse",
+        "210": "Erhvervsmæssig produktion",
+        "217": "Landbrug, dambrug eller lignende",
+        "220": "Kontor, handel, lager",
+        "230": "Hotel, restaurant",
+        "290": "Anden erhvervsmæssig anvendelse",
+    };
+    return typer[kode] || `Ukendt type (${kode})`;
 }
+
+// Hent bygninger for et givent husnummerId og oversæt bygningstype til læsbar form
+// findbygninger finder nu også ejendomstype og tilføjer det som felt i bygning-objektet, så vi kan bruge det i vores frontend senere.
+async function findBygninger(husnummerId) {
+    const bygninger = await hentBbrData('bygning', { Husnummer: husnummerId });
+    bygninger.forEach(byg => {
+        byg.ejendomstype = oversætAnvendelse(byg.byg021BygningensAnvendelse);
+    });
+    return bygninger;
+}
+
 // Hent enheder for et givent husnummerId
 async function findEnheder(bygningsId) {
     return await hentBbrData('enhed', { bygning: bygningsId });

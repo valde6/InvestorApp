@@ -29,9 +29,11 @@ async function test() {
 
     console.log('\n--- Trin 3: BBR Enheder ---');
 
-    // const bygning = bygninger.find(byg => byg.byg021BygningensAnvendelse === "120") <--
-    const bygning = bygninger[0];
-    bygning.ejendomstype = oversætAnvendelse(bygning.byg021BygningensAnvendelse);
+    // Finder den primære boligbygning og filtrerer garager, carporten osv. fra
+    const bygning = bygninger.find(byg => {
+        const kode = parseInt(byg.byg021BygningensAnvendelse);
+        return kode >= 110 && kode <= 299;
+    });
     const bygningsId = bygning.id_lokalId;
 
     const enheder = await findEnheder(bygningsId);
