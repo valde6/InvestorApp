@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS Ejendomsprofil;
 -- Ejendomsprofil
 CREATE TABLE Ejendomsprofil (
     ejendomsprofil_id   INT           PRIMARY KEY IDENTITY(1,1),
+    adresse_id          VARCHAR(50)   NOT NULL, 
     adresse             VARCHAR(255)  NOT NULL,
     ejendomstype        VARCHAR(100)  NOT NULL,
     byggeaar            INT,

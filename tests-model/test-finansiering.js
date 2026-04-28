@@ -6,7 +6,7 @@
 
 const { test } = require('node:test');
 const assert = require('node:assert');
-const Finansiering = require('./models/Finansiering');
+const Finansiering = require('../models/Finansiering');
 
 // Test 1: Månedlig ydelse beregnes korrekt
 test('maanedligYdelse beregner korrekt for kendt lån', () => {
