@@ -16,6 +16,7 @@
     <main>
         <!-- BBR-data hentet via Datafordeler — byggeår, areal og værelser -->
         <section>
+            <a href="/investeringscases/ny/koeb">+ Opret ny investeringscase</a>
             <h2>BBR Data</h2>
             <p><strong>Ejendomstype:</strong>
                 <%= bygning.ejendomstype %>
@@ -43,9 +44,8 @@
 
         <section>
             <h2>Adresseinformation</h2>
-            <p><strong>Adresse-ID:</strong>
-                <%= adresseId %>
-            </p>
+            <h1><%= adresse %></h1>
+              
             <!-- Viser et interaktivt luftfoto fra Skråfoto centreret om ejendommens koordinater -->
             <iframe src="<%= kortUrl %>" width="100%" height="400" frameborder="0"></iframe>
         </section>

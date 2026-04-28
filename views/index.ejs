@@ -19,6 +19,34 @@
             <input type="text" id="adresse-input" placeholder="Skriv en adresse, fx Solbjerg Plads" autocomplete="off">
             <ul id="forslag-liste"></ul>
         </section>
+
+        <!-- Liste over tidligere oprettede ejendomsprofiler hentet fra databasen -->
+        <section class="tidligere-ejendomme">
+            <h2>Tidligere ejendomsprofiler</h2>
+
+            <% if (ejendomme.length===0) { %>
+                <p>Ingen ejendomsprofiler endnu. Søg en adresse ovenfor for at komme i gang.</p>
+                <% } else { %>
+                    <ul class="ejendomme-liste">
+                        <% ejendomme.forEach(function(ejendom) { %>
+                            <li class="ejendom-item">
+                                <a href="/ejendomme/<%= ejendom.ejendomsprofil_id %>">
+                                    <strong>
+                                        <%= ejendom.adresse %>
+                                    </strong>
+                                </a>
+                                <span>
+                                    <%= ejendom.ejendomstype %>
+                                </span>
+                                <span>Oprettet: <%= new Date(ejendom.oprettet_dato).toLocaleDateString('da-DK') %>
+                                        </span>
+                                <span>Cases: <%= ejendom.antal_cases %></span>
+                            </li>
+                            <% }) %>
+                    </ul>
+                    <% } %>
+        </section>
+
     </main>
 
     <script src="/js/sog.js"></script>

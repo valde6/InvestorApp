@@ -21,5 +21,14 @@ async function søgAdresse(q) {
     return data;
 }
 
+// Henter den fulde adressetekst for et adresse-ID via DAWA
+async function hentAdresse(adresseId) {
+    const url = `${DAWA_BASE_URL}/adresser/${adresseId}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`DAWA svarede med status ${response.status}`);
+    const data = await response.json();
+    return data.adressebetegnelse;
+}
 
-module.exports = { søgAdresse };
+module.exports = { søgAdresse, hentAdresse };
+

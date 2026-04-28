@@ -6,12 +6,21 @@
 const express = require('express');
 require('dotenv').config();
 
-// Importer vores route-fil (samme princip som G7's routes/listings.js)
-//const ejendommeRoutes = require('./routes/ejendomme');
+// ============================================
+// IMPORTS AF ROUTES
+// ============================================
 
+// Adressesøgning via DAWA
 const adresserRoutes = require('./routes/adresser');
 
+// Investeringscase-formularen (trin 3.1-3.5)
 const investeringscasesRoutes = require('./routes/investeringscases');
+
+// Ejendomsprofil — viser BBR-data og kort for en valgt adresse
+const ejendommeRoutes = require('./routes/ejendomme');
+
+// Forsiden — viser søgefelt og tidligere ejendomsprofiler
+const forsideRoutes = require('./routes/forside');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,17 +32,12 @@ const PORT = process.env.PORT || 3000;
 // Tillader at læse JSON i request body (fx fra POST/PUT)
 app.use(express.json());
 
-// express.urlencoded er en middleware, der læser formlardata fra en post-request og omskriver det til læseligt for express.
-// extended: true betyder at den kan håndtere lidt mere komplekse strukturer fx arrays (vores ekstra udgifter)
+// Læser formulardata fra POST-requests og gør det tilgængeligt via req.body
+// extended: true tillader komplekse strukturer som arrays (fx ekstra udgifter)
 app.use(express.urlencoded({ extended: true }));
 
 // Servér statiske filer (CSS, client-side JS, billeder) fra public/
 app.use(express.static('public'));
-
-//
-app.use('/api/adresser', adresserRoutes);
-
-app.use('/investeringscases', investeringscasesRoutes);
 
 // Sæt EJS som template engine
 app.set('view engine', 'ejs');
@@ -42,16 +46,10 @@ app.set('view engine', 'ejs');
 // ROUTES
 // ============================================
 
-// Forsiden — render index.ejs
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-
-const ejendommeRoutes = require('./routes/ejendomme');
+app.use('/api/adresser', adresserRoutes);
+app.use('/investeringscases', investeringscasesRoutes);
 app.use('/ejendomme', ejendommeRoutes);
-
-
+app.use('/', forsideRoutes);
 
 // ============================================
 // START SERVER
