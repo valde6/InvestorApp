@@ -1,7 +1,7 @@
 require('dotenv').config();
 
-const { adresseIdTilHusnummerId } = require('./services/darService');
-const { findBygninger, findEnheder, findGrund } = require('./services/bbrService');
+const { adresseIdTilHusnummerId } = require('../services/darService');
+const { findBygninger, findEnheder, findGrund } = require('../services/bbrService');
 
 const adresseId = '0a3f50a3-f963-32b8-e044-0003ba298018'; // Alberts forældres adresse
 

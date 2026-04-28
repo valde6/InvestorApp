@@ -1,4 +1,4 @@
-const { pool, poolConnect } = require('./services/db');
+const { pool, poolConnect } = require('../services/db');
 
 async function test() {
     await poolConnect;

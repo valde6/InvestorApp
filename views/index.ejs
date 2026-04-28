@@ -30,7 +30,7 @@
                     <ul class="ejendomme-liste">
                         <% ejendomme.forEach(function(ejendom) { %>
                             <li class="ejendom-item">
-                                <a href="/ejendomme/<%= ejendom.ejendomsprofil_id %>">
+                                <a href="/ejendomsprofiler/<%= ejendom.ejendomsprofil_id %>">
                                     <strong>
                                         <%= ejendom.adresse %>
                                     </strong>
@@ -39,7 +39,7 @@
                                     <%= ejendom.ejendomstype %>
                                 </span>
                                 <span>Oprettet: <%= new Date(ejendom.oprettet_dato).toLocaleDateString('da-DK') %>
-                                        </span>
+                                </span>
                                 <span>Cases: <%= ejendom.antal_cases %></span>
                             </li>
                             <% }) %>
