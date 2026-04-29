@@ -64,7 +64,16 @@ router.get('/:id', async (req, res) => {
         `);
         const ejendomsprofil_id = profileResult.recordset[0].ejendomsprofil_id;
 
-        res.render('ejendom', { adresseId, kortUrl, bygning, enhed, adresse, ejendomsprofil_id });
+        res.render('ejendom', {
+            adresseId,
+            kortUrl,
+            bygning,
+            enhed,
+            adresse,
+            ejendomsprofil_id,
+            // Tom liste — nye ejendomme har ingen cases endnu
+            cases: []
+        });
     } catch (error) {
         console.error('Fejl i /ejendomme/:id', error);
         res.status(500).json({ fejl: 'Kunne ikke hente ejendomsdata' });

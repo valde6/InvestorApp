@@ -26,7 +26,8 @@ CREATE TABLE Ejendomsprofil (
 CREATE TABLE Investeringscase (
     investeringscase_id  INT            PRIMARY KEY IDENTITY(1,1),
     ejendomsprofil_id    INT            NOT NULL,
-    navn                 VARCHAR(255)   NOT NULL UNIQUE,
+    navn                 VARCHAR(255)   NOT NULL, -- Vi har valgt at navn ikke skal være unique, da der godt må være flere
+    -- investeringscases der hedder det samme. Det er investerings_id der er unikt.
     beskrivelse          VARCHAR(1000),
     ejendomspris          DECIMAL(15,2)  NOT NULL,
     omkostninger_koeb     DECIMAL(15,2)  NOT NULL,
