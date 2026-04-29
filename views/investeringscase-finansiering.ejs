@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="da">
+
 <head>
     <meta charset="UTF-8">
-    <title>Ny investeringscase – Finansiering</title>
+    <title>Ny investeringscase - Finansiering</title>
 </head>
+
 <body>
 
     <h1>Ny investeringscase</h1>
@@ -11,28 +13,37 @@
 
     <form action="/investeringscases/ny/finansiering" method="POST">
 
+        <!-- Skjult felt der sender investeringscase_id med til serveren via POST.
+             Værdien sættes ind af EJS via <%= investeringscase_id %> som den modtager fra GET-routen.
+             Brugeren ser ikke feltet, men det er nødvendigt for at vide hvilken case finansieringen tilhører. -->
         <input type="hidden" name="investeringscase_id" value="<%= investeringscase_id %>">
 
         <label for="laanebeloeb">Lånebeløb (kr.)</label>
-        <input type="number" id="laanebeloeb" name="laanebeloeb" required>
+        <input type="number" id="laanebeloeb" name="laanebeloeb">
 
-        <label for="rente_procent">Rente (%)</label>
-        <input type="number" id="rente_procent" name="rente_procent" step="0.01">
+        <div id="finansiering-ekstra" style="display:none">
 
-        <label for="loebetid_aar">Løbetid (år)</label>
-        <input type="number" id="loebetid_aar" name="loebetid_aar" required>
+            <label for="rente_procent">Rente (%)</label>
+            <input type="number" id="rente_procent" name="rente_procent" step="0.01">
 
-        <label for="afdragsfri_periode_aar">Afdragsfri periode (år)</label>
-        <input type="number" id="afdragsfri_periode_aar" name="afdragsfri_periode_aar" value="0">
+            <label for="loebetid_aar">Løbetid (år)</label>
+            <input type="number" id="loebetid_aar" name="loebetid_aar">
 
-        <label for="laanetype">Lånetype</label>
-        <input type="text" id="laanetype" name="laanetype">
+            <label for="afdragsfri_periode_aar">Afdragsfri periode (år)</label>
+            <input type="number" id="afdragsfri_periode_aar" name="afdragsfri_periode_aar" value="0">
 
-        <hr>
+            <label for="laanetype">Lånetype</label>
+            <input type="text" id="laanetype" name="laanetype">
+
+        </div>
+
+        <hr> <!-- horisontal linje -->
 
         <button type="submit">Næste trin</button>
 
     </form>
 
+    <script src="/js/investeringscase-finansiering.js"></script>
 </body>
+
 </html>

@@ -116,16 +116,18 @@ router.post('/ny/finansiering', async (req, res) => {
 
     const { investeringscase_id, laanebeloeb, rente_procent, loebetid_aar, afdragsfri_periode_aar, laanetype } = req.body;
 
+    const erLaan = parseFloat(laanebeloeb) > 0; // tjekker om laanebeloebet overhovedet er over 0
+
     try {
         const request = pool.request();
         request.input('investeringscase_id', sql.Int, investeringscase_id);
-        request.input('laanebeloeb', sql.Decimal(15, 2), laanebeloeb);
-        request.input('rente_procent', sql.Decimal(8, 4), rente_procent);
-        request.input('loebetid_aar', sql.Int, loebetid_aar);
-        request.input('afdragsfri_periode_aar', sql.Int, afdragsfri_periode_aar || 0);
-        request.input('laanetype', sql.VarChar, laanetype || null);
+        request.input('laanebeloeb', sql.Decimal(15, 2), laanebeloeb || 0);
+        request.input('rente_procent', sql.Decimal(8, 4), erLaan ? rente_procent || 0 : 0); //tjekker om erLaan er sand.
+        request.input('loebetid_aar', sql.Int, erLaan ? loebetid_aar || 0 : 0); //samme her
+        request.input('afdragsfri_periode_aar', sql.Int, erLaan ? afdragsfri_periode_aar || 0 : 0); //samme her
+        request.input('laanetype', sql.VarChar, erLaan ? laanetype || null : null); //samme her
 
-        
+
 
         await request.query(`
             INSERT INTO Finansiering 
@@ -288,7 +290,7 @@ router.post('/ny/udlejning', async (req, res) => {
         }
 
         // Trin 3.5 er sidste trin — send til oversigt
-        res.redirect('/investeringscases/oversigt?id=' + investeringscase_id);
+        res.redirect('/oversigt?id=' + investeringscase_id);
 
     } catch (err) {
         console.error('Fejl ved oprettelse af udlejning:', err);
@@ -296,71 +298,5 @@ router.post('/ny/udlejning', async (req, res) => {
     }
 });
 
-
-//==========================================
-//
-// OVERSIGT
-//
-//==========================================
-
-// GET /investeringscases/oversigt
-router.get('/oversigt', async (req, res) => {
-    await poolConnect;
-
-    const investeringscase_id = req.query.id;
-
-    try {
-        // Hent investeringscase
-        const caseRequest = pool.request();
-        caseRequest.input('id', sql.Int, investeringscase_id);
-        const caseResult = await caseRequest.query(`
-            SELECT * FROM Investeringscase WHERE investeringscase_id = @id
-        `);
-
-        // Hent købs- og renoveringsudgifter
-        const koebRequest = pool.request();
-        koebRequest.input('id', sql.Int, investeringscase_id);
-        const koebResult = await koebRequest.query(`
-            SELECT * FROM Koebsomkostning WHERE investeringscase_id = @id
-        `);
-
-        // Hent finansiering
-        const finansRequest = pool.request();
-        finansRequest.input('id', sql.Int, investeringscase_id);
-        const finansResult = await finansRequest.query(`
-            SELECT * FROM Finansiering WHERE investeringscase_id = @id
-        `);
-
-        // Hent driftsomkostninger
-        const driftsRequest = pool.request();
-        driftsRequest.input('id', sql.Int, investeringscase_id);
-        const driftsResult = await driftsRequest.query(`
-            SELECT o.* FROM Driftsomkostning o
-            JOIN Driftsbudget b ON o.driftsbudget_id = b.driftsbudget_id
-            WHERE b.investeringscase_id = @id
-        `);
-
-        // Hent udlejning
-        const udlejningRequest = pool.request();
-        udlejningRequest.input('id', sql.Int, investeringscase_id);
-        const udlejningResult = await udlejningRequest.query(`
-            SELECT * FROM Udlejning WHERE investeringscase_id = @id
-        `);
-
-        res.render('investeringscase-oversigt', {
-            sagen: caseResult.recordset[0],
-            koebsomkostninger: koebResult.recordset,
-            finansiering: finansResult.recordset[0],
-            driftsomkostninger: driftsResult.recordset,
-            udlejninger: udlejningResult.recordset,
-            // Send ejendomsprofil_id med så vi kan linke tilbage til ejendomsprofilsiden
-            ejendomsprofil_id: caseResult.recordset[0].ejendomsprofil_id
-        });
-
-    } catch (err) {
-        console.error('Fejl ved hentning af oversigt:', err);
-        res.status(500).send('Der skete en fejl. Prøv igen.');
-    }
-});
 
 module.exports = router;
