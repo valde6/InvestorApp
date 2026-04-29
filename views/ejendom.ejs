@@ -61,23 +61,6 @@
             <iframe src="<%= kortUrl %>" width="100%" height="400" frameborder="0"></iframe>
         </section>
 
-        <section>
-            <h2>Investeringscases</h2>
-            <% if (cases.length> 0) { %>
-                <% cases.forEach(c=> { %>
-                    <p>
-                        <!-- Link til case-oversigt — bruger query parameter id= som routen forventer -->
-                        <a href="/oversigt?id=<%= c.investeringscase_id %>">
-                            <%= c.navn %>
-                        </a>
-
-                    </p>
-                    <% }) %>
-                        <% } else { %>
-                            <p>Ingen cases oprettet endnu.</p>
-                            <% } %>
-        </section>
-
     </main>
 </body>
 

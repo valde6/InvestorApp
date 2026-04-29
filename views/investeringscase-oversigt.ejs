@@ -5,169 +5,174 @@
     <meta charset="UTF-8">
     <title>Oversigt - <%= sagen.navn %>
     </title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
-    <!-- Link tilbage til den ejendomsprofil som denne case tilhører -->
-    <a href="/ejendomsprofiler/<%= ejendomsprofil_id %>">← Tilbage til ejendom</a>
-    <h1>
-        <%= sagen.navn %>
-    </h1>
-    <p>
-        <%= sagen.beskrivelse %>
-    </p>
 
-    <h2>Køb og renoveringsudgifter</h2>
-    <p>Ejendomspris: <%= sagen.ejendomspris %> kr.</p>
-    <p>Omkostninger ved køb: <%= sagen.omkostninger_koeb %> kr.</p>
-    <p>Advokat: <%= sagen.advokat %> kr.</p>
-    <p>Tinglysning: <%= sagen.tinglysning %> kr.</p>
-    <p>Køberrådgivning: <%= sagen.koeberraadgivning %> kr.</p>
-
-    <% if (koebsomkostninger.length> 0) { %>
-        <h3>Ekstra udgifter</h3>
-        <% koebsomkostninger.forEach(k=> { %>
+    <header>
+        <a href="/ejendomsprofiler/<%= ejendomsprofil_id %>">← Tilbage til ejendom</a>
+        <h1>
+            <%= sagen.navn %>
+        </h1>
+        <% if (sagen.beskrivelse) { %>
             <p>
-                <%= k.beskrivelse %>: <%= k.beloeb %> kr.
+                <%= sagen.beskrivelse %>
             </p>
-            <% }) %>
-                <% } %>
+            <% } %>
+    </header>
 
-                    <h2>Finansiering</h2>
-                    <% if (finansiering) { %>
-                        <p>Lånebeløb: <%= finansiering.laanebeloeb %> kr.</p>
-                        <p>Rente: <%= finansiering.rente_procent %> %</p>
-                        <p>Løbetid: <%= finansiering.loebetid_aar %> år</p>
-                        <p>Afdragsfri periode: <%= finansiering.afdragsfri_periode_aar %> år</p>
-                        <p>Lånetype: <%= finansiering.laanetype %>
+    <main>
+
+        <section>
+            <h2>Køb og renoveringsudgifter</h2>
+            <div class="ejendom-data">
+                <p><strong>Ejendomspris:</strong>
+                    <%= Number(sagen.ejendomspris).toLocaleString('da-DK') %> kr.
+                </p>
+                <p><strong>Omkostninger ved køb:</strong>
+                    <%= Number(sagen.omkostninger_koeb).toLocaleString('da-DK') %> kr.
+                </p>
+                <p><strong>Advokat:</strong>
+                    <%= Number(sagen.advokat).toLocaleString('da-DK') %> kr.
+                </p>
+                <p><strong>Tinglysning:</strong>
+                    <%= Number(sagen.tinglysning).toLocaleString('da-DK') %> kr.
+                </p>
+                <p><strong>Køberrådgivning:</strong>
+                    <%= Number(sagen.koeberraadgivning).toLocaleString('da-DK') %> kr.
+                </p>
+            </div>
+            <% if (koebsomkostninger.length> 0) { %>
+                <h3 style="margin-top: 1rem; font-size: 0.95rem; color: #555;">Ekstra udgifter</h3>
+                <div class="ejendom-data">
+                    <% koebsomkostninger.forEach(k=> { %>
+                        <p><strong>
+                                <%= k.beskrivelse %>:
+                            </strong>
+                            <%= Number(k.beloeb).toLocaleString('da-DK') %> kr.
                         </p>
-                        <% } %>
+                        <% }) %>
+                </div>
+                <% } %>
+        </section>
 
-                            <h2>Driftsomkostninger</h2>
-                            <% if (driftsomkostninger.length> 0) { %>
-                                <% driftsomkostninger.forEach(d=> { %>
-                                    <p>
-                                        <%= d.beskrivelse %>: <%= d.maanedlig_beloeb %> kr./md.
-                                    </p>
-                                    <% }) %>
-                                        <% } else { %>
-                                            <p>Ingen driftsomkostninger angivet.</p>
-                                            <% } %>
+        <section>
+            <h2>Finansiering</h2>
+            <% if (finansiering) { %>
+                <div class="ejendom-data">
+                    <p><strong>Lånebeløb:</strong>
+                        <%= Number(finansiering.laanebeloeb).toLocaleString('da-DK') %> kr.
+                    </p>
+                    <p><strong>Rente:</strong>
+                        <%= finansiering.rente_procent %> %
+                    </p>
+                    <p><strong>Løbetid:</strong>
+                        <%= finansiering.loebetid_aar %> år
+                    </p>
+                    <p><strong>Afdragsfri periode:</strong>
+                        <%= finansiering.afdragsfri_periode_aar %> år
+                    </p>
+                    <p><strong>Lånetype:</strong>
+                        <%= finansiering.laanetype %>
+                    </p>
+                </div>
+                <% } %>
+        </section>
 
-                                                <h2>Udlejning</h2>
-                                                <% if (udlejninger.length> 0) { %>
-                                                    <% udlejninger.forEach(u=> { %>
-                                                        <p>
-                                                            <%= u.beskrivelse %>: <%= u.maanedlig_leje %> kr./md.
-                                                                    (udgifter: <%= u.udlejningsomkostning %> kr./md.)
-                                                        </p>
-                                                        <% }) %>
-                                                            <% } else { %>
-                                                                <p>Ingen udlejning angivet.</p>
-                                                                <% } %>
+        <section>
+            <h2>Driftsomkostninger</h2>
+            <% if (driftsomkostninger.length> 0) { %>
+                <div class="ejendom-data">
+                    <% driftsomkostninger.forEach(d=> { %>
+                        <p><strong>
+                                <%= d.beskrivelse %>:
+                            </strong>
+                            <%= Number(d.maanedlig_beloeb).toLocaleString('da-DK') %> kr./md.
+                        </p>
+                        <% }) %>
+                </div>
+                <% } else { %>
+                    <p style="color: #888;">Ingen driftsomkostninger angivet.</p>
+                    <% } %>
+        </section>
 
+        <section>
+            <h2>Udlejning</h2>
+            <% if (udlejninger.length> 0) { %>
+                <div class="ejendom-data">
+                    <% udlejninger.forEach(u=> { %>
+                        <p><strong>
+                                <%= u.beskrivelse %>:
+                            </strong>
+                            <%= Number(u.maanedlig_leje).toLocaleString('da-DK') %> kr./md. (udgifter: <%=
+                                    Number(u.udlejningsomkostning).toLocaleString('da-DK') %> kr./md.)
+                        </p>
+                        <% }) %>
+                </div>
+                <% } else { %>
+                    <p style="color: #888;">Ingen udlejning angivet.</p>
+                    <% } %>
+        </section>
 
-                                                                    <h2>Simulering (30 år)</h2>
-                                                                    <table>
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>År</th>
-                                                                                <th>Cashflow (kr.)</th>
-                                                                                <th>Gæld (kr.)</th>
-                                                                                <th>Egenkapital (kr.)</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <% simulering.forEach(s=> { %>
-                                                                                <tr>
-                                                                                    <td>
-                                                                                        <%= s.aar %>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <%= s.cashflow.toLocaleString('da-DK')
-                                                                                            %>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <%= s.gaeld.toLocaleString('da-DK')
-                                                                                            %>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <%= s.egenkapital.toLocaleString('da-DK')
-                                                                                            %>
-                                                                                    </td>
-                                                                                </tr>
-                                                                                <% }) %>
-                                                                        </tbody>
-                                                                    </table>
+        <section>
+            <h2>Simulering (30 år)</h2>
+            <canvas id="simuleringChart" style="width: 100%; height: 400px; margin-bottom: 2rem;"></canvas>
+            <div style="overflow-x: auto;">
+                <table class="simulering-tabel">
+                    <thead>
+                        <tr>
+                            <th>År</th>
+                            <th>Cashflow (kr.)</th>
+                            <th>Gæld (kr.)</th>
+                            <th>Egenkapital (kr.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% simulering.forEach(s=> { %>
+                            <tr>
+                                <td>
+                                    <%= s.aar %>
+                                </td>
+                                <td class="<%= s.cashflow < 0 ? 'tal-negativ' : 'tal-positiv' %>">
+                                    <%= s.cashflow.toLocaleString('da-DK') %>
+                                </td>
+                                <td>
+                                    <%= s.gaeld.toLocaleString('da-DK') %>
+                                </td>
+                                <td>
+                                    <%= s.egenkapital.toLocaleString('da-DK') %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-                                                                    <!-- Chart.js fra CDN -->
-                                                                    <script
-                                                                        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    </main>
 
-                                                                    <h2>Simulering (30 år)</h2>
-                                                                    <canvas id="simuleringChart" width="900"
-                                                                        height="400"></canvas>
-
-                                                                    <script>
-                                                                        // Data fra serveren via EJS
-                                                                        const simData = <%- JSON.stringify(simulering) %>;
-
-                                                                        const labels = simData.map(s => 'År ' + s.aar);
-                                                                        const cashflow = simData.map(s => s.cashflow);
-                                                                        const gaeld = simData.map(s => s.gaeld);
-                                                                        const egenkapital = simData.map(s => s.egenkapital);
-
-                                                                        const ctx = document.getElementById('simuleringChart').getContext('2d');
-                                                                        new Chart(ctx, {
-                                                                            type: 'line',
-                                                                            data: {
-                                                                                labels: labels,
-                                                                                datasets: [
-                                                                                    {
-                                                                                        label: 'Cashflow (kr.)',
-                                                                                        data: cashflow,
-                                                                                        borderColor: 'green',
-                                                                                        backgroundColor: 'rgba(0,128,0,0.1)',
-                                                                                        tension: 0.3
-                                                                                    },
-                                                                                    {
-                                                                                        label: 'Gæld (kr.)',
-                                                                                        data: gaeld,
-                                                                                        borderColor: 'red',
-                                                                                        backgroundColor: 'rgba(255,0,0,0.1)',
-                                                                                        tension: 0.3
-                                                                                    },
-                                                                                    {
-                                                                                        label: 'Egenkapital (kr.)',
-                                                                                        data: egenkapital,
-                                                                                        borderColor: 'blue',
-                                                                                        backgroundColor: 'rgba(0,0,255,0.1)',
-                                                                                        tension: 0.3
-                                                                                    }
-                                                                                ]
-                                                                            },
-                                                                            options: {
-                                                                                responsive: true,
-                                                                                plugins: {
-                                                                                    legend: { position: 'top' },
-                                                                                    title: {
-                                                                                        display: true,
-                                                                                        text: 'Udvikling over 30 år'
-                                                                                    }
-                                                                                },
-                                                                                scales: {
-                                                                                    y: {
-                                                                                        ticks: {
-                                                                                            // Formatér tal med tusindtalsseparator
-                                                                                            callback: function (value) {
-                                                                                                return value.toLocaleString('da-DK') + ' kr.';
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        });
-                                                                    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+        const simData = <% - JSON.stringify(simulering) %>;
+        const labels = simData.map(s => 'År ' + s.aar);
+        new Chart(document.getElementById('simuleringChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'Cashflow (kr.)', data: simData.map(s => s.cashflow), borderColor: '#2a7a3b', backgroundColor: 'rgba(42,122,59,0.08)', tension: 0.3 },
+                    { label: 'Gæld (kr.)', data: simData.map(s => s.gaeld), borderColor: '#c0392b', backgroundColor: 'rgba(192,57,43,0.08)', tension: 0.3 },
+                    { label: 'Egenkapital (kr.)', data: simData.map(s => s.egenkapital), borderColor: '#2a5caa', backgroundColor: 'rgba(42,92,170,0.08)', tension: 0.3 }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { ticks: { callback: v => v.toLocaleString('da-DK') + ' kr.' } } }
+            }
+        });
+    </script>
 
 </body>
 

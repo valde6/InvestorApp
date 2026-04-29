@@ -56,13 +56,50 @@ router.get('/:id', async (req, res) => {
             adresse,
             // Ingen ejendomsprofil_id endnu — profilen er ikke oprettet
             ejendomsprofil_id: null,
-            cases: []
         });
     } catch (error) {
         console.error('Fejl i /ejendomme/:id', error);
         res.status(500).json({ fejl: 'Kunne ikke hente ejendomsdata' });
     }
 
+});
+
+// POST /ejendomme/:id/opret
+// Opretter en ejendomsprofil i databasen ud fra BBR-data sendt fra formularen
+router.post('/:id/opret', async (req, res) => {
+    try {
+        await poolConnect;
+
+        const adresseId = req.params.id;
+        const { adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser } = req.body;
+
+        const request = pool.request();
+        request.input('adresse_id', sql.VarChar, adresseId);
+        request.input('adresse', sql.VarChar, adresse);
+        request.input('ejendomstype', sql.VarChar, ejendomstype || 'Ukendt');
+        request.input('byggeaar', sql.Int, byggeaar ? parseInt(byggeaar) : null);
+        request.input('boligareal_m2', sql.Int, boligareal_m2 ? parseInt(boligareal_m2) : null);
+        request.input('antal_vaerelser', sql.Int, antal_vaerelser ? parseInt(antal_vaerelser) : null);
+
+
+        //Vi anvender OUTPUT INSERTED til at fange det autogenerede ejendomsprofil_ID som Databasen selv laver.
+        //Vi anvende rbagefter dette til at redirecte brugeren til ejendomsprofilen de lige har oprettet med result.recordset[0].
+        const result = await request.query(`
+            INSERT INTO Ejendomsprofil 
+                (adresse_id, adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser)
+            OUTPUT INSERTED.ejendomsprofil_id 
+            VALUES 
+                (@adresse_id, @adresse, @ejendomstype, @byggeaar, @boligareal_m2, @antal_vaerelser)
+        `);
+
+        const ejendomsprofil_id = result.recordset[0].ejendomsprofil_id;
+
+        res.redirect('/ejendomsprofiler/' + ejendomsprofil_id);
+
+    } catch (err) {
+        console.error('Fejl ved oprettelse af ejendomsprofil:', err);
+        res.status(500).send('Der skete en fejl ved oprettelse af ejendomsprofil.');
+    }
 });
 
 module.exports = router;

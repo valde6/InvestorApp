@@ -28,21 +28,10 @@ router.get('/:id', async (req, res) => {
         const { lon, lat } = await hentKoordinater(profil.adresse_id);
         const kortUrl = byggeLuftfotoUrl(lon, lat);
 
-        res.render('ejendom', {
-            adresseId: profil.adresse_id,
+        res.render('ejendomsprofil', {
+            profil,        // hele DB-rækken direkte
             kortUrl,
-            bygning: {
-                byg026Opførelsesår: profil.byggeaar,
-                byg038SamletBygningsareal: null,
-                byg054AntalEtager: null,
-                ejendomstype: profil.ejendomstype
-            },
-            enhed: {
-                enh026EnhedensSamledeAreal: profil.boligareal_m2,
-                enh031AntalVærelser: profil.antal_vaerelser
-            },
             adresse: profil.adresse,
-            ejendomsprofil_id: profil.ejendomsprofil_id,
             cases
         });
     } catch (err) {
