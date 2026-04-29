@@ -17,8 +17,11 @@ const router = express.Router();
 
 // GET /investeringscaser/ny/køb
 // Viser formularen for trin 3.1: Køb og renoveringsudgifter
-router.get('/ny/koeb', function(req, res) {
-    res.render('investeringscase-koeb');
+router.get('/ny/koeb', function (req, res) {
+    // Læs ejendomsprofil_id fra URL'en (?ejendomsprofil_id=X)
+    // så vi kan sende det videre til formularen
+    const ejendomsprofil_id = req.query.ejendomsprofil_id;
+    res.render('investeringscase-koeb', { ejendomsprofil_id });
 });
 
 // POST /investeringscaser/ny/koeb
@@ -29,19 +32,20 @@ router.post('/ny/koeb', async (req, res) => {
     await poolConnect;
     console.log('req.body:', req.body);
 
-    // Udpak formulardata fra request body
-    const { navn, ejendomspris, omkostninger_koeb, advokat, tinglysning, koeberraadgivning, ekstra_beskrivelse, ekstra_beloeb } = req.body; //denne kan læses pga. urlencoded ting i server.js
+    // Tilføj ejendomsprofil_id til destructuring fra req.body
+    const { navn, ejendomsprofil_id, ejendomspris, omkostninger_koeb, advokat, tinglysning, koeberraadgivning, ekstra_beskrivelse, ekstra_beloeb } = req.body;
 
     try { // bruger try/catch, da ting i databaser kan gå galt
         // Byg forespørgslen op trin for trin
         const request = pool.request(); // samler alle disse som .input for at undgå SQL injection. .input sendes IKKE til databasen endnu, først når den pakkes i .query længere nede
         request.input('navn', sql.VarChar, navn); // navn kommer her fra req.body (defineret foroven)
-        request.input('ejendomsprofil_id', sql.Int, 1); // midlertidigt hardcodet
-        request.input('ejendomspris', sql.Decimal(15,2), ejendomspris); //ejendomspris kommer fra req.body osv osv
-        request.input('omkostninger_koeb', sql.Decimal(15,2), omkostninger_koeb); // 'omkostninger_koeb' matcher til @omkostninger_koeb forneden (VALUES)
-        request.input('advokat', sql.Decimal(15,2), advokat);
-        request.input('tinglysning', sql.Decimal(15,2), tinglysning);
-        request.input('koeberraadgivning', sql.Decimal(15,2), koeberraadgivning);
+        // Læs ejendomsprofil_id fra formularen i stedet for hardcodet 1
+        request.input('ejendomsprofil_id', sql.Int, ejendomsprofil_id);
+        request.input('ejendomspris', sql.Decimal(15, 2), ejendomspris); //ejendomspris kommer fra req.body osv osv
+        request.input('omkostninger_koeb', sql.Decimal(15, 2), omkostninger_koeb); // 'omkostninger_koeb' matcher til @omkostninger_koeb forneden (VALUES)
+        request.input('advokat', sql.Decimal(15, 2), advokat);
+        request.input('tinglysning', sql.Decimal(15, 2), tinglysning);
+        request.input('koeberraadgivning', sql.Decimal(15, 2), koeberraadgivning);
 
         // Kør queryen og gem resultatet
         // .query bruges her for at modvirke SQL injection. Der kan nemlig ikke sendes noget direkte som query. Den "endelige" query sendes efter den
@@ -74,7 +78,7 @@ router.post('/ny/koeb', async (req, res) => {
                 const ekstraRequest = pool.request(); // pool er vores forbindelse til databasen fra db.js importeret hertil øverst
                 ekstraRequest.input('investeringscase_id', sql.Int, investeringscase_id);
                 ekstraRequest.input('beskrivelse', sql.VarChar, beskrivelser[i]);
-                ekstraRequest.input('beloeb', sql.Decimal(15,2), beloeb[i]);
+                ekstraRequest.input('beloeb', sql.Decimal(15, 2), beloeb[i]);
 
                 await ekstraRequest.query(`
                     INSERT INTO Koebsomkostning (investeringscase_id, beskrivelse, beloeb)
@@ -102,8 +106,8 @@ router.post('/ny/koeb', async (req, res) => {
 router.get('/ny/finansiering', (req, res) => {
     const investeringscase_id = req.query.id; // NATURLOV: req.query er et objekt der indeholder alt der står efter ? i en URL. OG req.body er altid formulardata.
     res.render('investeringscase-finansiering', { investeringscase_id }); //res.render finder investeringscase-finansiering.ejs filen og sætter id'et ind.
-// Det kan den fordi der i server.js står app.set('view engine', 'ejs'); som fortæller express at ejs er template 
-// engine (engine til at mixe html og data). I øvrigt er views/-mappen express' standard mappe når man bruger en template engine
+    // Det kan den fordi der i server.js står app.set('view engine', 'ejs'); som fortæller express at ejs er template 
+    // engine (engine til at mixe html og data). I øvrigt er views/-mappen express' standard mappe når man bruger en template engine
 });
 
 // POST /investeringscases/ny/finansiering
@@ -115,8 +119,8 @@ router.post('/ny/finansiering', async (req, res) => {
     try {
         const request = pool.request();
         request.input('investeringscase_id', sql.Int, investeringscase_id);
-        request.input('laanebeloeb', sql.Decimal(15,2), laanebeloeb);
-        request.input('rente_procent', sql.Decimal(8,4), rente_procent);
+        request.input('laanebeloeb', sql.Decimal(15, 2), laanebeloeb);
+        request.input('rente_procent', sql.Decimal(8, 4), rente_procent);
         request.input('loebetid_aar', sql.Int, loebetid_aar);
         request.input('afdragsfri_periode_aar', sql.Int, afdragsfri_periode_aar || 0);
         request.input('laanetype', sql.VarChar, laanetype || null);
@@ -164,7 +168,7 @@ router.post('/ny/renovering', async (req, res) => {
                 const request = pool.request();
                 request.input('investeringscase_id', sql.Int, investeringscase_id);
                 request.input('beskrivelse', sql.VarChar, beskrivelser[i]);
-                request.input('beloeb', sql.Decimal(15,2), beloeber[i]);
+                request.input('beloeb', sql.Decimal(15, 2), beloeber[i]);
                 request.input('tidspunkt', sql.Date, tidspunkter[i]);
 
                 await request.query(`
@@ -224,7 +228,7 @@ router.post('/ny/driftsbudget', async (req, res) => {
                 const request = pool.request();
                 request.input('driftsbudget_id', sql.Int, driftsbudget_id);
                 request.input('beskrivelse', sql.VarChar, beskrivelser[i]);
-                request.input('maanedlig_beloeb', sql.Decimal(15,2), beloeber[i]);
+                request.input('maanedlig_beloeb', sql.Decimal(15, 2), beloeber[i]);
                 request.input('kategori', sql.VarChar, kategorier[i] || null);
 
                 await request.query(`
@@ -270,8 +274,8 @@ router.post('/ny/udlejning', async (req, res) => {
             for (let i = 0; i < lejer.length; i++) {
                 const request = pool.request();
                 request.input('investeringscase_id', sql.Int, investeringscase_id);
-                request.input('maanedlig_leje', sql.Decimal(15,2), lejer[i]);
-                request.input('udlejningsomkostning', sql.Decimal(15,2), omkostninger[i] || 0);
+                request.input('maanedlig_leje', sql.Decimal(15, 2), lejer[i]);
+                request.input('udlejningsomkostning', sql.Decimal(15, 2), omkostninger[i] || 0);
                 request.input('beskrivelse', sql.VarChar, beskrivelser[i] || null);
 
                 await request.query(`

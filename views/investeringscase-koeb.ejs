@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="da">
+
 <head>
     <meta charset="UTF-8">
     <title>Ny investeringscase - Køb</title>
@@ -44,8 +45,13 @@
 
         <button type="submit">Næste trin</button>
 
+        <!-- Skjult felt der sender ejendomsprofil_id med når formularen submittes.
+        Brugeren kan ikke se det, men POST-kaldet får id'et med -->
+        <input type="hidden" name="ejendomsprofil_id" value="<%= ejendomsprofil_id %>">
+
     </form>
 
-<script src="/js/investeringscase-koeb.js"></script>
+    <script src="/js/investeringscase-koeb.js"></script>
 </body>
+
 </html>

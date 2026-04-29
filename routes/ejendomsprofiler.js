@@ -16,6 +16,14 @@ router.get('/:id', async (req, res) => {
         if (!profil) {
             return res.status(404).send('Profil ikke fundet');
         }
+        const casesRequest = pool.request();
+        casesRequest.input('id', sql.Int, req.params.id);
+        const casesResult = await casesRequest.query(`
+            SELECT investeringscase_id, navn, oprettet_dato 
+            FROM Investeringscase 
+            WHERE ejendomsprofil_id = @id
+        `);
+        const cases = casesResult.recordset;
 
         const { lon, lat } = await hentKoordinater(profil.adresse_id);
         const kortUrl = byggeLuftfotoUrl(lon, lat);
@@ -34,7 +42,8 @@ router.get('/:id', async (req, res) => {
                 enh031AntalVærelser: profil.antal_vaerelser
             },
             adresse: profil.adresse,
-            ejendomsprofil_id: profil.ejendomsprofil_id
+            ejendomsprofil_id: profil.ejendomsprofil_id,
+            cases
         });
     } catch (err) {
         console.error('Fejl ved hentning af ejendomsprofil:', err);
