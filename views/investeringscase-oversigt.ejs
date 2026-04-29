@@ -153,10 +153,11 @@
         </section>
 
     </main>
-
+    <div id="sim-data" data-json="<%- encodeURIComponent(JSON.stringify(simulering)) %>" style="display:none"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script>
-        const simData = <% - JSON.stringify(simulering) %>;
+
+        const simData = JSON.parse(decodeURIComponent(document.getElementById('sim-data').dataset.json));
         const labels = simData.map(s => 'År ' + s.aar);
         new Chart(document.getElementById('simuleringChart').getContext('2d'), {
             type: 'line',

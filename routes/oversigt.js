@@ -65,7 +65,7 @@ router.get('/', async (req, res) => {
         // Byg Finansiering-objekt
         const finansiering = new Finansiering(
             finansData.laanebeloeb,
-            finansData.rente_procent,
+            finansData.rente_procent / 100,
             finansData.loebetid_aar,
             finansData.afdragsfri_periode_aar
         );
