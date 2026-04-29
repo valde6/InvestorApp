@@ -117,7 +117,9 @@
 
         <section>
             <h2>Simulering (30 år)</h2>
-            <canvas id="simuleringChart" height="120" style="margin-bottom: 2rem;"></canvas>
+            <div style="position: relative; width: 100%;">
+                <canvas id="simuleringChart"></canvas>
+            </div>
             <div style="overflow-x: auto;">
                 <table class="simulering-tabel">
                     <thead>
@@ -168,6 +170,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
                 plugins: { legend: { position: 'top' } },
                 scales: { y: { ticks: { callback: v => v.toLocaleString('da-DK') + ' kr.' } } }
             }
