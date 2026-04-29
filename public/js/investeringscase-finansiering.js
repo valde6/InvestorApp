@@ -1,3 +1,5 @@
+// bruges til at give mulighed for at 
+
 const laanebeloebFelt = document.getElementById('laanebeloeb');
 const ekstraFelter = document.getElementById('finansiering-ekstra');
 

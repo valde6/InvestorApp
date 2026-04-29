@@ -16,9 +16,16 @@
     <main>
         <!-- BBR-data hentet via Datafordeler — byggeår, areal og værelser -->
         <section>
-            <a href="/investeringscases/ny/koeb?ejendomsprofil_id=<%= ejendomsprofil_id %>">
-                + Opret ny investeringscase
-            </a>
+            <!-- Formular der opretter ejendomsprofilen når brugeren aktivt vælger det.
+     BBR-data sendes med som hidden inputs så POST-routen kan gemme dem i DB -->
+            <form action="/ejendomme/<%= adresseId %>/opret" method="POST">
+                <input type="hidden" name="adresse" value="<%= adresse %>">
+                <input type="hidden" name="ejendomstype" value="<%= bygning.byg021BygningensAnvendelse %>">
+                <input type="hidden" name="byggeaar" value="<%= bygning.byg026Opførelsesår %>">
+                <input type="hidden" name="boligareal_m2" value="<%= enhed?.enh026EnhedensSamledeAreal %>">
+                <input type="hidden" name="antal_vaerelser" value="<%= enhed?.enh031AntalVærelser %>">
+                <button type="submit">Opret ejendomsprofil</button>
+            </form>
             <h2>BBR Data</h2>
             <p><strong>Ejendomstype:</strong>
                 <%= bygning.ejendomstype %>

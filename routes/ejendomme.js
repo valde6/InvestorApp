@@ -47,31 +47,15 @@ router.get('/:id', async (req, res) => {
         const enheder = await findEnheder(bygning.id_lokalId);
         const enhed = enheder[0];
 
-        // Gem eller find eksisterende ejendomsprofil i databasen
-        await poolConnect;
-        const profileRequest = pool.request();
-        profileRequest.input('adresse_id', sql.VarChar, adresseId); // TIlføjer også adresse id til DB så det er nemmere at opbygge luftfoto senere
-        profileRequest.input('adresse', sql.VarChar, adresse);
-        profileRequest.input('ejendomstype', sql.VarChar, bygning.byg021BygningensAnvendelse);
-        profileRequest.input('byggeaar', sql.Int, bygning.byg026Opførelsesår || null);
-        profileRequest.input('boligareal_m2', sql.Int, enhed?.enh026EnhedensSamledeAreal || null);
-        profileRequest.input('antal_vaerelser', sql.Int, enhed?.enh031AntalVærelser || null);
-
-        const profileResult = await profileRequest.query(`
-            INSERT INTO Ejendomsprofil (adresse_id, adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser)
-            OUTPUT INSERTED.ejendomsprofil_id
-            VALUES (@adresse_id, @adresse, @ejendomstype, @byggeaar, @boligareal_m2, @antal_vaerelser)
-        `);
-        const ejendomsprofil_id = profileResult.recordset[0].ejendomsprofil_id;
-
+        // Send BBR-data til viewet uden at gemme i DB
         res.render('ejendom', {
             adresseId,
             kortUrl,
             bygning,
             enhed,
             adresse,
-            ejendomsprofil_id,
-            // Tom liste — nye ejendomme har ingen cases endnu
+            // Ingen ejendomsprofil_id endnu — profilen er ikke oprettet
+            ejendomsprofil_id: null,
             cases: []
         });
     } catch (error) {
