@@ -38,25 +38,40 @@ class Simulering {
         // Startgæld er lånebeløbet
         let gaeld = this.finansiering.laanebeloeb;
 
-        // Månedlig ydelse fra Finansiering-klassen
-        const maanedligYdelse = this.finansiering.maanedligYdelse();
-
         // Månedlig rente som decimaltal (fx 0.04 / 12)
         const r = this.finansiering.renteProcent / 12;
+
+        // Månedlig ydelse fra Finansiering-klassen (annuitet efter afdragsfri periode)
+        const maanedligYdelse = this.finansiering.maanedligYdelse();
+
+        // Antal afdragsfri år
+        const afdragsfriAar = this.finansiering.afdragsfriPeriodeAar || 0;
 
         for (let aar = 1; aar <= this.antalAar; aar++) {
 
             // --- BEREGN AFDRAG PÅ GÆLD FOR DETTE ÅR ---
-            // Vi beregner måned for måned for at få præcis gæld
             for (let maaned = 1; maaned <= 12; maaned++) {
-                if (gaeld <= 0) break; // lånet er betalt ud
+                if (gaeld <= 0) break;
 
-                const renteDel = gaeld * r; // renteandel af ydelsen
-                const afdragDel = maanedligYdelse - renteDel; // afdragsandel
-                gaeld = Math.max(0, gaeld - afdragDel); // træk afdrag fra gælden
+                const renteDel = gaeld * r;
+
+                if (aar <= afdragsfriAar) {
+                    // I afdragsfri periode betales kun renter — gælden falder ikke
+                    // gaeld forbliver uændret
+                } else {
+                    // Efter afdragsfri periode trækkes afdrag fra gælden
+                    const afdragDel = maanedligYdelse - renteDel;
+                    gaeld = Math.max(0, gaeld - afdragDel);
+                }
             }
 
             // --- BEREGN CASHFLOW FOR DETTE ÅR ---
+
+            // Månedlig ydelse afhænger af om vi er i afdragsfri periode
+            // I afdragsfri periode betales kun renter (gæld * månedlig rente * 12)
+            const aarligYdelse = aar <= afdragsfriAar
+                ? gaeld * r * 12
+                : maanedligYdelse * 12;
 
             // Indtægter fra udlejning (0 hvis ikke udlejet)
             const lejeindtaegt = this.udlejning
@@ -66,23 +81,17 @@ class Simulering {
             // Løbende driftsudgifter
             const driftsudgifter = this.driftsbudget.samletAarlig();
 
-            // Låneydelse for hele året
-            const aarligYdelse = maanedligYdelse * 12;
-
             // Engangsudgifter til renovering dette år
             const renoveringsudgifter = this.renoveringer
-                .filter(r => r.tidspunktAar === aar)
-                .reduce((sum, r) => sum + r.hentUdgift(), 0);
+                .filter(ren => ren.tidspunktAar === aar)
+                .reduce((sum, ren) => sum + ren.hentUdgift(), 0);
 
             // Samlet cashflow = indtægter - udgifter - ydelse - renovering
             const cashflow = lejeindtaegt - driftsudgifter - aarligYdelse - renoveringsudgifter;
 
             // --- BEREGN EGENKAPITAL ---
-            // Egenkapital = ejendomsværdi - restgæld
-            // Vi antager her at ejendomsværdien er konstant (kan udvides med værdistigning)
             const egenkapital = ejendomspris - gaeld;
 
-            // Gem resultatet for dette år
             resultater.push({
                 aar,
                 cashflow: Math.round(cashflow),

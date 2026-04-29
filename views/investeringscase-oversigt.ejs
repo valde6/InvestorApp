@@ -66,7 +66,7 @@
                                                                 <p>Ingen udlejning angivet.</p>
                                                                 <% } %>
 
-                                                                
+
                                                                     <h2>Simulering (30 år)</h2>
                                                                     <table>
                                                                         <thead>
@@ -99,6 +99,75 @@
                                                                                 <% }) %>
                                                                         </tbody>
                                                                     </table>
+
+                                                                    <!-- Chart.js fra CDN -->
+                                                                    <script
+                                                                        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+                                                                    <h2>Simulering (30 år)</h2>
+                                                                    <canvas id="simuleringChart" width="900"
+                                                                        height="400"></canvas>
+
+                                                                    <script>
+                                                                        // Data fra serveren via EJS
+                                                                        const simData = <%- JSON.stringify(simulering) %>;
+
+                                                                        const labels = simData.map(s => 'År ' + s.aar);
+                                                                        const cashflow = simData.map(s => s.cashflow);
+                                                                        const gaeld = simData.map(s => s.gaeld);
+                                                                        const egenkapital = simData.map(s => s.egenkapital);
+
+                                                                        const ctx = document.getElementById('simuleringChart').getContext('2d');
+                                                                        new Chart(ctx, {
+                                                                            type: 'line',
+                                                                            data: {
+                                                                                labels: labels,
+                                                                                datasets: [
+                                                                                    {
+                                                                                        label: 'Cashflow (kr.)',
+                                                                                        data: cashflow,
+                                                                                        borderColor: 'green',
+                                                                                        backgroundColor: 'rgba(0,128,0,0.1)',
+                                                                                        tension: 0.3
+                                                                                    },
+                                                                                    {
+                                                                                        label: 'Gæld (kr.)',
+                                                                                        data: gaeld,
+                                                                                        borderColor: 'red',
+                                                                                        backgroundColor: 'rgba(255,0,0,0.1)',
+                                                                                        tension: 0.3
+                                                                                    },
+                                                                                    {
+                                                                                        label: 'Egenkapital (kr.)',
+                                                                                        data: egenkapital,
+                                                                                        borderColor: 'blue',
+                                                                                        backgroundColor: 'rgba(0,0,255,0.1)',
+                                                                                        tension: 0.3
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            options: {
+                                                                                responsive: true,
+                                                                                plugins: {
+                                                                                    legend: { position: 'top' },
+                                                                                    title: {
+                                                                                        display: true,
+                                                                                        text: 'Udvikling over 30 år'
+                                                                                    }
+                                                                                },
+                                                                                scales: {
+                                                                                    y: {
+                                                                                        ticks: {
+                                                                                            // Formatér tal med tusindtalsseparator
+                                                                                            callback: function (value) {
+                                                                                                return value.toLocaleString('da-DK') + ' kr.';
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                    </script>
 
 </body>
 
