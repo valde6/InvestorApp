@@ -11,6 +11,7 @@ if (!datafordelerUsername || !datafordelerPassword) {
 
 // --- Privat hjælpefunktion: laver selve HTTP-kaldet ---
 async function hentBbrData(endpoint, queryParams) {
+    //URLSearchParams er funder vha. AI 
     const params = new URLSearchParams({
         ...queryParams,
         Format: 'JSON',

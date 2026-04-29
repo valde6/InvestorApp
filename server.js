@@ -25,6 +25,10 @@ const forsideRoutes = require('./routes/forside');
 // Ejendomsprofiler - Viser en ejendomsprofil ud fra data i databasen der er oprettet
 const ejendomsprofilRoutes = require('./routes/ejendomsprofiler');
 
+// Oversigt over investeringscasen
+const oversigtRoutes = require('./routes/oversigt');
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,6 +59,7 @@ app.use('/investeringscases', investeringscasesRoutes);
 app.use('/ejendomme', ejendommeRoutes);
 app.use('/ejendomsprofiler', ejendomsprofilRoutes);
 app.use('/', forsideRoutes);
+app.use('/oversigt', oversigtRoutes);
 
 // ============================================
 // START SERVER

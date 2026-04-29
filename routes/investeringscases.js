@@ -42,10 +42,10 @@ router.post('/ny/koeb', async (req, res) => {
         // Læs ejendomsprofil_id fra formularen i stedet for hardcodet 1
         request.input('ejendomsprofil_id', sql.Int, ejendomsprofil_id);
         request.input('ejendomspris', sql.Decimal(15, 2), ejendomspris); //ejendomspris kommer fra req.body osv osv
-        request.input('omkostninger_koeb', sql.Decimal(15, 2), omkostninger_koeb); // 'omkostninger_koeb' matcher til @omkostninger_koeb forneden (VALUES)
-        request.input('advokat', sql.Decimal(15, 2), advokat);
-        request.input('tinglysning', sql.Decimal(15, 2), tinglysning);
-        request.input('koeberraadgivning', sql.Decimal(15, 2), koeberraadgivning);
+        request.input('omkostninger_koeb', sql.Decimal(15, 2), omkostninger_koeb || 0); // 'omkostninger_koeb' matcher til @omkostninger_koeb forneden (VALUES)
+        request.input('advokat', sql.Decimal(15, 2), advokat || 0);
+        request.input('tinglysning', sql.Decimal(15, 2), tinglysning || 0);
+        request.input('koeberraadgivning', sql.Decimal(15, 2), koeberraadgivning || 0);
 
         // Kør queryen og gem resultatet
         // .query bruges her for at modvirke SQL injection. Der kan nemlig ikke sendes noget direkte som query. Den "endelige" query sendes efter den
@@ -124,6 +124,8 @@ router.post('/ny/finansiering', async (req, res) => {
         request.input('loebetid_aar', sql.Int, loebetid_aar);
         request.input('afdragsfri_periode_aar', sql.Int, afdragsfri_periode_aar || 0);
         request.input('laanetype', sql.VarChar, laanetype || null);
+
+        
 
         await request.query(`
             INSERT INTO Finansiering 
@@ -248,7 +250,7 @@ router.post('/ny/driftsbudget', async (req, res) => {
 
 //==========================================
 //
-// TRIN 3.5
+// TRIN 3.5 Udlejning
 //
 //==========================================
 

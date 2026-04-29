@@ -66,6 +66,40 @@
                                                                 <p>Ingen udlejning angivet.</p>
                                                                 <% } %>
 
+                                                                
+                                                                    <h2>Simulering (30 år)</h2>
+                                                                    <table>
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>År</th>
+                                                                                <th>Cashflow (kr.)</th>
+                                                                                <th>Gæld (kr.)</th>
+                                                                                <th>Egenkapital (kr.)</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <% simulering.forEach(s=> { %>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <%= s.aar %>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <%= s.cashflow.toLocaleString('da-DK')
+                                                                                            %>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <%= s.gaeld.toLocaleString('da-DK')
+                                                                                            %>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <%= s.egenkapital.toLocaleString('da-DK')
+                                                                                            %>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <% }) %>
+                                                                        </tbody>
+                                                                    </table>
+
 </body>
 
 </html>
