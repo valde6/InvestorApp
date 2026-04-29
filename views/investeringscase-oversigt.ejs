@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="da">
+
 <head>
     <meta charset="UTF-8">
-    <title>Oversigt - <%= sagen.navn %></title>
+    <title>Oversigt - <%= sagen.navn %>
+    </title>
 </head>
-<body>
 
-    <h1><%= sagen.navn %></h1>
-    <p><%= sagen.beskrivelse %></p>
+<body>
+    <!-- Link tilbage til den ejendomsprofil som denne case tilhører -->
+    <a href="/ejendomsprofiler/<%= ejendomsprofil_id %>">← Tilbage til ejendom</a>
+    <h1>
+        <%= sagen.navn %>
+    </h1>
+    <p>
+        <%= sagen.beskrivelse %>
+    </p>
 
     <h2>Køb og renoveringsudgifter</h2>
     <p>Ejendomspris: <%= sagen.ejendomspris %> kr.</p>
@@ -16,39 +24,48 @@
     <p>Tinglysning: <%= sagen.tinglysning %> kr.</p>
     <p>Køberrådgivning: <%= sagen.koeberraadgivning %> kr.</p>
 
-    <% if (koebsomkostninger.length > 0) { %>
+    <% if (koebsomkostninger.length> 0) { %>
         <h3>Ekstra udgifter</h3>
-        <% koebsomkostninger.forEach(k => { %>
-            <p><%= k.beskrivelse %>: <%= k.beloeb %> kr.</p>
-        <% }) %>
-    <% } %>
+        <% koebsomkostninger.forEach(k=> { %>
+            <p>
+                <%= k.beskrivelse %>: <%= k.beloeb %> kr.
+            </p>
+            <% }) %>
+                <% } %>
 
-    <h2>Finansiering</h2>
-    <% if (finansiering) { %>
-        <p>Lånebeløb: <%= finansiering.laanebeloeb %> kr.</p>
-        <p>Rente: <%= finansiering.rente_procent %> %</p>
-        <p>Løbetid: <%= finansiering.loebetid_aar %> år</p>
-        <p>Afdragsfri periode: <%= finansiering.afdragsfri_periode_aar %> år</p>
-        <p>Lånetype: <%= finansiering.laanetype %></p>
-    <% } %>
+                    <h2>Finansiering</h2>
+                    <% if (finansiering) { %>
+                        <p>Lånebeløb: <%= finansiering.laanebeloeb %> kr.</p>
+                        <p>Rente: <%= finansiering.rente_procent %> %</p>
+                        <p>Løbetid: <%= finansiering.loebetid_aar %> år</p>
+                        <p>Afdragsfri periode: <%= finansiering.afdragsfri_periode_aar %> år</p>
+                        <p>Lånetype: <%= finansiering.laanetype %>
+                        </p>
+                        <% } %>
 
-    <h2>Driftsomkostninger</h2>
-    <% if (driftsomkostninger.length > 0) { %>
-        <% driftsomkostninger.forEach(d => { %>
-            <p><%= d.beskrivelse %>: <%= d.maanedlig_beloeb %> kr./md.</p>
-        <% }) %>
-    <% } else { %>
-        <p>Ingen driftsomkostninger angivet.</p>
-    <% } %>
+                            <h2>Driftsomkostninger</h2>
+                            <% if (driftsomkostninger.length> 0) { %>
+                                <% driftsomkostninger.forEach(d=> { %>
+                                    <p>
+                                        <%= d.beskrivelse %>: <%= d.maanedlig_beloeb %> kr./md.
+                                    </p>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <p>Ingen driftsomkostninger angivet.</p>
+                                            <% } %>
 
-    <h2>Udlejning</h2>
-    <% if (udlejninger.length > 0) { %>
-        <% udlejninger.forEach(u => { %>
-            <p><%= u.beskrivelse %>: <%= u.maanedlig_leje %> kr./md. (udgifter: <%= u.udlejningsomkostning %> kr./md.)</p>
-        <% }) %>
-    <% } else { %>
-        <p>Ingen udlejning angivet.</p>
-    <% } %>
+                                                <h2>Udlejning</h2>
+                                                <% if (udlejninger.length> 0) { %>
+                                                    <% udlejninger.forEach(u=> { %>
+                                                        <p>
+                                                            <%= u.beskrivelse %>: <%= u.maanedlig_leje %> kr./md.
+                                                                    (udgifter: <%= u.udlejningsomkostning %> kr./md.)
+                                                        </p>
+                                                        <% }) %>
+                                                            <% } else { %>
+                                                                <p>Ingen udlejning angivet.</p>
+                                                                <% } %>
 
 </body>
+
 </html>

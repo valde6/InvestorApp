@@ -350,7 +350,9 @@ router.get('/oversigt', async (req, res) => {
             koebsomkostninger: koebResult.recordset,
             finansiering: finansResult.recordset[0],
             driftsomkostninger: driftsResult.recordset,
-            udlejninger: udlejningResult.recordset
+            udlejninger: udlejningResult.recordset,
+            // Send ejendomsprofil_id med så vi kan linke tilbage til ejendomsprofilsiden
+            ejendomsprofil_id: caseResult.recordset[0].ejendomsprofil_id
         });
 
     } catch (err) {
