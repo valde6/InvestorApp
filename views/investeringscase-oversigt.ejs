@@ -153,31 +153,52 @@
         </section>
 
     </main>
-    <div id="sim-data" data-json="<%- encodeURIComponent(JSON.stringify(simulering)) %>" style="display:none"></div>
+    
+    <!-- Chart.js er et JavaScript-bibliotek til at lave diagrammer.
+     I stedet for at have biblioteket liggende i projektet selv,
+     hentes det fra Cloudflares CDN — et globalt netværk af servere
+     der leverer filen hurtigt uanset hvor brugeren befinder sig. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-    <script>
 
-        const simData = JSON.parse(decodeURIComponent(document.getElementById('sim-data').dataset.json));
+    <script>
+        // Henter simuleringsdata direkte fra serveren via EJS.
+        // <%- %> indsætter værdien uden HTML-escaping, så JSON forbliver valid JavaScript.
+        // VS Code markerer linjen som en fejl da editoren ikke forstår EJS-syntaks i JavaScript,
+        // men koden er korrekt og virker uden problemer i browseren.
+        const simData = <%- JSON.stringify(simulering) %>;
+
+        // Lav labels til x-aksen — ét label per år (fx "År 1", "År 2" osv.)
         const labels = simData.map(s => 'År ' + s.aar);
+
+        // Opret et nyt linjediagram i canvas-elementet
         new Chart(document.getElementById('simuleringChart').getContext('2d'), {
             type: 'line',
             data: {
                 labels,
                 datasets: [
+                    // Cashflow — grøn linje
                     { label: 'Cashflow (kr.)', data: simData.map(s => s.cashflow), borderColor: '#2a7a3b', backgroundColor: 'rgba(42,122,59,0.08)', tension: 0.3 },
+                    // Gæld — rød linje
                     { label: 'Gæld (kr.)', data: simData.map(s => s.gaeld), borderColor: '#c0392b', backgroundColor: 'rgba(192,57,43,0.08)', tension: 0.3 },
+                    // Egenkapital — blå linje
                     { label: 'Egenkapital (kr.)', data: simData.map(s => s.egenkapital), borderColor: '#2a5caa', backgroundColor: 'rgba(42,92,170,0.08)', tension: 0.3 }
                 ]
             },
             options: {
-                responsive: true,
+                responsive: true,        // Grafen tilpasser sig vinduets bredde
                 maintainAspectRatio: true,
-                plugins: { legend: { position: 'top' } },
-                scales: { y: { ticks: { callback: v => v.toLocaleString('da-DK') + ' kr.' } } }
+                plugins: { legend: { position: 'top' } }, // Forklaring vises øverst
+                scales: {
+                    y: {
+                        ticks: {
+                            // Formatér y-aksens tal med dansk tusindtalsseparator og kr. suffix
+                            callback: v => v.toLocaleString('da-DK') + ' kr.'
+                        }
+                    }
+                }
             }
         });
     </script>
-
 </body>
 
 </html>

@@ -26,7 +26,7 @@ const forsideRoutes = require('./routes/forside');
 const ejendomsprofilRoutes = require('./routes/ejendomsprofiler');
 
 // Oversigt over investeringscasen
-const oversigtRoutes = require('./routes/oversigt');
+const oversigtRoutes = require('./routes/investeringscase-oversigt');
 
 
 
@@ -59,7 +59,7 @@ app.use('/investeringscases', investeringscasesRoutes);
 app.use('/ejendomme', ejendommeRoutes);
 app.use('/ejendomsprofiler', ejendomsprofilRoutes);
 app.use('/', forsideRoutes);
-app.use('/oversigt', oversigtRoutes);
+app.use('/investeringscase-oversigt', oversigtRoutes);
 
 // ============================================
 // START SERVER

@@ -290,7 +290,7 @@ router.post('/ny/udlejning', async (req, res) => {
         }
 
         // Trin 3.5 er sidste trin — send til oversigt
-        res.redirect('/oversigt?id=' + investeringscase_id);
+        res.redirect('/investeringscase-oversigt?id=' + investeringscase_id);
 
     } catch (err) {
         console.error('Fejl ved oprettelse af udlejning:', err);
