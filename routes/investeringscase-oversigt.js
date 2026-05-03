@@ -63,12 +63,12 @@ router.get('/', async (req, res) => {
         // --- BYGG MODEL-OBJEKTER FRA DATABASE-DATA ---
 
         // Byg Finansiering-objekt
-        const finansiering = new Finansiering(
+        const finansiering = finansData ? new Finansiering(
             finansData.laanebeloeb,
             finansData.rente_procent / 100,
             finansData.loebetid_aar,
             finansData.afdragsfri_periode_aar
-        );
+        ) : null; // håndter tilfælde uden finansiering
 
         // Byg Driftsbudget-objekt og tilføj poster
         const driftsbudget = new Driftsbudget();

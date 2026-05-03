@@ -12,33 +12,44 @@
     <h1>Ny investeringscase</h1>
     <h2>Trin 2 af 5: Finansiering & lånedetaljer</h2>
 
-    <form action="/investeringscases/ny/finansiering" method="POST">
+    <!-- action ændres dynamisk afhængigt af om vi opretter eller redigerer.
+         Samme princip som i koeb.ejs — én formular bruges til begge situationer -->
+    <form action="<%= finansiering ? '/investeringscases/' + finansiering.investeringscase_id + '/rediger/finansiering' : '/investeringscases/ny/finansiering' %>" method="POST">
 
         <!-- Skjult felt der sender investeringscase_id med til serveren via POST.
              Værdien sættes ind af EJS via <%= investeringscase_id %> som den modtager fra GET-routen.
              Brugeren ser ikke feltet, men det er nødvendigt for at vide hvilken case finansieringen tilhører. -->
-        <input type="hidden" name="investeringscase_id" value="<%= investeringscase_id %>">
+        <input type="hidden" name="investeringscase_id" value="<%= finansiering ? finansiering.investeringscase_id : investeringscase_id %>">
 
         <label for="laanebeloeb">Lånebeløb (kr.)</label>
-        <input type="number" id="laanebeloeb" name="laanebeloeb">
+        <!-- value udfyldes med eksisterende lånebeløb hvis vi redigerer, ellers tomt -->
+        <input type="number" id="laanebeloeb" name="laanebeloeb"
+            value="<%= finansiering ? finansiering.laanebeloeb : '' %>">
 
-        <div id="finansiering-ekstra" style="display:none">
+        <!-- Denne div vises kun hvis lånebeløbet er udfyldt (styret af JavaScript).
+             Ved redigering skal den vises med det samme hvis der allerede er et lånebeløb -->
+        <div id="finansiering-ekstra" style="<%= finansiering && finansiering.laanebeloeb > 0 ? 'display:block' : 'display:none' %>">
 
             <label for="rente_procent">Rente (%)</label>
-            <input type="number" id="rente_procent" name="rente_procent" step="0.01">
+            <!-- value udfyldes med eksisterende rente hvis vi redigerer -->
+            <input type="number" id="rente_procent" name="rente_procent" step="0.01"
+                value="<%= finansiering ? finansiering.rente_procent : '' %>">
 
             <label for="loebetid_aar">Løbetid (år)</label>
-            <input type="number" id="loebetid_aar" name="loebetid_aar" min="1" required>
+            <input type="number" id="loebetid_aar" name="loebetid_aar" min="1"
+                value="<%= finansiering ? finansiering.loebetid_aar : '' %>">
 
             <label for="afdragsfri_periode_aar">Afdragsfri periode (år)</label>
-            <input type="number" id="afdragsfri_periode_aar" name="afdragsfri_periode_aar">
+            <input type="number" id="afdragsfri_periode_aar" name="afdragsfri_periode_aar"
+                value="<%= finansiering ? finansiering.afdragsfri_periode_aar : '' %>">
 
             <label for="laanetype">Lånetype</label>
-            <input type="text" id="laanetype" name="laanetype">
+            <input type="text" id="laanetype" name="laanetype"
+                value="<%= finansiering ? finansiering.laanetype : '' %>">
 
         </div>
 
-        <hr> <!-- horisontal linje -->
+        <hr>
 
         <button type="submit">Næste trin</button>
 

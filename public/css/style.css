@@ -235,6 +235,44 @@ button:hover,
 }
 
 /* ============================================
+   CASE-LISTE MED SLET OG REDIGER KNAPPER
+   ============================================ */
+.case-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.case-item a {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.case-knapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.knap-slet {
+    background: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.knap-slet:hover {
+    background: #a93226;
+}
+
+/* ============================================
    FORMULARER (investeringscase-trin)
    ============================================ */
 form {

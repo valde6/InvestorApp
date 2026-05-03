@@ -64,7 +64,14 @@ app.use('/ejendomme', ejendommeRoutes);
 app.use('/ejendomsprofiler', ejendomsprofilRoutes);
 app.use('/', forsideRoutes);
 app.use('/investeringscase-oversigt', oversigtRoutes);
-//app.use('/rediger', redigerRoutes);
+
+// Redigering af investeringscase (trin 3.1-3.5)
+// Registreres under /investeringscases så URL-strukturen bliver
+// /investeringscases/:id/rediger/koeb — parallelt med oprettelsesflowet
+// som ligger på /investeringscases/ny/koeb.
+// Express sender alle requests der starter med /investeringscases
+// videre til redigerRoutes, som derefter matcher /:id/rediger/koeb
+app.use('/investeringscases', redigerRoutes);
 app.use('/sammenligning', sammenligning);
 
 // ============================================

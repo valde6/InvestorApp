@@ -21,7 +21,6 @@
                 <%= adresse %>
             </h2>
             <div class="ejendom-data">
-                <p><strong>Ejendomstype:</strong> ...</p>
                 <p><strong>Ejendomstype:</strong>
                     <%= profil.ejendomstype %>
                 </p>
@@ -53,19 +52,30 @@
             <a href="/investeringscases/ny/koeb?ejendomsprofil_id=<%= profil.ejendomsprofil_id %>">
                 <button>+ Opret ny investeringscase</button>
             </a>
-
             <% if (cases.length> 0) { %>
                 <% cases.forEach(c=> { %>
-                    <p>
+                    <div class="case-item">
                         <a href="/investeringscase-oversigt?id=<%= c.investeringscase_id %>">
                             <%= c.navn %>
                         </a>
-                    </p>
+                        <div class="case-knapper">
+                            <!-- Slet-knap sendes som POST da HTML ikke understøtter DELETE direkte.
+                     confirm() beder brugeren bekræfte inden sletning så data ikke
+                     slettes ved et uheld -->
+                            <form action="/investeringscases/<%= c.investeringscase_id %>/slet" method="POST">
+                                <button type="submit" class="knap-slet"
+                                    onclick="return confirm('Er du sikker på at du vil slette <%= c.navn %>?')">
+                                    Slet
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                     <% }) %>
                         <% } else { %>
                             <p>Ingen cases oprettet endnu.</p>
                             <% } %>
         </section>
+
         <section>
             <a href="/sammenligning" class="knap">Sammenlign cases</a>
         </section>

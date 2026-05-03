@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/style.css">
     <title>Ny investeringscase - Køb</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
@@ -12,32 +12,56 @@
     <h1>Ny investeringscase</h1>
     <h2>Trin 1 af 5: Køb og renoveringsudgifter</h2>
 
-    <form action="/investeringscases/ny/koeb" method="POST">
+    <!-- action ændres dynamisk afhængigt af om vi opretter eller redigerer.
+         Hvis sagen eksisterer (redigering) sendes formularen til rediger-routen med case-id'et.
+         Hvis sagen ikke eksisterer (oprettelse) sendes den til den normale oprettelsesroute. -->
+    <form action="<%= sagen ? '/investeringscases/' + sagen.investeringscase_id + '/rediger/koeb' : '/investeringscases/ny/koeb' %>" method="POST">
+        
         <label for="navn">Navn på investeringscase</label>
-        <input type="text" id="navn" name="navn" required placeholder="fx Min lejlighed på Nørrebro">
+        <!-- value sættes til den eksisterende værdi hvis vi redigerer, ellers tomt felt.
+             sagen ? sagen.navn : '' betyder: hvis sagen eksisterer, brug sagen.navn, ellers ingenting -->
+        <input type="text" id="navn" name="navn" required placeholder="fx Min lejlighed på Nørrebro"
+            value="<%= sagen ? sagen.navn : '' %>">
 
         <h3>Obligatoriske udgifter</h3>
 
         <label for="ejendomspris">Ejendomspris (kr.)</label>
-        <input type="number" id="ejendomspris" name="ejendomspris" required>
+        <!-- Samme princip for alle felter — value udfyldes hvis data eksisterer -->
+        <input type="number" id="ejendomspris" name="ejendomspris" required
+            value="<%= sagen ? sagen.ejendomspris : '' %>">
 
         <label for="omkostninger_koeb">Omkostninger ved køb (kr.)</label>
-        <input type="number" id="omkostninger_koeb" name="omkostninger_koeb">
+        <input type="number" id="omkostninger_koeb" name="omkostninger_koeb"
+            value="<%= sagen ? sagen.omkostninger_koeb : '' %>">
 
         <label for="advokat">Advokat (kr.)</label>
-        <input type="number" id="advokat" name="advokat">
+        <input type="number" id="advokat" name="advokat"
+            value="<%= sagen ? sagen.advokat : '' %>">
 
         <label for="tinglysning">Tinglysning (kr.)</label>
-        <input type="number" id="tinglysning" name="tinglysning">
+        <input type="number" id="tinglysning" name="tinglysning"
+            value="<%= sagen ? sagen.tinglysning : '' %>">
 
         <label for="koeberraadgivning">Køberrådgivning (kr.)</label>
-        <input type="number" id="koeberraadgivning" name="koeberraadgivning">
+        <input type="number" id="koeberraadgivning" name="koeberraadgivning"
+            value="<%= sagen ? sagen.koeberraadgivning : '' %>">
 
         <h3>Ekstra udgifter</h3>
         <p>Tilføj eventuelle yderligere udgifter forbundet med købet.</p>
 
         <div id="ekstra-udgifter">
-            <!-- Her bliver ekstra udgiftslinjer indsat dynamisk -->
+            <!-- Vis eksisterende ekstra udgifter hvis vi redigerer.
+                 typeof koebsomkostninger !== 'undefined' tjekker om variablen overhovedet
+                 er sendt med fra routen — ved oprettelse sendes den ikke med -->
+            <% if (typeof koebsomkostninger !== 'undefined') { %>
+                <% koebsomkostninger.forEach(k => { %>
+                    <!-- Hver ekstra udgift vises som en linje med beskrivelse og beløb udfyldt -->
+                    <div class="ekstra-udgift-linje">
+                        <input type="text" name="ekstra_beskrivelse" value="<%= k.beskrivelse %>" placeholder="Beskrivelse">
+                        <input type="number" name="ekstra_beloeb" value="<%= k.beloeb %>" placeholder="Beløb (kr.)">
+                    </div>
+                <% }) %>
+            <% } %>
         </div>
 
         <button type="button" id="tilfoej-udgift">Tilføj udgift</button>
@@ -46,8 +70,7 @@
 
         <button type="submit">Næste trin</button>
 
-        <!-- Skjult felt der sender ejendomsprofil_id med når formularen submittes.
-        Brugeren kan ikke se det, men POST-kaldet får id'et med -->
+        <!-- Skjult felt der sender ejendomsprofil_id med når formularen submittes -->
         <input type="hidden" name="ejendomsprofil_id" value="<%= ejendomsprofil_id %>">
 
     </form>

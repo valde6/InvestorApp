@@ -20,6 +20,15 @@
                 <%= sagen.beskrivelse %>
             </p>
             <% } %>
+                <a href="/investeringscases/<%= sagen.investeringscase_id %>/rediger/koeb">
+                    <button>Rediger case</button>
+                </a>
+                <!-- Slet-knap sendes som en POST-formular da HTML ikke understøtter DELETE-requests direkte -->
+                <form action="/investeringscases/<%= sagen.investeringscase_id %>/slet" method="POST"
+                    style="display:inline;">
+                    <button type="submit" onclick="return confirm('Er du sikker på at du vil slette denne case?')">Slet
+                        case</button>
+                </form>
     </header>
 
     <main>
@@ -153,7 +162,7 @@
         </section>
 
     </main>
-    
+
     <!-- Chart.js er et JavaScript-bibliotek til at lave diagrammer.
      I stedet for at have biblioteket liggende i projektet selv,
      hentes det fra Cloudflares CDN — et globalt netværk af servere

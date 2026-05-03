@@ -18,10 +18,12 @@ const router = express.Router();
 // GET /investeringscaser/ny/køb
 // Viser formularen for trin 3.1: Køb og renoveringsudgifter
 router.get('/ny/koeb', function (req, res) {
-    // Læs ejendomsprofil_id fra URL'en (?ejendomsprofil_id=X)
-    // så vi kan sende det videre til formularen
     const ejendomsprofil_id = req.query.ejendomsprofil_id;
-    res.render('investeringscase-koeb', { ejendomsprofil_id });
+    res.render('investeringscase-koeb', {
+        ejendomsprofil_id,
+        sagen: null,          // null fortæller EJS at vi er i oprettelsestilstand
+        koebsomkostninger: [] // tomt array så EJS ikke fejler
+    });
 });
 
 // POST /investeringscaser/ny/koeb
@@ -103,11 +105,15 @@ router.post('/ny/koeb', async (req, res) => {
 //==========================================
 
 // GET /investeringscases/ny/finansiering
+
 router.get('/ny/finansiering', (req, res) => {
-    const investeringscase_id = req.query.id; // NATURLOV: req.query er et objekt der indeholder alt der står efter ? i en URL. OG req.body er altid formulardata.
-    res.render('investeringscase-finansiering', { investeringscase_id }); //res.render finder investeringscase-finansiering.ejs filen og sætter id'et ind.
-    // Det kan den fordi der i server.js står app.set('view engine', 'ejs'); som fortæller express at ejs er template 
-    // engine (engine til at mixe html og data). I øvrigt er views/-mappen express' standard mappe når man bruger en template engine
+    const investeringscase_id = req.query.id;// NATURLOV: req.query er et objekt der indeholder alt der står efter ? i en URL. OG req.body er altid formulardata.
+    res.render('investeringscase-finansiering', { //res.render finder investeringscase-finansiering.ejs filen og sætter id'et ind.
+        investeringscase_id,
+        finansiering: null  // null fortæller EJS at vi er i oprettelsestilstand
+        // // Det kan den fordi der i server.js står app.set('view engine', 'ejs'); som fortæller express at ejs er template 
+        // engine (engine til at mixe html og data). I øvrigt er views/-mappen express' standard mappe når man bruger en template engine
+    });
 });
 
 // POST /investeringscases/ny/finansiering
@@ -153,7 +159,10 @@ router.post('/ny/finansiering', async (req, res) => {
 // GET /investeringscases/ny/renovering
 router.get('/ny/renovering', (req, res) => {
     const investeringscase_id = req.query.id;
-    res.render('investeringscase-renovering', { investeringscase_id });
+    res.render('investeringscase-renovering', { 
+        investeringscase_id,
+        renoveringer: []
+    });
 });
 
 // POST /investeringscases/ny/renovering
@@ -199,7 +208,10 @@ router.post('/ny/renovering', async (req, res) => {
 // GET /investeringscases/ny/driftsbudget
 router.get('/ny/driftsbudget', (req, res) => {
     const investeringscase_id = req.query.id;
-    res.render('investeringscase-driftsbudget', { investeringscase_id });
+    res.render('investeringscase-driftsbudget', { 
+        investeringscase_id,
+        driftsomkostninger: []
+    });
 });
 
 // POST /investeringscases/ny/driftsbudget
@@ -259,7 +271,10 @@ router.post('/ny/driftsbudget', async (req, res) => {
 // GET /investeringscases/ny/udlejning
 router.get('/ny/udlejning', (req, res) => {
     const investeringscase_id = req.query.id;
-    res.render('investeringscase-udlejning', { investeringscase_id });
+    res.render('investeringscase-udlejning', { 
+        investeringscase_id,
+        udlejninger: []
+    });
 });
 
 // POST /investeringscases/ny/udlejning

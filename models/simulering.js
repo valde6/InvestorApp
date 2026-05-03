@@ -35,17 +35,20 @@ class Simulering {
     beregnSimulering(ejendomspris) {
         const resultater = [];
 
-        // Startgæld er lånebeløbet
-        let gaeld = this.finansiering.laanebeloeb;
+        // Hvis der ingen finansiering er angivet sættes gæld og ydelse til 0
+        // Dette håndterer tilfældet hvor en case oprettes uden låneoplysninger
+        let gaeld = this.finansiering ? this.finansiering.laanebeloeb : 0;
 
         // Månedlig rente som decimaltal (fx 0.04 / 12)
-        const r = this.finansiering.renteProcent / 12;
+        // 0 hvis ingen finansiering er angivet
+        const r = this.finansiering ? this.finansiering.renteProcent / 12 : 0;
 
         // Månedlig ydelse fra Finansiering-klassen (annuitet efter afdragsfri periode)
-        const maanedligYdelse = this.finansiering.maanedligYdelse();
+        // 0 hvis ingen finansiering er angivet
+        const maanedligYdelse = this.finansiering ? this.finansiering.maanedligYdelse() : 0;
 
-        // Antal afdragsfri år
-        const afdragsfriAar = this.finansiering.afdragsfriPeriodeAar || 0;
+        // Antal afdragsfri år — 0 hvis ingen finansiering er angivet
+        const afdragsfriAar = this.finansiering ? this.finansiering.afdragsfriPeriodeAar || 0 : 0;
 
         for (let aar = 1; aar <= this.antalAar; aar++) {
 
