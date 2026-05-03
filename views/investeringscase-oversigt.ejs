@@ -117,6 +117,13 @@
                             <%= Number(u.maanedlig_leje).toLocaleString('da-DK') %> kr./md. (udgifter: <%=
                                     Number(u.udlejningsomkostning).toLocaleString('da-DK') %> kr./md.)
                         </p>
+                        <p><strong>Månedlig nettolejeindtægt:</strong>
+                            <%= Number(u.maanedlig_leje - u.udlejningsomkostning).toLocaleString('da-DK') %> kr./md.
+                        </p>
+                        <p><strong>Årlig nettolejeindtægt:</strong>
+                            <%= Number((u.maanedlig_leje - u.udlejningsomkostning) * 12).toLocaleString('da-DK') %>
+                                kr./år
+                        </p>
                         <% }) %>
                 </div>
                 <% } else { %>
@@ -174,7 +181,7 @@
         // <%- %> indsætter værdien uden HTML-escaping, så JSON forbliver valid JavaScript.
         // VS Code markerer linjen som en fejl da editoren ikke forstår EJS-syntaks i JavaScript,
         // men koden er korrekt og virker uden problemer i browseren.
-        const simData = <%- JSON.stringify(simulering) %>;
+        const simData = <% - JSON.stringify(simulering) %>;
 
         // Lav labels til x-aksen — ét label per år (fx "År 1", "År 2" osv.)
         const labels = simData.map(s => 'År ' + s.aar);
