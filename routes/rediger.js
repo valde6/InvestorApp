@@ -549,4 +549,180 @@ router.post('/:id/slet', async (req, res) => {
     }
 });
 
+
+//==========================================
+//
+// DUPLIKERING AF INVESTERINGSCASE
+//
+//==========================================
+
+// POST /investeringscases/:id/dupliker
+// Kopierer en eksisterende case med alt tilknyttet data til en ny række
+// Den nye case får et nyt auto-genereret id fra databasen
+router.post('/:id/dupliker', async (req, res) => {
+    await poolConnect;
+
+    // Hent id på den case der skal kopieres
+    const investeringscase_id = req.params.id;
+
+    try {
+        // --- HENT EKSISTERENDE DATA ---
+
+        // Hent selve investeringscasen
+        const caseRequest = pool.request();
+        caseRequest.input('id', sql.Int, investeringscase_id);
+        const caseResult = await caseRequest.query(`
+            SELECT * FROM Investeringscase WHERE investeringscase_id = @id
+        `);
+        const sagen = caseResult.recordset[0];
+
+        // Hent finansiering
+        const finansRequest = pool.request();
+        finansRequest.input('id', sql.Int, investeringscase_id);
+        const finansResult = await finansRequest.query(`
+            SELECT * FROM Finansiering WHERE investeringscase_id = @id
+        `);
+        const finansiering = finansResult.recordset[0];
+
+        // Hent koebsomkostninger
+        const koebRequest = pool.request();
+        koebRequest.input('id', sql.Int, investeringscase_id);
+        const koebResult = await koebRequest.query(`
+            SELECT * FROM Koebsomkostning WHERE investeringscase_id = @id
+        `);
+
+        // Hent renoveringer
+        const renoveringRequest = pool.request();
+        renoveringRequest.input('id', sql.Int, investeringscase_id);
+        const renoveringResult = await renoveringRequest.query(`
+            SELECT * FROM Renovering WHERE investeringscase_id = @id
+        `);
+
+        // Hent driftsomkostninger via join med driftsbudget
+        const driftsRequest = pool.request();
+        driftsRequest.input('id', sql.Int, investeringscase_id);
+        const driftsResult = await driftsRequest.query(`
+            SELECT o.* FROM Driftsomkostning o
+            JOIN Driftsbudget b ON o.driftsbudget_id = b.driftsbudget_id
+            WHERE b.investeringscase_id = @id
+        `);
+
+        // Hent udlejning
+        const udlejningRequest = pool.request();
+        udlejningRequest.input('id', sql.Int, investeringscase_id);
+        const udlejningResult = await udlejningRequest.query(`
+            SELECT * FROM Udlejning WHERE investeringscase_id = @id
+        `);
+
+        // --- INDSÆT KOPI ---
+
+        // Opret ny investeringscase med "Kopi af" foran navnet
+        const nyCase = pool.request();
+        nyCase.input('ejendomsprofil_id', sql.Int, sagen.ejendomsprofil_id);
+        nyCase.input('navn', sql.VarChar, 'Kopi af ' + sagen.navn);
+        nyCase.input('beskrivelse', sql.VarChar, sagen.beskrivelse || null);
+        nyCase.input('ejendomspris', sql.Decimal(15, 2), sagen.ejendomspris);
+        nyCase.input('omkostninger_koeb', sql.Decimal(15, 2), sagen.omkostninger_koeb);
+        nyCase.input('advokat', sql.Decimal(15, 2), sagen.advokat);
+        nyCase.input('tinglysning', sql.Decimal(15, 2), sagen.tinglysning);
+        nyCase.input('koeberraadgivning', sql.Decimal(15, 2), sagen.koeberraadgivning);
+
+        // OUTPUT INSERTED returnerer det nye auto-genererede id
+        const nyCaseResult = await nyCase.query(`
+            INSERT INTO Investeringscase 
+                (ejendomsprofil_id, navn, beskrivelse, ejendomspris, omkostninger_koeb, advokat, tinglysning, koeberraadgivning)
+            OUTPUT INSERTED.investeringscase_id
+            VALUES 
+                (@ejendomsprofil_id, @navn, @beskrivelse, @ejendomspris, @omkostninger_koeb, @advokat, @tinglysning, @koeberraadgivning)
+        `);
+        const nytId = nyCaseResult.recordset[0].investeringscase_id;
+
+        // Kopier finansiering hvis den eksisterer
+        if (finansiering) {
+            const nyFinans = pool.request();
+            nyFinans.input('id', sql.Int, nytId);
+            nyFinans.input('laanebeloeb', sql.Decimal(15, 2), finansiering.laanebeloeb);
+            nyFinans.input('rente_procent', sql.Decimal(8, 4), finansiering.rente_procent);
+            nyFinans.input('loebetid_aar', sql.Int, finansiering.loebetid_aar);
+            nyFinans.input('afdragsfri_periode_aar', sql.Int, finansiering.afdragsfri_periode_aar);
+            nyFinans.input('laanetype', sql.VarChar, finansiering.laanetype || null);
+            await nyFinans.query(`
+                INSERT INTO Finansiering (investeringscase_id, laanebeloeb, rente_procent, loebetid_aar, afdragsfri_periode_aar, laanetype)
+                VALUES (@id, @laanebeloeb, @rente_procent, @loebetid_aar, @afdragsfri_periode_aar, @laanetype)
+            `);
+        }
+
+        // Kopier koebsomkostninger
+        for (const k of koebResult.recordset) {
+            const nyKoeb = pool.request();
+            nyKoeb.input('id', sql.Int, nytId);
+            nyKoeb.input('beskrivelse', sql.VarChar, k.beskrivelse);
+            nyKoeb.input('beloeb', sql.Decimal(15, 2), k.beloeb);
+            await nyKoeb.query(`
+                INSERT INTO Koebsomkostning (investeringscase_id, beskrivelse, beloeb)
+                VALUES (@id, @beskrivelse, @beloeb)
+            `);
+        }
+
+        // Kopier renoveringer
+        for (const r of renoveringResult.recordset) {
+            const nyRenovering = pool.request();
+            nyRenovering.input('id', sql.Int, nytId);
+            nyRenovering.input('beskrivelse', sql.VarChar, r.beskrivelse);
+            nyRenovering.input('beloeb', sql.Decimal(15, 2), r.beloeb);
+            nyRenovering.input('tidspunkt', sql.Date, r.tidspunkt);
+            await nyRenovering.query(`
+                INSERT INTO Renovering (investeringscase_id, beskrivelse, beloeb, tidspunkt)
+                VALUES (@id, @beskrivelse, @beloeb, @tidspunkt)
+            `);
+        }
+
+        // Kopier driftsbudget og driftsomkostninger hvis der er nogle
+        if (driftsResult.recordset.length > 0) {
+            const nyBudget = pool.request();
+            nyBudget.input('id', sql.Int, nytId);
+            nyBudget.input('navn', sql.VarChar, 'Driftsbudget');
+            const nyBudgetResult = await nyBudget.query(`
+                INSERT INTO Driftsbudget (investeringscase_id, navn)
+                OUTPUT INSERTED.driftsbudget_id
+                VALUES (@id, @navn)
+            `);
+            const nytBudgetId = nyBudgetResult.recordset[0].driftsbudget_id;
+
+            for (const d of driftsResult.recordset) {
+                const nyDrifts = pool.request();
+                nyDrifts.input('id', sql.Int, nytBudgetId);
+                nyDrifts.input('beskrivelse', sql.VarChar, d.beskrivelse);
+                nyDrifts.input('beloeb', sql.Decimal(15, 2), d.maanedlig_beloeb);
+                nyDrifts.input('kategori', sql.VarChar, d.kategori || null);
+                await nyDrifts.query(`
+                    INSERT INTO Driftsomkostning (driftsbudget_id, beskrivelse, maanedlig_beloeb, kategori)
+                    VALUES (@id, @beskrivelse, @beloeb, @kategori)
+                `);
+            }
+        }
+
+        // Kopier udlejning
+        for (const u of udlejningResult.recordset) {
+            const nyUdlejning = pool.request();
+            nyUdlejning.input('id', sql.Int, nytId);
+            nyUdlejning.input('maanedlig_leje', sql.Decimal(15, 2), u.maanedlig_leje);
+            nyUdlejning.input('udlejningsomkostning', sql.Decimal(15, 2), u.udlejningsomkostning);
+            nyUdlejning.input('beskrivelse', sql.VarChar, u.beskrivelse || null);
+            await nyUdlejning.query(`
+                INSERT INTO Udlejning (investeringscase_id, maanedlig_leje, udlejningsomkostning, beskrivelse)
+                VALUES (@id, @maanedlig_leje, @udlejningsomkostning, @beskrivelse)
+            `);
+        }
+
+        // Send brugeren til oversigten for den nye kopierede case
+        res.redirect('/investeringscase-oversigt?id=' + nytId);
+
+    } catch (err) {
+        console.error('Fejl ved duplikering af investeringscase:', err);
+        res.status(500).send('Der skete en fejl. Prøv igen.');
+    }
+});
+
+
 module.exports = router;

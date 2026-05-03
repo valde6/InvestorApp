@@ -235,27 +235,50 @@ button:hover,
 }
 
 /* ============================================
-   CASE-LISTE MED SLET OG REDIGER KNAPPER
+   HEADER KNAPPER (oversigts-siden)
    ============================================ */
-.case-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
-}
-
-.case-item a {
-    flex: 1;
-    font-size: 0.95rem;
-}
-
-.case-knapper {
+.header-knapper {
     display: flex;
     gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Gælder for slet-knap direkte i <header> (fx ejendomsprofil) */
+header form {
+    display: inline;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    gap: 0;
+}
+
+.knap-rediger {
+    background: #2a5caa;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.knap-rediger:hover {
+    background: #1e4489;
+}
+
+.knap-dupliker {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.knap-dupliker:hover {
+    background: #545b62;
 }
 
 .knap-slet {
@@ -263,13 +286,58 @@ button:hover,
     color: white;
     border: none;
     border-radius: 6px;
-    padding: 0.4rem 0.9rem;
-    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
 }
 
 .knap-slet:hover {
     background: #a93226;
+}
+
+/* ============================================
+   INLINE FORMULARER (slet/dupliker knapper)
+   Reset så de ikke får form-styling
+   ============================================ */
+
+/* Gælder for slet-knap direkte i <header> (fx ejendomsprofil) */
+header form {
+    display: inline;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    gap: 0;
+}
+
+.header-knapper form {
+    display: inline;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    gap: 0;
+}
+
+.case-item form {
+    display: inline;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    gap: 0;
+}
+/* ============================================
+   INLINE FORMULARER I CASE-LISTE
+   Reset så slet-knappen ikke fylder hele bredden
+   ============================================ */
+.case-item form {
+    display: inline;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    gap: 0;
 }
 
 /* ============================================

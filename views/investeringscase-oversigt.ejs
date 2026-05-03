@@ -20,15 +20,24 @@
                 <%= sagen.beskrivelse %>
             </p>
             <% } %>
-                <a href="/investeringscases/<%= sagen.investeringscase_id %>/rediger/koeb">
-                    <button>Rediger case</button>
-                </a>
-                <!-- Slet-knap sendes som en POST-formular da HTML ikke understøtter DELETE-requests direkte -->
-                <form action="/investeringscases/<%= sagen.investeringscase_id %>/slet" method="POST"
-                    style="display:inline;">
-                    <button type="submit" onclick="return confirm('Er du sikker på at du vil slette denne case?')">Slet
-                        case</button>
-                </form>
+
+                <!-- Knapper til at håndtere casen — placeret i en flex-container så de står på række -->
+                <div class="header-knapper">
+                    <a href="/investeringscases/<%= sagen.investeringscase_id %>/rediger/koeb">
+                        <button class="knap-rediger">Rediger case</button>
+                    </a>
+
+                    <!-- Dupliker sendes som POST da HTML ikke understøtter PUT direkte -->
+                    <form action="/investeringscases/<%= sagen.investeringscase_id %>/dupliker" method="POST">
+                        <button type="submit" class="knap-dupliker">Dupliker case</button>
+                    </form>
+
+                    <!-- Slet sendes som POST da HTML ikke understøtter DELETE direkte -->
+                    <form action="/investeringscases/<%= sagen.investeringscase_id %>/slet" method="POST">
+                        <button type="submit" class="knap-slet"
+                            onclick="return confirm('Er du sikker på at du vil slette denne case?')">Slet case</button>
+                    </form>
+                </div>
     </header>
 
     <main>

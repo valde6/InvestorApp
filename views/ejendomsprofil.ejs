@@ -65,9 +65,20 @@
                             <%= c.navn %>
                         </a>
                         <div class="case-knapper">
-                            <!-- Slet-knap sendes som POST da HTML ikke understøtter DELETE direkte.
-                     confirm() beder brugeren bekræfte inden sletning så data ikke
-                     slettes ved et uheld -->
+                            <!-- Rediger-knap sender brugeren til redigeringsflowet for denne case -->
+                            <a href="/investeringscases/<%= c.investeringscase_id %>/rediger/koeb">
+                                <button class="knap-rediger">Rediger</button>
+                            </a>
+
+                            <!-- Dupliker sendes som POST da HTML ikke understøtter PUT direkte.
+         Opretter en kopi af casen med alle tilknyttede data og nyt auto-genereret id -->
+                            <form action="/investeringscases/<%= c.investeringscase_id %>/dupliker" method="POST">
+                                <button type="submit" class="knap-dupliker">Dupliker</button>
+                            </form>
+
+                            <!-- Slet sendes som POST da HTML ikke understøtter DELETE direkte.
+         confirm() beder brugeren bekræfte inden sletning så data ikke slettes ved et uheld.
+         ON DELETE CASCADE i databasen sørger for at alt tilknyttet data også slettes -->
                             <form action="/investeringscases/<%= c.investeringscase_id %>/slet" method="POST">
                                 <button type="submit" class="knap-slet"
                                     onclick="return confirm('Er du sikker på at du vil slette <%= c.navn %>?')">
