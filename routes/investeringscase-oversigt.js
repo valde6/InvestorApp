@@ -80,7 +80,7 @@ router.get('/', async (req, res) => {
         const udlejningData = udlejningResult.recordset[0];
         const udlejning = udlejningData
             ? new Udlejning(udlejningData.maanedlig_leje, udlejningData.udlejningsomkostning)
-            : null;
+            : null; // håndter tilfælde uden udlejning
 
         // Byg Renovering-objekter
         const renoveringer = renoveringResult.recordset.map(r => {
