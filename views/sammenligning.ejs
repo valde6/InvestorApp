@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Sammenlign cases</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header>
+    <a href="/">← Tilbage til forsiden</a>
+    <h1>Sammenlign investeringscases</h1>
+    <p>Vælg to cases for at sammenligne deres simuleringsresultater</p>
+</header>
+
+<main>
+
+    <section>
+        <form method="GET" action="/sammenligning">
+            <div style="display: flex; gap: 2rem;">
+
+                <div style="flex: 1;">
+                    <label>Case A</label>
+                    <select name="id_a">
+                        <option value="">— Vælg en case —</option>
+                        <% alleCases.forEach(c => { %>
+                            <option value="<%= c.investeringscase_id %>" <%= id_a == c.investeringscase_id ? 'selected' : '' %>>
+                                <%= c.navn %> — <%= c.adresse %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div style="flex: 1;">
+                    <label>Case B</label>
+                    <select name="id_b">
+                        <option value="">— Vælg en case —</option>
+                        <% alleCases.forEach(c => { %>
+                            <option value="<%= c.investeringscase_id %>" <%= id_b == c.investeringscase_id ? 'selected' : '' %>>
+                                <%= c.navn %> — <%= c.adresse %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+            </div>
+            <button type="submit" style="margin-top: 1rem;">Sammenlign</button>
+        </form>
+    </section>
+
+    <% if (caseA && caseB) { %>
+
+        <section>
+            <h2>Nøgletal</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+                <div>
+                    <h2><%= caseA.sagen.navn %></h2>
+                    <div class="ejendom-data">
+                        <p><strong>Ejendomspris:</strong> <%= Number(caseA.sagen.ejendomspris).toLocaleString('da-DK') %> kr.</p>
+                        <p><strong>Egenkapital år 30:</strong> <%= caseA.resultater.find(s => s.aar === 30).egenkapital.toLocaleString('da-DK') %> kr.</p>
+                        <p><strong>Cashflow år 30:</strong> <%= caseA.resultater.find(s => s.aar === 30).cashflow.toLocaleString('da-DK') %> kr.</p>
+                        <p><strong>Gæld år 30:</strong> <%= caseA.resultater.find(s => s.aar === 30).gaeld.toLocaleString('da-DK') %> kr.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h2><%= caseB.sagen.navn %></h2>
+                    <div class="ejendom-data">
+                        <p><strong>Ejendomspris:</strong> <%= Number(caseB.sagen.ejendomspris).toLocaleString('da-DK') %> kr.</p>
+                        <p><strong>Egenkapital år 30:</strong> <%= caseB.resultater.find(s => s.aar === 30).egenkapital.toLocaleString('da-DK') %> kr.</p>
+                        <p><strong>Cashflow år 30:</strong> <%= caseB.resultater.find(s => s.aar === 30).cashflow.toLocaleString('da-DK') %> kr.</p>
+                        <p><strong>Gæld år 30:</strong> <%= caseB.resultater.find(s => s.aar === 30).gaeld.toLocaleString('da-DK') %> kr.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h2>Egenkapital over 30 år</h2>
+            <canvas id="sammenligningChart"></canvas>
+        </section>
+
+    <% } %>
+
+</main>
+
+<% if (caseA && caseB) { %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+    const dataA = <%- JSON.stringify(caseA.resultater) %>;
+    const dataB = <%- JSON.stringify(caseB.resultater) %>;
+    const labels = dataA.map(s => 'År ' + s.aar);
+
+    new Chart(document.getElementById('sammenligningChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: '<%= caseA.sagen.navn %> — Egenkapital',
+                    data: dataA.map(s => s.egenkapital),
+                    borderColor: '#2a5caa',
+                    backgroundColor: 'rgba(42,92,170,0.08)',
+                    tension: 0.3
+                },
+                {
+                    label: '<%= caseB.sagen.navn %> — Egenkapital',
+                    data: dataB.map(s => s.egenkapital),
+                    borderColor: '#c0392b',
+                    backgroundColor: 'rgba(192,57,43,0.08)',
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: {
+                y: { ticks: { callback: v => v.toLocaleString('da-DK') + ' kr.' } }
+            }
+        }
+    });
+</script>
+<% } %>
+
+</body>
+</html>
