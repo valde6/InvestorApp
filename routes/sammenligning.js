@@ -37,12 +37,15 @@ async function hentCaseMedSimulering(id) {
     renoveringReq.input('id', sql.Int, id);
     const renoveringRes = await renoveringReq.query(`SELECT * FROM Renovering WHERE investeringscase_id = @id`);
 
-    const finansiering = new Finansiering(
+    // Opret kun finansiering-objektet hvis der faktisk er data fra databasen.
+    // Hvis finansData er undefined (ingen finansiering tilknyttet casen),
+    // sættes finansiering til null så simuleringsmodellen kan håndtere det uden at crashe.
+    const finansiering = finansData ? new Finansiering(
         finansData.laanebeloeb,
         finansData.rente_procent / 100,
         finansData.loebetid_aar,
         finansData.afdragsfri_periode_aar
-    );
+    ) : null; // håndter tilfælde uden finansiering
 
     const driftsbudget = new Driftsbudget();
     driftsRes.recordset.forEach(p => driftsbudget.tilfoejPost(p.beskrivelse, p.maanedlig_beloeb));

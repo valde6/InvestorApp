@@ -186,25 +186,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
     <script>
-        
+
         // simData oprettes som et JavaScript-array i browseren ved hjælp af EJS og JSON.stringify.
         //
         // Sådan fungerer det trin for trin:
-        // 1. På SERVEREN kører EJS og finder <%- ... %>-tagget.
+        // 1. På SERVEREN kører EJS og finder rå-output-tagget og evaluerer det.
         // 2. JSON.stringify(simulering) konverterer server-arrayet 'simulering' til en JSON-streng,
         //    fx: [{"aar":1,"cashflow":-5000,"gaeld":2000000,"egenkapital":300000}, ...]
-        // 3. <%- indsætter strengen RAW (uden HTML-escaping) direkte i HTML-filen.
-        //    Hvis man brugte <%= i stedet, ville " blive til &quot; og JSON ville være ugyldig.
+        // 3. Rå-output-tagget indsætter strengen uden HTML-escaping direkte i HTML-filen.
+        //    //    Hvis man brugte escaped output i stedet, ville " blive til &quot; og JSON ville være ugyldig.
         // 4. Browseren modtager den færdige side og ser blot:
         //    const simData = [{"aar":1,...}, {"aar":2,...}];
         //    — altså helt almindelig JavaScript. EJS-taggene eksisterer ikke mere.
         //
         // De røde markeringer skyldes at VS Code's JavaScript-parser ikke forstår EJS-syntaks.
-        // VS Code læser filen som ren JavaScript og ser "<% -" som en ugyldig operator-kombination,
+        // VS Code læser filen som ren JavaScript og ser rå-output-tagget som en ugyldig operator-kombination,
         // og "simulering" som en ukendt variabel (da den kun eksisterer på serveren, ikke i browseren).
         // Det er en falsk fejl (false positive) fra editoren — koden er 100% korrekt og
         // virker præcis som forventet når Node.js behandler filen.
-        const simData = <% - JSON.stringify(simulering) %>;
+        // prettier-ignore-kommentaren fortæller Prettier at lade denne del af koden uændret, da EJS-syntaksen kan forvirre formatteren og føre til utilsigtede ændringer i formateringen.
+        // prettier-ignore
+        const simData = <%- JSON.stringify(simulering) %>;
 
         // Lav labels til x-aksen — ét label per år (fx "År 1", "År 2" osv.)
         const labels = simData.map(s => 'År ' + s.aar);
