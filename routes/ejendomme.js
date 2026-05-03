@@ -73,6 +73,20 @@ router.post('/:id/opret', async (req, res) => {
         const adresseId = req.params.id;
         const { adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser } = req.body;
 
+        // Tjek om der allerede findes en profil med dette adresse_id
+        const tjekRequest = pool.request();
+        tjekRequest.input('adresse_id', sql.VarChar, adresseId);
+        const tjekResult = await tjekRequest.query(`
+            SELECT ejendomsprofil_id FROM Ejendomsprofil
+            WHERE adresse_id = @adresse_id
+        `);
+
+        // Hvis der allerede findes en profil — send brugeren direkte derhen
+        if (tjekResult.recordset.length > 0) {
+            const eksisterendeId = tjekResult.recordset[0].ejendomsprofil_id;
+            return res.redirect('/ejendomsprofiler/' + eksisterendeId);
+        }
+
         const request = pool.request();
         request.input('adresse_id', sql.VarChar, adresseId);
         request.input('adresse', sql.VarChar, adresse);

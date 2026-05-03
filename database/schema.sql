@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS Ejendomsprofil;
 -- Ejendomsprofil
 CREATE TABLE Ejendomsprofil (
     ejendomsprofil_id   INT           PRIMARY KEY IDENTITY(1,1),
-    adresse_id          VARCHAR(50)   NOT NULL, 
+    adresse_id          VARCHAR(50)   NOT NULL, UNIQUE, --Der skal ikke kunne eksistere duplikkerede profiler på den samme adresse. 
     adresse             VARCHAR(255)  NOT NULL,
     ejendomstype        VARCHAR(100)  NOT NULL,
     byggeaar            INT,
@@ -35,7 +35,7 @@ CREATE TABLE Investeringscase (
     tinglysning           DECIMAL(15,2)  NOT NULL,
     koeberraadgivning     DECIMAL(15,2)  NOT NULL,
     oprettet_dato        DATETIME       NOT NULL DEFAULT GETDATE(),
-    FOREIGN KEY (ejendomsprofil_id) REFERENCES Ejendomsprofil(ejendomsprofil_id)
+    FOREIGN KEY (ejendomsprofil_id) REFERENCES Ejendomsprofil(ejendomsprofil_id) ON DELETE CASCADE
 );
 
 -- Ekstra udgifterne til investeringscase (3.1)
@@ -44,7 +44,7 @@ CREATE TABLE Koebsomkostning (
     investeringscase_id  INT           NOT NULL,
     beskrivelse          VARCHAR(255)  NOT NULL,
     beloeb               DECIMAL(15,2) NOT NULL,
-    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
+    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id) ON DELETE CASCADE
 );
 
 -- Renovering (variable renoveringer tilknyttet investeringscase) (3.3)
@@ -54,7 +54,7 @@ CREATE TABLE Renovering (
     beskrivelse          VARCHAR(255)  NOT NULL,
     beloeb               DECIMAL(15,2) NOT NULL,
     tidspunkt            DATE          NOT NULL,
-    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
+    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id) ON DELETE CASCADE
 );
 
 -- Finansiering
@@ -66,7 +66,7 @@ CREATE TABLE Finansiering (
     loebetid_aar          INT           NOT NULL,
     afdragsfri_periode_aar INT          NOT NULL DEFAULT 0,
     laanetype             VARCHAR(100),
-    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
+    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id) ON DELETE CASCADE
 );
 
 -- Driftsbudget
@@ -75,7 +75,7 @@ CREATE TABLE Driftsbudget (
     investeringscase_id  INT           NOT NULL,
     navn                 VARCHAR(255),
     maanedlig_total      DECIMAL(15,2),
-    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
+    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Udlejning (
@@ -84,7 +84,7 @@ CREATE TABLE Udlejning (
     maanedlig_leje       DECIMAL(15,2) NOT NULL,
     udlejningsomkostning DECIMAL(15,2) NOT NULL DEFAULT 0,
     beskrivelse          VARCHAR(255),
-    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id)
+    FOREIGN KEY (investeringscase_id) REFERENCES Investeringscase(investeringscase_id) ON DELETE CASCADE
 );
 
 -- Driftsomkostning
@@ -94,5 +94,5 @@ CREATE TABLE Driftsomkostning (
     beskrivelse          VARCHAR(255),
     maanedlig_beloeb     DECIMAL(15,2) NOT NULL,
     kategori             VARCHAR(100),
-    FOREIGN KEY (driftsbudget_id) REFERENCES Driftsbudget(driftsbudget_id)
+    FOREIGN KEY (driftsbudget_id) REFERENCES Driftsbudget(driftsbudget_id) ON DELETE CASCADE
 );
