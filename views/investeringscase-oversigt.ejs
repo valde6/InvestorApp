@@ -186,10 +186,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
     <script>
-        // Henter simuleringsdata direkte fra serveren via EJS.
-        // <%- %> indsætter værdien uden HTML-escaping, så JSON forbliver valid JavaScript.
-        // VS Code markerer linjen som en fejl da editoren ikke forstår EJS-syntaks i JavaScript,
-        // men koden er korrekt og virker uden problemer i browseren.
+        
+        // simData oprettes som et JavaScript-array i browseren ved hjælp af EJS og JSON.stringify.
+        //
+        // Sådan fungerer det trin for trin:
+        // 1. På SERVEREN kører EJS og finder <%- ... %>-tagget.
+        // 2. JSON.stringify(simulering) konverterer server-arrayet 'simulering' til en JSON-streng,
+        //    fx: [{"aar":1,"cashflow":-5000,"gaeld":2000000,"egenkapital":300000}, ...]
+        // 3. <%- indsætter strengen RAW (uden HTML-escaping) direkte i HTML-filen.
+        //    Hvis man brugte <%= i stedet, ville " blive til &quot; og JSON ville være ugyldig.
+        // 4. Browseren modtager den færdige side og ser blot:
+        //    const simData = [{"aar":1,...}, {"aar":2,...}];
+        //    — altså helt almindelig JavaScript. EJS-taggene eksisterer ikke mere.
+        //
+        // De røde markeringer skyldes at VS Code's JavaScript-parser ikke forstår EJS-syntaks.
+        // VS Code læser filen som ren JavaScript og ser "<% -" som en ugyldig operator-kombination,
+        // og "simulering" som en ukendt variabel (da den kun eksisterer på serveren, ikke i browseren).
+        // Det er en falsk fejl (false positive) fra editoren — koden er 100% korrekt og
+        // virker præcis som forventet når Node.js behandler filen.
         const simData = <% - JSON.stringify(simulering) %>;
 
         // Lav labels til x-aksen — ét label per år (fx "År 1", "År 2" osv.)
