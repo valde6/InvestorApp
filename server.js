@@ -28,7 +28,11 @@ const ejendomsprofilRoutes = require('./routes/ejendomsprofiler');
 // Oversigt over investeringscasen
 const oversigtRoutes = require('./routes/investeringscase-oversigt');
 
+// Rediger investeringscase - viser en form med eksisterende data for at redigere en case
+const redigerRoutes = require('./routes/rediger');
 
+// Sammenlign investeringscase, Viser en sammenligning af 2 eksisterende cases
+const sammenligning = require('./routes/sammenligning');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,6 +64,8 @@ app.use('/ejendomme', ejendommeRoutes);
 app.use('/ejendomsprofiler', ejendomsprofilRoutes);
 app.use('/', forsideRoutes);
 app.use('/investeringscase-oversigt', oversigtRoutes);
+//app.use('/rediger', redigerRoutes);
+app.use('/sammenligning', sammenligning);
 
 // ============================================
 // START SERVER
