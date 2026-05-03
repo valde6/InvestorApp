@@ -13,6 +13,12 @@
     <header>
         <h1>Ejendomsprofil</h1>
         <a href="/">← Tilbage til forsiden</a>
+        <form action="/ejendomsprofiler/<%= profil.ejendomsprofil_id %>/slet" method="POST" style="display:inline;">
+            <button type="submit" class="knap-slet"
+                onclick="return confirm('Er du sikker? Dette sletter også alle tilknyttede investeringscases.')">
+                Slet ejendomsprofil
+            </button>
+        </form>
     </header>
 
     <main>

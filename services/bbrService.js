@@ -77,4 +77,4 @@ async function findGrund(grundId) {
     return await hentBbrData('grund', { id: grundId });
 }
 
-module.exports = { findBygninger, findEnheder, findGrund };
+module.exports = { findBygninger, findEnheder, findGrund, oversætAnvendelse };

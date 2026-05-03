@@ -14,6 +14,10 @@ const { findBygninger, findEnheder } = require('../services/bbrService');
 // Importer DAWA-service for at kunne hente den fulde adresse
 const { hentAdresse } = require('../services/dawaService');
 
+//Importer BBR-service til at oversætte boligens anvendelseskode
+const { oversætAnvendelse } = require('../services/bbrService');
+
+
 router.get('/:id', async (req, res) => {
     try {
         const adresseId = req.params.id;
@@ -85,12 +89,15 @@ router.post('/:id/opret', async (req, res) => {
         if (tjekResult.recordset.length > 0) {
             const eksisterendeId = tjekResult.recordset[0].ejendomsprofil_id;
             return res.redirect('/ejendomsprofiler/' + eksisterendeId);
-        }
+        };
+
+        // Oversæt BBR-koden til læsbart navn inden vi gemmer
+        const ejendomstypeNavn = oversætAnvendelse(ejendomstype);
 
         const request = pool.request();
         request.input('adresse_id', sql.VarChar, adresseId);
         request.input('adresse', sql.VarChar, adresse);
-        request.input('ejendomstype', sql.VarChar, ejendomstype || 'Ukendt');
+        request.input('ejendomstype', sql.VarChar, ejendomstypeNavn || 'Ukendt');
         request.input('byggeaar', sql.Int, byggeaar ? parseInt(byggeaar) : null);
         request.input('boligareal_m2', sql.Int, boligareal_m2 ? parseInt(boligareal_m2) : null);
         request.input('antal_vaerelser', sql.Int, antal_vaerelser ? parseInt(antal_vaerelser) : null);

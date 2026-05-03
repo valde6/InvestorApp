@@ -40,5 +40,28 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// POST /ejendomsprofiler/:id/slet
+// Sletter ejendomsprofilen. ON DELETE CASCADE sørger automatisk for
+// at alle tilknyttede investeringscases og deres data også slettes
+router.post('/:id/slet', async (req, res) => {
+    try {
+        await poolConnect;
+
+        const request = pool.request();
+        request.input('id', sql.Int, req.params.id);
+
+        await request.query(`
+            DELETE FROM Ejendomsprofil WHERE ejendomsprofil_id = @id
+        `);
+
+        // Send brugeren tilbage til forsiden efter sletning
+        res.redirect('/');
+
+    } catch (err) {
+        console.error('Fejl ved sletning af ejendomsprofil:', err);
+        res.status(500).send('Der skete en fejl ved sletning.');
+    }
+});
+
 module.exports = router;
 
