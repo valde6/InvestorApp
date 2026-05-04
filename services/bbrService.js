@@ -77,4 +77,17 @@ async function findGrund(grundId) {
     return await hentBbrData('grund', { id: grundId });
 }
 
-module.exports = { findBygninger, findEnheder, findGrund, oversætAnvendelse };
+// Alternativ til findBygninger når husnummer-opslag returnerer tomt
+// Bruges til lejligheder i etageejendomme
+async function findBygningViaEnhed(husnummerId) {
+    const enheder = await hentBbrData('enhed', { husnummer: husnummerId });
+    if (!enheder.length) return null;
+
+    const bygningsId = enheder[0].bygning;
+    if (!bygningsId) return null;
+
+    const bygninger = await hentBbrData('bygning', { id: bygningsId });
+    return bygninger.length ? bygninger[0] : null;
+}
+
+module.exports = { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaEnhed };

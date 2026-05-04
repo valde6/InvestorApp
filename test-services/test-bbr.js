@@ -3,7 +3,7 @@ require('dotenv').config();
 const { adresseIdTilHusnummerId } = require('../services/darService');
 const { findBygninger, findEnheder, findGrund } = require('../services/bbrService');
 
-const adresseId = '0a3f50a3-f963-32b8-e044-0003ba298018'; // Alberts forældres adresse
+const adresseId = 'ed03664b-6ec0-412c-a7ef-bc4ec414e440'; // Alberts forældres adresse
 
 
 // Fordi de forskellige data vi akal bruge om boligen ikke ligger i samme BBR-endpoint, så har jeg lavet 3 forskellige funktioner i bbrService:

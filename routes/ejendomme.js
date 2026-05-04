@@ -9,7 +9,7 @@ const { hentKoordinater, byggeLuftfotoUrl } = require('../services/kortService')
 const { adresseIdTilHusnummerId } = require('../services/darService');
 
 // Importer BBR-service til at hente bygnings- og enhedsdata
-const { findBygninger, findEnheder } = require('../services/bbrService');
+const { findBygninger, findEnheder, findBygningViaEnhed } = require('../services/bbrService');
 
 // Importer DAWA-service for at kunne hente den fulde adresse
 const { hentAdresse } = require('../services/dawaService');
@@ -30,7 +30,16 @@ router.get('/:id', async (req, res) => {
         const husnummerId = await adresseIdTilHusnummerId(adresseId);
 
         // Hent bygningsdata fra BBR og tag den første aktive bygning
-        const bygninger = await findBygninger(husnummerId);
+        let bygninger = await findBygninger(husnummerId);
+
+        // Fallback til enhed-opslag hvis bygning ikke findes direkte via husnummer-ID.
+        // Dette sker typisk for lejligheder i etageejendomme, hvor bygningen er knyttet
+        // til selve ejendommen frem for den individuelle lejlighedsadresse.
+        if (!bygninger.length) {
+            const bygningFraEnhed = await findBygningViaEnhed(husnummerId);
+            if (bygningFraEnhed) bygninger = [bygningFraEnhed];
+        }
+
         //console.log('Bygningskoder:', bygninger.map(b => b.byg021BygningensAnvendelse)); -> kan bruges til at debugge og se hvilke anvendelseskoder der kommer tilbage i data
 
         //Denne linje anvendes, idet der i bygningsarrayet kan være flere bygninger. Find finder den bygning i bygninger, der har koden for "bolig", så man
