@@ -6,10 +6,10 @@ const router = express.Router();
 const { hentKoordinater, byggeLuftfotoUrl } = require('../services/kortService');
 
 // Importer DAR-service til at oversætte adresse-ID til husnummer-ID
-const { adresseIdTilHusnummerId } = require('../services/darService');
+const { adresseIdTilHusnummerId, husnummerTilBygningBfe } = require('../services/darService');
 
 // Importer BBR-service til at hente bygnings- og enhedsdata
-const { findBygninger, findEnheder, findBygningViaEnhed } = require('../services/bbrService');
+const { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaBfe } = require('../services/bbrService');
 
 // Importer DAWA-service for at kunne hente den fulde adresse
 const { hentAdresse } = require('../services/dawaService');
@@ -36,8 +36,11 @@ router.get('/:id', async (req, res) => {
         // Dette sker typisk for lejligheder i etageejendomme, hvor bygningen er knyttet
         // til selve ejendommen frem for den individuelle lejlighedsadresse.
         if (!bygninger.length) {
-            const bygningFraEnhed = await findBygningViaEnhed(husnummerId);
-            if (bygningFraEnhed) bygninger = [bygningFraEnhed];
+            const bfeNummer = await husnummerTilBygningBfe(husnummerId);
+            if (bfeNummer) {
+                const bygning = await findBygningViaBfe(bfeNummer);
+                if (bygning) bygninger = [bygning];
+            }
         }
 
         //console.log('Bygningskoder:', bygninger.map(b => b.byg021BygningensAnvendelse)); -> kan bruges til at debugge og se hvilke anvendelseskoder der kommer tilbage i data

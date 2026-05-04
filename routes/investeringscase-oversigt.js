@@ -60,6 +60,14 @@ router.get('/', async (req, res) => {
             SELECT * FROM Renovering WHERE investeringscase_id = @id
         `);
 
+        // Hent ekstra købsomkostninger
+        // Disse er variable udgifter brugeren selv har tilføjet i trin 1 (udover de faste felter)
+        const koebsRequest = pool.request();
+        koebsRequest.input('id', sql.Int, investeringscase_id);
+        const koebsResult = await koebsRequest.query(`
+            SELECT * FROM Koebsomkostning WHERE investeringscase_id = @id
+        `);
+
         // --- BYGG MODEL-OBJEKTER FRA DATABASE-DATA ---
 
         // Byg Finansiering-objekt
@@ -100,7 +108,7 @@ router.get('/', async (req, res) => {
             driftsomkostninger: driftsResult.recordset,
             udlejning: udlejningData,
             udlejninger: udlejningResult.recordset,  // den gamle EJS bruger udlejninger
-            koebsomkostninger: [],                   // hentes ikke i ny route endnu
+            koebsomkostninger: koebsResult.recordset,
             renoveringer: renoveringResult.recordset,
             simulering: simuleringResultater,
             ejendomsprofil_id: sagen.ejendomsprofil_id

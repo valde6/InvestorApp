@@ -3,23 +3,14 @@ const BBR_BASE_URL = 'https://services.datafordeler.dk/BBR/BBRPublic/1/REST';
 const datafordelerUsername = process.env.DATAFORDELER_USERNAME
 const datafordelerPassword = process.env.DATAFORDELER_PASSWORD
 
-
 //Kontrollerer at de eksiterer i .env ved serveropstart så vi hurtigt og effektivt opdager fejl
 if (!datafordelerUsername || !datafordelerPassword) {
     throw new Error('DATAFORDELER credentials mangler i .env (DATAFORDELER_USERNAME og DATAFORDELER_PASSWORD)');
 };
 
 // --- Privat hjælpefunktion: laver selve HTTP-kaldet ---
-async function hentBbrData(endpoint, queryParams) {
-    //URLSearchParams er funder vha. AI 
-    const params = new URLSearchParams({
-        ...queryParams,
-        Format: 'JSON',
-        username: datafordelerUsername,
-        password: datafordelerPassword
-    });
-
-    const url = `${BBR_BASE_URL}/${endpoint}?${params.toString()}`;
+async function hentBbrData(endpoint, ekstraParams) {
+    const url = `${BBR_BASE_URL}/${endpoint}?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&${ekstraParams}`;
     console.log(`DEBUG BBR ${endpoint}:`, url.replace(datafordelerPassword, '***'));
 
     const response = await fetch(url);
@@ -32,7 +23,6 @@ async function hentBbrData(endpoint, queryParams) {
     // Filtrér kun aktive registreringer (status 6 = gældende)
     return data.filter(objekt => objekt.status === '6');
 }
-
 
 // --- Offentlige funktioner ---
 
@@ -55,39 +45,39 @@ function oversætAnvendelse(kode) {
     return typer[kode] || `Ukendt type (${kode})`;
 }
 
-// Hent bygninger for et givent husnummerId og oversæt bygningstype til læsbar form
-// findbygninger finder nu også ejendomstype og tilføjer det som felt i bygning-objektet, så vi kan bruge det i vores frontend senere.
 async function findBygninger(husnummerId) {
-    const bygninger = await hentBbrData('bygning', { Husnummer: husnummerId });
+    const bygninger = await hentBbrData('bygning', `Husnummer=${encodeURIComponent(husnummerId)}`);
     bygninger.forEach(byg => {
         byg.ejendomstype = oversætAnvendelse(byg.byg021BygningensAnvendelse);
     });
     return bygninger;
 }
 
-// Hent enheder for et givent husnummerId
 async function findEnheder(bygningsId) {
-    return await hentBbrData('enhed', { bygning: bygningsId });
+    return await hentBbrData('enhed', `bygning=${encodeURIComponent(bygningsId)}`);
 }
-// Hent grund for et givent grundId
-// TODO: Grundareal returnerer tomt array for denne adressetype.
-// BBR knytter muligvis grunden via jordstykke-relationer i stedet for husnummer-id.
-// Alternativ: hent grundareal fra Dataforsyningens jordstykke-API via matrikelnummer.
+
 async function findGrund(grundId) {
-    return await hentBbrData('grund', { id: grundId });
+    return await hentBbrData('grund', `id=${encodeURIComponent(grundId)}`);
 }
 
-// Alternativ til findBygninger når husnummer-opslag returnerer tomt
-// Bruges til lejligheder i etageejendomme
-async function findBygningViaEnhed(husnummerId) {
-    const enheder = await hentBbrData('enhed', { husnummer: husnummerId });
-    if (!enheder.length) return null;
+// Fallback: henter bygning via BFE-nummer — bruges til lejligheder i etageejendomme
+async function findBygningViaBfe(bfeNummer) {
+    const bygninger = await hentBbrData('bygning', `BFEnummer=${encodeURIComponent(bfeNummer)}`);
 
-    const bygningsId = enheder[0].bygning;
-    if (!bygningsId) return null;
+    // Midlertidig debug — vis alle bygninger og deres anvendelseskoder
+    console.log('DEBUG antal bygninger fra BFE:', bygninger.length);
+    bygninger.forEach((byg, i) => {
+        console.log(`DEBUG bygning ${i}: anvendelse=${byg.byg021BygningensAnvendelse}, status=${byg.status}`);
+    });
 
-    const bygninger = await hentBbrData('bygning', { id: bygningsId });
-    return bygninger.length ? bygninger[0] : null;
+    bygninger.forEach(byg => {
+        byg.ejendomstype = oversætAnvendelse(byg.byg021BygningensAnvendelse);
+    });
+    return bygninger.find(byg => {
+        const kode = parseInt(byg.byg021BygningensAnvendelse);
+        return kode >= 110 && kode <= 299;
+    }) || null;
 }
 
-module.exports = { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaEnhed };
+module.exports = { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaBfe };

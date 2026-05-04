@@ -76,9 +76,12 @@ class Simulering {
                 ? gaeld * r * 12
                 : maanedligYdelse * 12;
 
-            // Indtægter fra udlejning (0 hvis ikke udlejet)
+            // Nettolejeindtægt = bruttoleje minus udlejningsomkostninger (0 hvis ikke udlejet)
+            // Udlejningsomkostninger er IKKE det samme som driftsudgifter —
+            // driftsudgifter dækker ejendommens løbende udgifter (forsikring, ejendomsskat osv.)
+            // mens udlejningsomkostninger kun vedrører selve udlejningsforholdet
             const lejeindtaegt = this.udlejning
-                ? this.udlejning.aarligLejeindtaegt()
+                ? this.udlejning.aarligNetto()
                 : 0;
 
             // Løbende driftsudgifter
