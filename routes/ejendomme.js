@@ -8,14 +8,11 @@ const { hentKoordinater, byggeLuftfotoUrl } = require('../services/kortService')
 // Importer DAR-service til at oversætte adresse-ID til husnummer-ID
 const { adresseIdTilHusnummerId, husnummerTilBygningBfe } = require('../services/darService');
 
-// Importer BBR-service til at hente bygnings- og enhedsdata
+// Importer BBR-service til at hente bygnings- og enhedsdata, sa,t oversætte anvendelseskode, mm.
 const { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaBfe } = require('../services/bbrService');
 
 // Importer DAWA-service for at kunne hente den fulde adresse
 const { hentAdresse } = require('../services/dawaService');
-
-//Importer BBR-service til at oversætte boligens anvendelseskode
-const { oversætAnvendelse } = require('../services/bbrService');
 
 
 router.get('/:id', async (req, res) => {

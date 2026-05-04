@@ -1,23 +1,26 @@
--- Indsæt eksempeldata i Ejendomsprofil
-INSERT INTO Ejendomsprofil (adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser, grundareal_m2)
+-- Ejendomsprofiler
+-- adresse_id er sat til seed-værdier da disse ikke er rigtige DAWA-adresser
+INSERT INTO Ejendomsprofil (adresse_id, adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser, grundareal_m2)
 VALUES
-    ('Østerbrogade 45, 2100 København Ø', 'Lejlighed', 1923, 87, 3, NULL),
-    ('Villavej 12, 2800 Kongens Lyngby', 'Enfamiliehus', 1967, 142, 5, 650),
-    ('Nørrebrogade 88, 2200 København N', 'Lejlighed', 1898, 64, 2, NULL),
-    ('Strandvejen 201, 2900 Hellerup', 'Enfamiliehus', 1954, 198, 6, 820),
-    ('Amagerbrogade 33, 2300 København S', 'Rækkehus', 2005, 110, 4, 180);
+    ('seed-0001', 'Østerbrogade 45, 2100 København Ø', 'Lejlighed', 1923, 87, 3, NULL),
+    ('seed-0002', 'Villavej 12, 2800 Kongens Lyngby', 'Enfamiliehus', 1967, 142, 5, 650),
+    ('seed-0003', 'Nørrebrogade 88, 2200 København N', 'Lejlighed', 1898, 64, 2, NULL),
+    ('seed-0004', 'Strandvejen 201, 2900 Hellerup', 'Enfamiliehus', 1954, 198, 6, 820),
+    ('seed-0005', 'Amagerbrogade 33, 2300 København S', 'Rækkehus', 2005, 110, 4, 180);
 
--- Indsæt eksempeldata i Investeringscase
-INSERT INTO Investeringscase (ejendomsprofil_id, navn, beskrivelse, ejendomspris)
+-- Investeringscases
+-- Alle NOT NULL-felter er med — tal er eksempler og ikke realistiske beregninger
+INSERT INTO Investeringscase (ejendomsprofil_id, navn, beskrivelse, ejendomspris, omkostninger_koeb, advokat, tinglysning, koeberraadgivning)
 VALUES
-    (1, 'Østerbro udlejning 2024', 'Udlejning til studerende nær universitetet', 3200000),
-    (1, 'Østerbro korttidsudlejning', 'Airbnb-strategi i højsæson', 3200000),
-    (2, 'Lyngby langsigtet investering', 'Køb og hold i 20 år', 4750000),
-    (3, 'Nørrebro renovering og salg', 'Opkøb, renovering og videresalg', 2800000),
-    (4, 'Hellerup premium udlejning', 'Langtidsudlejning til familier', 7500000),
-    (5, 'Amager rækkehus udlejning', 'Udlejning til par eller småfamilie', 3900000);
+    (1, 'Østerbro udlejning 2024', 'Udlejning til studerende nær universitetet', 3200000, 50000, 15000, 10000, 20000),
+    (1, 'Østerbro korttidsudlejning', 'Airbnb-strategi i højsæson', 3200000, 50000, 15000, 10000, 20000),
+    (2, 'Lyngby langsigtet investering', 'Køb og hold i 20 år', 4750000, 75000, 20000, 15000, 25000),
+    (3, 'Nørrebro renovering og salg', 'Opkøb, renovering og videresalg', 2800000, 45000, 12000, 9000, 18000),
+    (4, 'Hellerup premium udlejning', 'Langtidsudlejning til familier', 7500000, 120000, 30000, 25000, 40000),
+    (5, 'Amager rækkehus udlejning', 'Udlejning til par eller småfamilie', 3900000, 60000, 16000, 12000, 22000);
 
--- Indsæt eksempeldata i Finansiering
+-- Finansiering
+-- rente_procent gemmes som decimaltal (0.0425 = 4,25%) — routes dividerer med 100 inden brug i modellen
 INSERT INTO Finansiering (investeringscase_id, laanebeloeb, rente_procent, loebetid_aar, afdragsfri_periode_aar, laanetype)
 VALUES
     (1, 2560000, 0.0425, 30, 0, 'Realkreditlån'),
@@ -27,7 +30,8 @@ VALUES
     (5, 6000000, 0.0375, 30, 3, 'Realkreditlån'),
     (6, 3120000, 0.0425, 30, 0, 'Realkreditlån');
 
--- Indsæt eksempeldata i Driftsbudget
+-- Driftsbudgetter
+-- Én per investeringscase — maanedlig_total beregnes i applikationen, ikke her
 INSERT INTO Driftsbudget (investeringscase_id, navn, maanedlig_total)
 VALUES
     (1, 'Driftsbudget Østerbro udlejning', 4200),
@@ -37,7 +41,8 @@ VALUES
     (5, 'Driftsbudget Hellerup', 6200),
     (6, 'Driftsbudget Amager', 3600);
 
--- Indsæt eksempeldata i Driftsomkostning
+-- Driftsomkostninger
+-- Individuelle poster under hvert driftsbudget
 INSERT INTO Driftsomkostning (driftsbudget_id, beskrivelse, maanedlig_beloeb, kategori)
 VALUES
     (1, 'Ejendomsskat', 1200, 'Skat'),

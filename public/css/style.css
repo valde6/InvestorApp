@@ -300,16 +300,6 @@ header form {
    Reset så de ikke får form-styling
    ============================================ */
 
-/* Gælder for slet-knap direkte i <header> (fx ejendomsprofil) */
-header form {
-    display: inline;
-    background: none;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-    gap: 0;
-}
-
 .header-knapper form {
     display: inline;
     background: none;
@@ -319,18 +309,6 @@ header form {
     gap: 0;
 }
 
-.case-item form {
-    display: inline;
-    background: none;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-    gap: 0;
-}
-/* ============================================
-   INLINE FORMULARER I CASE-LISTE
-   Reset så slet-knappen ikke fylder hele bredden
-   ============================================ */
 .case-item form {
     display: inline;
     background: none;

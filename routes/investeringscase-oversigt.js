@@ -106,7 +106,6 @@ router.get('/', async (req, res) => {
             sagen,
             finansiering: finansData,
             driftsomkostninger: driftsResult.recordset,
-            udlejning: udlejningData,
             udlejninger: udlejningResult.recordset,  // den gamle EJS bruger udlejninger
             koebsomkostninger: koebsResult.recordset,
             renoveringer: renoveringResult.recordset,
