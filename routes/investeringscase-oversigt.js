@@ -109,6 +109,7 @@ router.get('/', async (req, res) => {
             udlejninger: udlejningResult.recordset,  // den gamle EJS bruger udlejninger
             koebsomkostninger: koebsResult.recordset,
             renoveringer: renoveringResult.recordset,
+            finansieringModel: finansiering,  // Tilføjes for at kunne vise totale renteomkostninger
             simulering: simuleringResultater,
             ejendomsprofil_id: sagen.ejendomsprofil_id
         });

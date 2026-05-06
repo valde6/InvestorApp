@@ -58,7 +58,13 @@ async function findEnheder(bygningsId) {
 }
 
 async function findGrund(grundId) {
-    return await hentBbrData('grund', `id=${encodeURIComponent(grundId)}`);
+    const url = `${BBR_BASE_URL}/grund?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&id=${encodeURIComponent(grundId)}`;
+    console.log('DEBUG BBR grund råt:', url.replace(datafordelerPassword, '***'));
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`BBR /grund svarede med status ${response.status}`);
+    const data = await response.json();
+    console.log('DEBUG grund råt (ingen statusfilter):', JSON.stringify(data, null, 2));
+    return data;
 }
 
 // Fallback: henter bygning via BFE-nummer — bruges til lejligheder i etageejendomme
@@ -80,4 +86,9 @@ async function findBygningViaBfe(bfeNummer) {
     }) || null;
 }
 
-module.exports = { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaBfe };
+//Test midlertidig:
+async function findEnhedViaAdresse(adresseId) {
+    return await hentBbrData('enhed', `AdresseIdentificerer=${encodeURIComponent(adresseId)}`);
+}
+
+module.exports = { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaBfe, findEnhedViaAdresse };

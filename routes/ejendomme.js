@@ -9,7 +9,7 @@ const { hentKoordinater, byggeLuftfotoUrl } = require('../services/kortService')
 const { adresseIdTilHusnummerId, husnummerTilBygningBfe } = require('../services/darService');
 
 // Importer BBR-service til at hente bygnings- og enhedsdata, sa,t oversætte anvendelseskode, mm.
-const { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaBfe } = require('../services/bbrService');
+const { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaBfe, findEnhedViaAdresse } = require('../services/bbrService');
 
 // Importer DAWA-service for at kunne hente den fulde adresse
 const { hentAdresse } = require('../services/dawaService');
@@ -49,16 +49,26 @@ router.get('/:id', async (req, res) => {
             return kode >= 110 && kode <= 299;
         });
 
-
+        console.log('DEBUG bygning fuld:', JSON.stringify(bygning, null, 2));
         //Denne returnerer hvis ikke der kan findes nogle "korrekte" boligtyper. 
         if (!bygning) {
             return res.render('fejl', { besked: 'Vi kunne ikke finde boligdata for denne adresse. Dette kan skyldes at ejendommen er registreret som erhverv, har en ukendt bygningstype, eller ikke er registreret korrekt i BBR. Prøv en anden adresse.' });
         }
-
+        const bfeNummer = await husnummerTilBygningBfe(husnummerId);
+        console.log('DEBUG bfe:', bfeNummer);
+        const grunde = await findGrund(bygning.grund);
+console.log('DEBUG grund:', JSON.stringify(grunde, null, 2));
 
         // Hent enhedsdata (boligoplysninger) for den fundne bygning
         const enheder = await findEnheder(bygning.id_lokalId);
+
         const enhed = enheder[0];
+
+        //Test
+        console.log('DEBUG enhed:', JSON.stringify(enhed, null, 2));
+
+        const enhedViaAdresse = await findEnhedViaAdresse(adresseId);
+        console.log('DEBUG enhed via adresse:', JSON.stringify(enhedViaAdresse[0], null, 2));
 
         // Send BBR-data til viewet uden at gemme i DB
         res.render('ejendom', {

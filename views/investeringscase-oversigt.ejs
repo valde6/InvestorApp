@@ -94,6 +94,15 @@
                     <p><strong>Lånetype:</strong>
                         <%= finansiering.laanetype %>
                     </p>
+                    <p><strong>Månedlig ydelse:</strong>
+                        <%= Number(finansieringModel.maanedligYdelse().toFixed(0)).toLocaleString('da-DK') %> kr./md.
+                    </p>
+                    <p><strong>Total renteomkostning:</strong>
+                        <%= Number(finansieringModel.totalRenteomkostning().toFixed(0)).toLocaleString('da-DK') %> kr.
+                    </p>
+                    <p><strong>Månedlig cashflow-påvirkning fra lån:</strong>
+                        -<%= Number(finansieringModel.maanedligYdelse().toFixed(0)).toLocaleString('da-DK') %> kr./md.
+                    </p>
                 </div>
                 <% } %>
         </section>
@@ -205,7 +214,7 @@
         // virker præcis som forventet når Node.js behandler filen.
         // prettier-ignore-kommentaren fortæller Prettier at lade denne del af koden uændret, da EJS-syntaksen kan forvirre formatteren og føre til utilsigtede ændringer i formateringen.
         // prettier-ignore
-        const simData = <%- JSON.stringify(simulering) %>;
+        const simData = <% - JSON.stringify(simulering) %>;
 
         // Lav labels til x-aksen — ét label per år (fx "År 1", "År 2" osv.)
         const labels = simData.map(s => 'År ' + s.aar);
