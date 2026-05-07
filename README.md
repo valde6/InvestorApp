@@ -89,4 +89,4 @@ node --test test-models/test-renovering.js
 
 ## Kendte begrænsninger
 
-Grundareal vises ikke for lejligheder i etageejendomme. BBR knytter grundareal til matriklen og ikke til den individuelle lejlighed, hvilket kræver et ekstra opslag via DAR's BFE-endpoint. Vi har kortlagt løsningen men valgt at prioritere andre dele af projektet.
+
