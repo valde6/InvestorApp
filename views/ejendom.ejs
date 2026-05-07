@@ -34,14 +34,8 @@
             <p><strong>Byggeår:</strong>
                 <%= bygning.byg026Opførelsesår %>
             </p>
-            <p><strong>Samlet areal:</strong> <!-- Boligareal for den specifikke enhed, altså et plan -->
-                <%= bygning.byg038SamletBygningsareal %> m²
-            </p>
-            <p><strong>Antal etager:</strong>
-                <%= bygning.byg054AntalEtager %>
-            </p>
             <% if (enhed) { %>
-                <p><strong>Boligareal:</strong> <!-- Boligareal for alle plan i bygningen -->
+                <p><strong>Boligareal:</strong>
                     <%= enhed.enh026EnhedensSamledeAreal %> m²
                 </p>
                 <p><strong>Antal værelser:</strong>
@@ -49,11 +43,11 @@
                 </p>
                 <% } else { %>
                     <p>Ingen enhedsdata tilgængelig</p>
-                    <% if (grundareal) { %>
-                        <p><strong>Grundareal:</strong>
-                            <%= grundareal %> m²
-                        </p>
-                        <% } %>
+                    <% } %>
+                        <% if (grundareal) { %>
+                            <p><strong>Grundareal:</strong>
+                                <%= grundareal %> m²
+                            </p>
                             <% } %>
         </section>
 

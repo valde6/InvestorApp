@@ -9,7 +9,7 @@ const { hentKoordinater, byggeLuftfotoUrl } = require('../services/kortService')
 const { adresseIdTilHusnummerId, husnummerTilBygningBfe } = require('../services/darService');
 
 // bbrService henter bygnings- og enhedsdata fra Datafordeler
-const { findBygninger, findEnheder, oversætAnvendelse, findBygningViaBfe, findEnhedViaAdresse } = require('../services/bbrService');
+const { findBygningViaId, findBygningViaBfe, oversætAnvendelse, findEnhedViaAdresse } = require('../services/bbrService');
 
 // dawaService henter adressetekst og adgangsadresse (inkl. jordstykke-href til grundareal)
 const { hentAdresse, hentAdgangsadresse } = require('../services/dawaService');
@@ -36,12 +36,14 @@ router.get('/:id', async (req, res) => {
         // Dette virker for alle adressetyper — også ejerlejligheder —
         // fordi BBR knytter enheden til adressen via adresseIdentificerer.
         const alleEnheder = await findEnhedViaAdresse(adresseId);
-        const enhed = alleEnheder.find(e => e.adresseIdentificerer === adresseId) || alleEnheder[0];
 
+        const enhed = alleEnheder.find(e => e.adresseIdentificerer === adresseId) || alleEnheder[0];
+        console.log('DEBUG alleEnheder:', alleEnheder.length, JSON.stringify(alleEnheder.map(e => e.adresseIdentificerer)));
+        console.log('DEBUG enhed:', JSON.stringify(enhed?.bygning));
         // Hent bygningen via enhedens bygnings-ID.
         // Dette er mere robust end at gå via husnummer-ID, da ejerlejligheder
         // ikke altid har en direkte bygningskobling via husnummeret.
-        let bygninger = enhed ? await findBygninger(enhed.bygning) : [];
+        let bygninger = enhed ? await findBygningViaId(enhed.bygning) : [];
 
         // Fallback: hvis bygning stadig ikke findes, forsøg via husnummer → BFE-nummer.
         // Dette håndterer etageejendomme hvor bygningen er knyttet til ejendommen
@@ -74,8 +76,10 @@ router.get('/:id', async (req, res) => {
 
         // Grundareal hentes kun for ikke-lejligheder — for lejligheder giver grundareal
         // ikke mening da grunden tilhører hele ejendommen, ikke den individuelle bolig.
-        // En lejlighed identificeres ved at adressen har etage eller dør.
-        const erLejlighed = adgangsadresse.etage !== null || adgangsadresse.dør !== null;
+        //Vi anvender anvendelseskoden til at definere om ejendommens grundareal er relevant at indhente eller ej. Vi har via. BBR's anvendelseskoder fundet frem til at det
+        //Kun er relevant for anvendelskoder under 140
+        const anvendelseskode = parseInt(bygning.byg021BygningensAnvendelse);
+        const erLejlighed = anvendelseskode >= 140;
         const grundareal = erLejlighed ? null : await hentGrundareal(adgangsadresse.jordstykke.href);
 
         // Send BBR-data til viewet uden at gemme i databasen
