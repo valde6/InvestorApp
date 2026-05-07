@@ -24,6 +24,7 @@
                 <input type="hidden" name="byggeaar" value="<%= bygning.byg026Opførelsesår %>">
                 <input type="hidden" name="boligareal_m2" value="<%= enhed?.enh026EnhedensSamledeAreal %>">
                 <input type="hidden" name="antal_vaerelser" value="<%= enhed?.enh031AntalVærelser %>">
+                <input type="hidden" name="grundareal_m2" value="<%= grundareal ?? '' %>">
                 <button type="submit">Opret ejendomsprofil</button>
             </form>
             <h2>BBR Data</h2>
@@ -48,7 +49,12 @@
                 </p>
                 <% } else { %>
                     <p>Ingen enhedsdata tilgængelig</p>
-                    <% } %>
+                    <% if (grundareal) { %>
+                        <p><strong>Grundareal:</strong>
+                            <%= grundareal %> m²
+                        </p>
+                        <% } %>
+                            <% } %>
         </section>
 
         <section>

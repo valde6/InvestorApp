@@ -39,9 +39,14 @@
                 <p><strong>Antal værelser:</strong>
                     <%= profil.antal_vaerelser %>
                 </p>
-                <p><strong>Oprettet:</strong>
-                    <%= new Date(profil.oprettet_dato).toLocaleDateString('da-DK') %>
-                </p>
+                <% if (profil.grundareal_m2) { %>
+                    <p><strong>Grundareal:</strong>
+                        <%= profil.grundareal_m2 %> m²
+                    </p>
+                    <% } %>
+                        <p><strong>Oprettet:</strong>
+                            <%= new Date(profil.oprettet_dato).toLocaleDateString('da-DK') %>
+                        </p>
             </div>
 
         </section>

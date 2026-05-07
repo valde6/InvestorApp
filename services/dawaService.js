@@ -30,5 +30,14 @@ async function hentAdresse(adresseId) {
     return data.adressebetegnelse;
 }
 
-module.exports = { søgAdresse, hentAdresse };
+async function hentAdgangsadresse(adresseId) {
+    const url = `${DAWA_BASE_URL}/adresser/${adresseId}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`DAWA svarede med status ${response.status}`);
+    const data = await response.json();
+    return data.adgangsadresse;
+}
+
+module.exports = { søgAdresse, hentAdresse, hentAdgangsadresse };
+
 

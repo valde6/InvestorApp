@@ -1,17 +1,25 @@
+// ============================================
+// services/bbrService.js
+// Henter bygnings- og enhedsdata fra BBR via Datafordeler.
+// Dokumentation: https://datafordeler.dk/dataoversigt/bygnings-og-boligregistret-bbr/bbr/
+// ============================================
+
 const BBR_BASE_URL = 'https://services.datafordeler.dk/BBR/BBRPublic/1/REST';
 
-const datafordelerUsername = process.env.DATAFORDELER_USERNAME
-const datafordelerPassword = process.env.DATAFORDELER_PASSWORD
+const datafordelerUsername = process.env.DATAFORDELER_USERNAME;
+const datafordelerPassword = process.env.DATAFORDELER_PASSWORD;
 
-//Kontrollerer at de eksiterer i .env ved serveropstart så vi hurtigt og effektivt opdager fejl
+// Kontrollér at credentials eksisterer ved serveropstart — fejler hurtigt og tydeligt
 if (!datafordelerUsername || !datafordelerPassword) {
     throw new Error('DATAFORDELER credentials mangler i .env (DATAFORDELER_USERNAME og DATAFORDELER_PASSWORD)');
-};
+}
 
-// --- Privat hjælpefunktion: laver selve HTTP-kaldet ---
+// ============================================
+// Privat hjælpefunktion — laver selve HTTP-kaldet til BBR
+// Filtrerer automatisk på status = '6' (kun gældende registreringer)
+// ============================================
 async function hentBbrData(endpoint, ekstraParams) {
     const url = `${BBR_BASE_URL}/${endpoint}?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&${ekstraParams}`;
-    console.log(`DEBUG BBR ${endpoint}:`, url.replace(datafordelerPassword, '***'));
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -20,13 +28,14 @@ async function hentBbrData(endpoint, ekstraParams) {
 
     const data = await response.json();
 
-    // Filtrér kun aktive registreringer (status 6 = gældende)
+    // Kun aktive registreringer returneres (status 6 = gældende i BBR)
     return data.filter(objekt => objekt.status === '6');
 }
 
-// --- Offentlige funktioner ---
-
-// Oversætter BBR's anvendelseskode til læsbar ejendomstype
+// ============================================
+// Oversætter BBR's numeriske anvendelseskode til læsbart dansk navn.
+// Bruges inden data gemmes i databasen så vi ikke gemmer rå koder.
+// ============================================
 function oversætAnvendelse(kode) {
     const typer = {
         "110": "Stuehus til landbrugsejendom",
@@ -45,38 +54,40 @@ function oversætAnvendelse(kode) {
     return typer[kode] || `Ukendt type (${kode})`;
 }
 
+// ============================================
+// Henter bygninger tilknyttet et husnummer-ID.
+// Primært opslag — virker for enfamiliehuse og de fleste ejendomme.
+// ============================================
 async function findBygninger(husnummerId) {
     const bygninger = await hentBbrData('bygning', `Husnummer=${encodeURIComponent(husnummerId)}`);
+    // Tilføj læsbart ejendomstypenavn på hvert bygningsobjekt
     bygninger.forEach(byg => {
         byg.ejendomstype = oversætAnvendelse(byg.byg021BygningensAnvendelse);
     });
     return bygninger;
 }
 
-async function findEnheder(bygningsId) {
-    return await hentBbrData('enhed', `bygning=${encodeURIComponent(bygningsId)}`);
+// ============================================
+// Henter bygning via bygningens eget UUID.
+// Bruges når vi kender bygnings-ID'et fra en enhed (typisk lejligheder),
+// da enhedsobjektet indeholder et direkte bygnings-UUID.
+// ============================================
+async function findBygningViaId(bygningsId) {
+    const bygninger = await hentBbrData('bygning', `id=${encodeURIComponent(bygningsId)}`);
+    bygninger.forEach(byg => {
+        byg.ejendomstype = oversætAnvendelse(byg.byg021BygningensAnvendelse);
+    });
+    return bygninger;
 }
 
-async function findGrund(grundId) {
-    const url = `${BBR_BASE_URL}/grund?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&id=${encodeURIComponent(grundId)}`;
-    console.log('DEBUG BBR grund råt:', url.replace(datafordelerPassword, '***'));
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`BBR /grund svarede med status ${response.status}`);
-    const data = await response.json();
-    console.log('DEBUG grund råt (ingen statusfilter):', JSON.stringify(data, null, 2));
-    return data;
-}
-
-// Fallback: henter bygning via BFE-nummer — bruges til lejligheder i etageejendomme
+// ============================================
+// Fallback: henter bygning via BFE-nummer.
+// Bruges til etageejendomme hvor husnummer-opslaget ikke returnerer bygningen,
+// fordi bygningen er registreret på ejendommen frem for den specifikke adresse.
+// Returnerer den første boligbygning (anvendelseskode 110–299) eller null.
+// ============================================
 async function findBygningViaBfe(bfeNummer) {
     const bygninger = await hentBbrData('bygning', `BFEnummer=${encodeURIComponent(bfeNummer)}`);
-
-    // Midlertidig debug — vis alle bygninger og deres anvendelseskoder
-    console.log('DEBUG antal bygninger fra BFE:', bygninger.length);
-    bygninger.forEach((byg, i) => {
-        console.log(`DEBUG bygning ${i}: anvendelse=${byg.byg021BygningensAnvendelse}, status=${byg.status}`);
-    });
-
     bygninger.forEach(byg => {
         byg.ejendomstype = oversætAnvendelse(byg.byg021BygningensAnvendelse);
     });
@@ -86,9 +97,13 @@ async function findBygningViaBfe(bfeNummer) {
     }) || null;
 }
 
-//Test midlertidig:
+// ============================================
+// Henter alle enheder (lejligheder/boliger) tilknyttet en adresse.
+// Bruges som primært opslag — virker for alle adressetyper inkl. ejerlejligheder,
+// fordi BBR knytter enheden direkte til adresse-ID'et via adresseIdentificerer.
+// ============================================
 async function findEnhedViaAdresse(adresseId) {
     return await hentBbrData('enhed', `AdresseIdentificerer=${encodeURIComponent(adresseId)}`);
 }
 
-module.exports = { findBygninger, findEnheder, findGrund, oversætAnvendelse, findBygningViaBfe, findEnhedViaAdresse };
+module.exports = { oversætAnvendelse, findBygninger, findBygningViaId, findBygningViaBfe, findEnhedViaAdresse };
