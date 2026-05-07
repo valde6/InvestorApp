@@ -57,11 +57,11 @@ router.get('/:id', async (req, res) => {
             }
         }
 
-        // Find den relevante boligbygning ud fra anvendelseskode (110–299 = bolig).
+        // Find den relevante boligbygning ud fra anvendelseskode (110–190 = bolig).
         // Dette sikrer at vi ikke ender med en carport, garage eller erhvervsbygning.
         const bygning = bygninger.find(byg => {
             const kode = parseInt(byg.byg021BygningensAnvendelse);
-            return kode >= 110 && kode <= 299;
+            return kode >= 110 && kode <= 190;
         });
 
         // Vis fejlside hvis ingen boligbygning kunne identificeres
@@ -89,8 +89,7 @@ router.get('/:id', async (req, res) => {
             bygning,
             enhed,
             adresse,
-            grundareal,
-            ejendomsprofil_id: null,
+            grundareal
         });
 
     } catch (error) {

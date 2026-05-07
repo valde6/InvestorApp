@@ -45,11 +45,6 @@ function oversætAnvendelse(kode) {
         "150": "Kollegium",
         "160": "Døgninstitution",
         "190": "Anden helårsbeboelse",
-        "210": "Erhvervsmæssig produktion",
-        "217": "Landbrug, dambrug eller lignende",
-        "220": "Kontor, handel, lager",
-        "230": "Hotel, restaurant",
-        "290": "Anden erhvervsmæssig anvendelse",
     };
     return typer[kode] || `Ukendt type (${kode})`;
 }
@@ -84,7 +79,7 @@ async function findBygningViaId(bygningsId) {
 // Fallback: henter bygning via BFE-nummer.
 // Bruges til etageejendomme hvor husnummer-opslaget ikke returnerer bygningen,
 // fordi bygningen er registreret på ejendommen frem for den specifikke adresse.
-// Returnerer den første boligbygning (anvendelseskode 110–299) eller null.
+// Returnerer den første boligbygning (anvendelseskode 110–190) eller null.
 // ============================================
 async function findBygningViaBfe(bfeNummer) {
     const bygninger = await hentBbrData('bygning', `BFEnummer=${encodeURIComponent(bfeNummer)}`);
@@ -93,7 +88,7 @@ async function findBygningViaBfe(bfeNummer) {
     });
     return bygninger.find(byg => {
         const kode = parseInt(byg.byg021BygningensAnvendelse);
-        return kode >= 110 && kode <= 299;
+        return kode >= 110 && kode <= 190;
     }) || null;
 }
 

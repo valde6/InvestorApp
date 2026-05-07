@@ -41,6 +41,7 @@
                 <p><strong>Antal værelser:</strong>
                     <%= enhed.enh031AntalVærelser %>
                 </p>
+                <!-- Ekstra sikkerhedsnet så serveren ikke crasher ved ejs, selvom der er flere kontroller i ejendomme.js, kan det ske ved edgecases at der ikke er nogen enhed, selvom bygningen er registretet -->
                 <% } else { %>
                     <p>Ingen enhedsdata tilgængelig</p>
                     <% } %>
