@@ -1,57 +1,97 @@
+-- ============================================
+-- database/seed.sql
+-- Eksempeldata til lokal udvikling og test
+-- Kør efter schema.sql
+-- ============================================
+
 -- Ejendomsprofiler
--- adresse_id er sat til seed-værdier da disse ikke er rigtige DAWA-adresser
+-- adresse_id er det rigtige DAWA UUID — bruges til kortvisning
+-- grundareal_m2 er NULL for lejligheder (de har ikke en selvstændig grund)
 INSERT INTO Ejendomsprofil (adresse_id, adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser, grundareal_m2)
 VALUES
-    ('seed-0001', 'Østerbrogade 45, 2100 København Ø', 'Lejlighed', 1923, 87, 3, NULL),
-    ('seed-0002', 'Villavej 12, 2800 Kongens Lyngby', 'Enfamiliehus', 1967, 142, 5, 650),
-    ('seed-0003', 'Nørrebrogade 88, 2200 København N', 'Lejlighed', 1898, 64, 2, NULL),
-    ('seed-0004', 'Strandvejen 201, 2900 Hellerup', 'Enfamiliehus', 1954, 198, 6, 820),
-    ('seed-0005', 'Amagerbrogade 33, 2300 København S', 'Rækkehus', 2005, 110, 4, 180);
+    ('0a3f50a1-dc7e-32b8-e044-0003ba298018', 'Østerbrogade 45, 2. tv, 2100 København Ø', 'Lejlighed',    1923,  87, 3, NULL),
+    ('0a3f50a3-c3df-32b8-e044-0003ba298018', 'Gudrunsvej 5, 2920 Charlottenlund',         'Enfamiliehus', 1954, 162, 5,  720),
+    ('5b0f2cea-585f-488c-b9d7-65ca0180d092', 'Nørrebrogade 88, st., 2200 København N',    'Lejlighed',    1898,  64, 2, NULL),
+    ('0a3f50a4-1a0d-32b8-e044-0003ba298018', 'Tornagervej 11, 2920 Charlottenlund',       'Enfamiliehus', 1967, 198, 6,  890);
 
 -- Investeringscases
--- Alle NOT NULL-felter er med — tal er eksempler og ikke realistiske beregninger
+-- Profil 1 har 2 cases (god til at demonstrere sammenligning), resten har 1
 INSERT INTO Investeringscase (ejendomsprofil_id, navn, beskrivelse, ejendomspris, omkostninger_koeb, advokat, tinglysning, koeberraadgivning)
 VALUES
-    (1, 'Østerbro udlejning 2024', 'Udlejning til studerende nær universitetet', 3200000, 50000, 15000, 10000, 20000),
-    (1, 'Østerbro korttidsudlejning', 'Airbnb-strategi i højsæson', 3200000, 50000, 15000, 10000, 20000),
-    (2, 'Lyngby langsigtet investering', 'Køb og hold i 20 år', 4750000, 75000, 20000, 15000, 25000),
-    (3, 'Nørrebro renovering og salg', 'Opkøb, renovering og videresalg', 2800000, 45000, 12000, 9000, 18000),
-    (4, 'Hellerup premium udlejning', 'Langtidsudlejning til familier', 7500000, 120000, 30000, 25000, 40000),
-    (5, 'Amager rækkehus udlejning', 'Udlejning til par eller småfamilie', 3900000, 60000, 16000, 12000, 22000);
+    (1, 'Østerbro udlejning 2024',       'Langtidsudlejning til studerende nær universitetet', 3200000,  50000, 15000, 10000, 20000),
+    (1, 'Østerbro korttidsudlejning',    'Airbnb-strategi i højsæson',                         3200000,  50000, 15000, 10000, 20000),
+    (2, 'Gudrunsvej langsigtet',         'Køb og hold — rolig villavej i Charlottenlund',      5200000,  80000, 22000, 16000, 28000),
+    (3, 'Nørrebro renovering og salg',   'Opkøb, totalrenovering og videresalg',               2800000,  45000, 12000,  9000, 18000),
+    (4, 'Tornagervej udlejning familie', 'Langtidsudlejning til familie i Charlottenlund',     6100000, 100000, 26000, 20000, 35000);
 
 -- Finansiering
--- rente_procent gemmes som decimaltal (0.0425 = 4,25%) — routes dividerer med 100 inden brug i modellen
+-- rente_procent gemmes som decimaltal (0.0425 = 4,25%)
 INSERT INTO Finansiering (investeringscase_id, laanebeloeb, rente_procent, loebetid_aar, afdragsfri_periode_aar, laanetype)
 VALUES
     (1, 2560000, 0.0425, 30, 0, 'Realkreditlån'),
     (2, 2560000, 0.0450, 25, 2, 'Realkreditlån'),
-    (3, 3800000, 0.0400, 30, 5, 'Realkreditlån'),
+    (3, 4160000, 0.0400, 30, 5, 'Realkreditlån'),
     (4, 2240000, 0.0500, 20, 0, 'Banklån'),
-    (5, 6000000, 0.0375, 30, 3, 'Realkreditlån'),
-    (6, 3120000, 0.0425, 30, 0, 'Realkreditlån');
+    (5, 4880000, 0.0390, 30, 3, 'Realkreditlån');
+
+-- Koebsomkostninger
+-- Variable ekstraomkostninger brugeren tilføjer i trin 3.1
+INSERT INTO Koebsomkostning (investeringscase_id, beskrivelse, beloeb)
+VALUES
+    (1, 'Tilstandsrapport',       4500),
+    (1, 'Elinstallationsrapport', 3500),
+    (3, 'Tilstandsrapport',       4500),
+    (3, 'Byggesagkyndig',         8000),
+    (5, 'Tilstandsrapport',       4500),
+    (5, 'Elinstallationsrapport', 3500);
+
+-- Renoveringer
+-- Engangsudgifter på et bestemt tidspunkt, bruges i simuleringsmodellen
+INSERT INTO Renovering (investeringscase_id, beskrivelse, beloeb, tidspunkt)
+VALUES
+    (1, 'Køkken og badeværelse',    95000, '2025-06-01'),
+    (2, 'Maling og gulve',          40000, '2025-03-01'),
+    (3, 'Tilbygning og isolering', 350000, '2026-01-01'),
+    (4, 'Total renovering',        450000, '2025-09-01'),
+    (5, 'Køkken, bad og facade',   280000, '2025-07-01');
 
 -- Driftsbudgetter
--- Én per investeringscase — maanedlig_total beregnes i applikationen, ikke her
+-- En per investeringscase
 INSERT INTO Driftsbudget (investeringscase_id, navn, maanedlig_total)
 VALUES
     (1, 'Driftsbudget Østerbro udlejning', 4200),
-    (2, 'Driftsbudget Østerbro korttid', 5500),
-    (3, 'Driftsbudget Lyngby', 3800),
-    (4, 'Driftsbudget Nørrebro', 3100),
-    (5, 'Driftsbudget Hellerup', 6200),
-    (6, 'Driftsbudget Amager', 3600);
+    (2, 'Driftsbudget Østerbro korttid',   5500),
+    (3, 'Driftsbudget Gudrunsvej',         4800),
+    (4, 'Driftsbudget Nørrebro',           3100),
+    (5, 'Driftsbudget Tornagervej',        5900);
 
 -- Driftsomkostninger
 -- Individuelle poster under hvert driftsbudget
 INSERT INTO Driftsomkostning (driftsbudget_id, beskrivelse, maanedlig_beloeb, kategori)
 VALUES
-    (1, 'Ejendomsskat', 1200, 'Skat'),
-    (1, 'Forsikring', 800, 'Forsikring'),
-    (1, 'Vedligehold', 1500, 'Vedligehold'),
-    (1, 'Fællesudgifter', 700, 'Fællesudgifter'),
-    (2, 'Ejendomsskat', 1200, 'Skat'),
-    (2, 'Rengøring', 2000, 'Service'),
-    (2, 'Forsikring', 1000, 'Forsikring'),
-    (3, 'Ejendomsskat', 1800, 'Skat'),
-    (3, 'Vedligehold', 1200, 'Vedligehold'),
-    (3, 'Forsikring', 800, 'Forsikring');
+    (1, 'Ejendomsskat',    1200, 'Skat'),
+    (1, 'Forsikring',       800, 'Forsikring'),
+    (1, 'Vedligehold',     1500, 'Vedligehold'),
+    (1, 'Fællesudgifter',   700, 'Fællesudgifter'),
+    (2, 'Ejendomsskat',    1200, 'Skat'),
+    (2, 'Rengøring',       2000, 'Service'),
+    (2, 'Forsikring',      1000, 'Forsikring'),
+    (3, 'Ejendomsskat',    2200, 'Skat'),
+    (3, 'Forsikring',      1200, 'Forsikring'),
+    (3, 'Vedligehold',     1400, 'Vedligehold'),
+    (4, 'Ejendomsskat',     900, 'Skat'),
+    (4, 'Forsikring',       700, 'Forsikring'),
+    (4, 'Fællesudgifter',   600, 'Fællesudgifter'),
+    (5, 'Ejendomsskat',    2800, 'Skat'),
+    (5, 'Forsikring',      1600, 'Forsikring'),
+    (5, 'Vedligehold',     1800, 'Vedligehold');
+
+-- Udlejning
+-- En post per investeringscase
+INSERT INTO Udlejning (investeringscase_id, maanedlig_leje, udlejningsomkostning, beskrivelse)
+VALUES
+    (1, 12500,  500, 'Langtidsudlejning til studerende'),
+    (2, 18000, 2000, 'Korttidsudlejning via Airbnb'),
+    (3, 22000,  800, 'Familieudlejning langsigtet'),
+    (4, 11000,  500, 'Udlejning under renovering'),
+    (5, 26000, 1000, 'Langtidsudlejning til familie');
