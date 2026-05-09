@@ -1,7 +1,6 @@
 // ============================================
 // models/Driftsbudget.js
-// Klasse der repræsenterer driftsbudget for
-// en ejendomsinvestering
+// Klasse der repræsenterer driftsbudget for en ejendomsinvestering
 // ============================================
 
 class Driftsbudget {

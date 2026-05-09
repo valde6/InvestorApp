@@ -362,7 +362,8 @@ form textarea:focus {
 
 /* ============================================
    CASES-LISTE (ejendomsprofil.ejs)
-   ============================================ */
+   ============================================ 
+*/
 .cases-liste {
     display: flex;
     flex-direction: column;

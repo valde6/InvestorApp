@@ -1,3 +1,8 @@
+//======================
+//kortService.js
+//Henter koordinaterne vha. DAWAs adresseID og bygger en URL op embedes i et iframe i ejs
+//=======================
+
 const SKRAAFOTO_BASE_URL = 'https://skraafoto.dataforsyningen.dk/';
 const DAWA_BASE_URL = 'https://api.dataforsyningen.dk';
 

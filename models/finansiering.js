@@ -19,13 +19,13 @@ class Finansiering {
     // Beregner månedlig ydelse efter den afdragsfrie periode er udløbet.
     // Den afdragsfrie periode trækkes fra løbetiden fordi hele gælden
     // stadig skal afdrages — bare over færre år.
-    // Eksempel: 30 års lån, 5 år afdragsfrit → annuitet beregnes over 25 år
+    // Eksempel: 30 års lån, 5 år afdragsfrit -> annuitet beregnes over 25 år
     maanedligYdelse() {
         const r = this.renteProcent / 12;
         const effektivLoebetid = this.loebetidAar - this.afdragsfriPeriodeAar;
         const n = effektivLoebetid * 12;
 
-        if (r === 0) return this.laanebeloeb / n; // særtilfælde: rentefrit lån
+        if (r === 0) return this.laanebeloeb / n; // særtilfælde: rentefrit lån (Kontant køb)
 
         return this.laanebeloeb * (r / (1 - Math.pow(1 + r, -n)));
     }

@@ -10,9 +10,8 @@ if (!datafordelerUsername || !datafordelerPassword) {
 };
 
 async function adresseIdTilHusnummerId(adresseId) {
-    const url = `${DAR_BASE_URL}?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&adresseId=${encodeURIComponent(adresseId)}`; //EncodeURI anvendes fordi der ikke toleres mellemrum/specialtegn. Metoden erstatter specialtegn med sikre koder. f.eks. mellemrum bliver til %20
-
-    console.log('DEBUG URL:', url.replace(datafordelerPassword, '***')); // Skjuler password i log
+    const url = `${DAR_BASE_URL}?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&adresseId=${encodeURIComponent(adresseId)}`; 
+    //EncodeURI anvendes fordi der ikke toleres mellemrum/specialtegn. Metoden erstatter specialtegn med sikre koder. f.eks. mellemrum bliver til %20
 
 
     const response = await fetch(url);
@@ -30,7 +29,6 @@ async function adresseIdTilHusnummerId(adresseId) {
 async function husnummerTilBygningBfe(husnummerId) {
     const url = `${DAR_BFE_BASE_URL}?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&husnummerId=${encodeURIComponent(husnummerId)}`;
 
-    console.log('DEBUG URL:', url.replace(datafordelerPassword, '***'));
 
     const response = await fetch(url);
 
@@ -42,7 +40,7 @@ async function husnummerTilBygningBfe(husnummerId) {
 
     const data = await response.json();
 
-    // DAR returnerer ikke bfeNummer direkte — BFE-nummeret for ejendommen
+    // DAR returnerer ikke bfeNummer direkte, idet BFE-nummeret for ejendommen
     // ligger som 'samletFastEjendom' inde i det første element af jordstykkeList
     const bfeNummer = data?.jordstykkeList?.[0]?.samletFastEjendom;
 

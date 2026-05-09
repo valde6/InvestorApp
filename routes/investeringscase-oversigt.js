@@ -106,14 +106,14 @@ router.get('/', async (req, res) => {
             sagen,
             finansiering: finansData,
             driftsomkostninger: driftsResult.recordset,
-            udlejninger: udlejningResult.recordset,  // den gamle EJS bruger udlejninger
+            udlejninger: udlejningResult.recordset,
             koebsomkostninger: koebsResult.recordset,
             renoveringer: renoveringResult.recordset,
-            finansieringModel: finansiering,  // Tilføjes for at kunne vise totale renteomkostninger
+            finansieringModel: finansiering,
             simulering: simuleringResultater,
             ejendomsprofil_id: sagen.ejendomsprofil_id
         });
-
+        //Fejlhåndtering
     } catch (err) {
         console.error('Fejl ved hentning af oversigt:', err);
         res.status(500).send('Der skete en fejl. Prøv igen.');

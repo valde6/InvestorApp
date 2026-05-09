@@ -1,17 +1,27 @@
+//==================================
+//ejendomme.js
+//Anvendes når en bruger har fundet en legitim ejendom, og har aktivt trykket på den
+//Efter de har søgt gennem sog.js, og adresser.js
+//Anvender de forskellige eksterne API service fra services, til at hente den nødvendige info
+//Til at opbygge en side der sendes til viewert
+//==================================
+
+
+//Starter databaseconneciton for at sikre at profilen kan gemmes i databasen
 const { pool, poolConnect, sql } = require('../services/db');
 const express = require('express');
 const router = express.Router();
 
-// kortService bruges til at hente koordinater og bygge Skråfoto-URL til kortvisning
+//kortService bruges til at hente koordinater og bygge Skråfoto-URL til kortvisning
 const { hentKoordinater, byggeLuftfotoUrl } = require('../services/kortService');
 
-// darService oversætter adresse-ID til husnummer-ID (påkrævet af BBR)
+// arService oversætter adresse-ID til husnummer-ID (påkrævet af BBR)
 const { adresseIdTilHusnummerId, husnummerTilBygningBfe } = require('../services/darService');
 
-// bbrService henter bygnings- og enhedsdata fra Datafordeler
+//bbrService henter bygnings- og enhedsdata fra Datafordeler
 const { findBygningViaId, findBygningViaBfe, oversætAnvendelse, findEnhedViaAdresse } = require('../services/bbrService');
 
-// dawaService henter adressetekst og adgangsadresse (inkl. jordstykke-href til grundareal)
+//dawaService henter adressetekst og adgangsadresse (inkl. jordstykke-href til grundareal)
 const { hentAdresse, hentAdgangsadresse } = require('../services/dawaService');
 
 // matrikelService henter grundareal fra DAWA's jordstykke-endpoint
@@ -33,19 +43,18 @@ router.get('/:id', async (req, res) => {
         const adresse = await hentAdresse(adresseId);
 
         // Forsøg at hente enhed direkte via adresse-ID.
-        // Dette virker for alle adressetyper — også ejerlejligheder —
+        // Dette virker for alle adressetyper — også ejerlejligheder,
         // fordi BBR knytter enheden til adressen via adresseIdentificerer.
         const alleEnheder = await findEnhedViaAdresse(adresseId);
 
         const enhed = alleEnheder.find(e => e.adresseIdentificerer === adresseId) || alleEnheder[0];
-        console.log('DEBUG alleEnheder:', alleEnheder.length, JSON.stringify(alleEnheder.map(e => e.adresseIdentificerer)));
-        console.log('DEBUG enhed:', JSON.stringify(enhed?.bygning));
+
         // Hent bygningen via enhedens bygnings-ID.
         // Dette er mere robust end at gå via husnummer-ID, da ejerlejligheder
         // ikke altid har en direkte bygningskobling via husnummeret.
         let bygninger = enhed ? await findBygningViaId(enhed.bygning) : [];
 
-        // Fallback: hvis bygning stadig ikke findes, forsøg via husnummer → BFE-nummer.
+        // Fallback: hvis bygning stadig ikke findes, forsøg via husnummer -> BFE-nummer.
         // Dette håndterer etageejendomme hvor bygningen er knyttet til ejendommen
         // frem for den individuelle lejlighedsadresse.
         if (!bygninger.length) {
@@ -57,25 +66,25 @@ router.get('/:id', async (req, res) => {
             }
         }
 
-        // Find den relevante boligbygning ud fra anvendelseskode (110–190 = bolig).
+        // Find den relevante boligbygning ud fra anvendelseskode (110–190 = bolig (Inden for gruppes definerede ramme)).
         // Dette sikrer at vi ikke ender med en carport, garage eller erhvervsbygning.
         const bygning = bygninger.find(byg => {
             const kode = parseInt(byg.byg021BygningensAnvendelse);
             return kode >= 110 && kode <= 190;
         });
 
-        // Vis fejlside hvis ingen boligbygning kunne identificeres
+        //Vis fejlside hvis ingen boligbygning kunne identificeres
         if (!bygning) {
             return res.render('fejl', {
                 besked: 'Vi kunne ikke finde boligdata for denne adresse. Dette kan skyldes at ejendommen er registreret som erhverv, har en ukendt bygningstype, eller ikke er registreret korrekt i BBR. Prøv en anden adresse.'
             });
         }
 
-        // Hent adgangsadresse for at afgøre om det er en lejlighed og for at få jordstykke-href
+        //Hent adgangsadresse for at afgøre om det er en lejlighed og for at få jordstykke-href
         const adgangsadresse = await hentAdgangsadresse(adresseId);
 
-        // Grundareal hentes kun for ikke-lejligheder — for lejligheder giver grundareal
-        // ikke mening da grunden tilhører hele ejendommen, ikke den individuelle bolig.
+        //Grundareal hentes kun for ikke-lejligheder, idet lejligheder giver grundareal
+        //ikke mening da grunden tilhører hele ejendommen, ikke den individuelle bolig.
         //Vi anvender anvendelseskoden til at definere om ejendommens grundareal er relevant at indhente eller ej. Vi har via. BBR's anvendelseskoder fundet frem til at det
         //Kun er relevant for anvendelskoder under 140
         const anvendelseskode = parseInt(bygning.byg021BygningensAnvendelse);
@@ -99,9 +108,9 @@ router.get('/:id', async (req, res) => {
 });
 
 
-// POST /ejendomme/:id/opret
-// Opretter en ejendomsprofil i databasen ud fra BBR-data sendt som hidden inputs fra formularen.
-// Hvis profilen allerede findes (samme adresse_id), sendes brugeren direkte derhen.
+//POST /ejendomme/:id/opret
+//Opretter en ejendomsprofil i databasen ud fra BBR-data sendt som hidden inputs fra formularen.
+//Hvis profilen allerede findes (samme adresse_id), sendes brugeren direkte derhen.
 router.post('/:id/opret', async (req, res) => {
     try {
         await poolConnect;
@@ -123,7 +132,8 @@ router.post('/:id/opret', async (req, res) => {
             return res.redirect('/ejendomsprofiler/' + eksisterendeId);
         }
 
-        // Oversæt BBR-anvendelseskoden til læsbart navn inden gemning
+        // Oversæt BBR-anvendelseskoden til læsbart navn inden gemning i database 
+        //Så det ikke behøver blive gjort på et andet tidspunkt
         const ejendomstypeNavn = oversætAnvendelse(ejendomstype);
 
         // Gem den nye ejendomsprofil i databasen.

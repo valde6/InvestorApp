@@ -66,7 +66,7 @@ router.post('/ny/koeb', async (req, res) => {
         // vha. OUTPUT INSERTED.investeringscase_id. Ved .query sender databasen et svar tiblage i JS-format, som indeholder recordset: [investeringscase_id = x] og andre ting.
         // Recordset er altså et array af rækker (investeringscase_id, navn, ejendomspris osv (så basically en "record")) og i queryen beder vi kun om ét objekt - investeringscase_id,
         // så objektet der sendes tilbage indeholder kun 1 element, som findes på 0. plads i arrayet.
-        // I vores tilfælde bad vi kun om investeringscase_id via OUTPUT INSERTED, så hver række har kun én kolonne.
+        // I vores tilfælde bad vi kun om investeringscase_id via OUTPUT INSERTED, så hver række har kun en kolonne.
 
         // Gem ekstra udgifter, kun hvis brugeren har tilføjet nogle
         if (ekstra_beskrivelse) {
@@ -75,7 +75,7 @@ router.post('/ny/koeb', async (req, res) => {
             const beskrivelser = Array.isArray(ekstra_beskrivelse) ? ekstra_beskrivelse : [ekstra_beskrivelse];
             const beloeb = Array.isArray(ekstra_beloeb) ? ekstra_beloeb : [ekstra_beloeb];
 
-            // Loop igennem hver ekstra udgift og gem dem én ad gangen
+            // Loop igennem hver ekstra udgift og gem dem en ad gangen
             for (let i = 0; i < beskrivelser.length; i++) {
                 const ekstraRequest = pool.request(); // pool er vores forbindelse til databasen fra db.js importeret hertil øverst
                 ekstraRequest.input('investeringscase_id', sql.Int, investeringscase_id);
@@ -92,6 +92,7 @@ router.post('/ny/koeb', async (req, res) => {
         // Send brugeren videre til trin 3.2
         res.redirect('/investeringscases/ny/finansiering?id=' + investeringscase_id); // svaret på req er at redirecte brugeren med dette specifikke id
 
+        //FEjlhåndtering
     } catch (err) {
         console.error('Fejl ved oprettelse af investeringscase:', err);
         res.status(500).send('Der skete en fejl. Prøv igen.');
@@ -112,7 +113,7 @@ router.get('/ny/finansiering', (req, res) => {
         investeringscase_id,
         finansiering: null  // null fortæller EJS at vi er i oprettelsestilstand
         // // Det kan den fordi der i server.js står app.set('view engine', 'ejs'); som fortæller express at ejs er template 
-        // engine (engine til at mixe html og data). I øvrigt er views/-mappen express' standard mappe når man bruger en template engine
+        // engine (engine til at mixe html og data).
     });
 });
 
@@ -159,7 +160,7 @@ router.post('/ny/finansiering', async (req, res) => {
 // GET /investeringscases/ny/renovering
 router.get('/ny/renovering', (req, res) => {
     const investeringscase_id = req.query.id;
-    res.render('investeringscase-renovering', { 
+    res.render('investeringscase-renovering', {
         investeringscase_id,
         renoveringer: []
     });
@@ -208,7 +209,7 @@ router.post('/ny/renovering', async (req, res) => {
 // GET /investeringscases/ny/driftsbudget
 router.get('/ny/driftsbudget', (req, res) => {
     const investeringscase_id = req.query.id;
-    res.render('investeringscase-driftsbudget', { 
+    res.render('investeringscase-driftsbudget', {
         investeringscase_id,
         driftsomkostninger: []
     });
@@ -271,7 +272,7 @@ router.post('/ny/driftsbudget', async (req, res) => {
 // GET /investeringscases/ny/udlejning
 router.get('/ny/udlejning', (req, res) => {
     const investeringscase_id = req.query.id;
-    res.render('investeringscase-udlejning', { 
+    res.render('investeringscase-udlejning', {
         investeringscase_id,
         udlejninger: []
     });
@@ -304,7 +305,7 @@ router.post('/ny/udlejning', async (req, res) => {
             }
         }
 
-        // Trin 3.5 er sidste trin — send til oversigt
+        // Trin 3.5 er sidste trin hvor det sendes til oversigt
         res.redirect('/investeringscase-oversigt?id=' + investeringscase_id);
 
     } catch (err) {

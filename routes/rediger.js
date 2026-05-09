@@ -20,7 +20,7 @@ const { pool, poolConnect, sql } = require('../services/db');
 
 // GET /investeringscases/:id/rediger/koeb
 // Henter eksisterende data og viser formularen med udfyldte felter.
-// :id er en URL-parameter — fx /investeringscases/7/rediger/koeb henter case med id 7
+// :id er en URL-parameter f.eks. /investeringscases/7/rediger/koeb henter case med id 7
 router.get('/:id/rediger/koeb', async (req, res) => {
 
     // Venter på at databaseforbindelsen er klar inden vi laver opslag
@@ -309,7 +309,7 @@ router.get('/:id/rediger/driftsbudget', async (req, res) => {
     const investeringscase_id = req.params.id;
 
     try {
-        // Driftsomkostninger ligger ikke direkte på investeringscase — de er knyttet
+        // Driftsomkostninger ligger ikke direkte på investeringscase, da de er knyttet
         // til et Driftsbudget som er knyttet til investeringscasen.
         // Vi bruger JOIN for at hente omkostningerne via driftsbudgettet
         const request = pool.request();
@@ -397,6 +397,7 @@ router.post('/:id/rediger/driftsbudget', async (req, res) => {
         // Send brugeren videre til næste trin i redigeringsflowet
         res.redirect('/investeringscases/' + investeringscase_id + '/rediger/udlejning');
 
+    // Fejlhåndtering    
     } catch (err) {
         console.error('Fejl ved opdatering af driftsbudget:', err);
         res.status(500).send('Der skete en fejl. Prøv igen.');

@@ -1,7 +1,6 @@
 // ============================================
 // models/Renovering.js
-// Klasse der repræsenterer en renovering/forbedring
-// af en ejendomsinvestering
+// Klasse der repræsenterer en renovering/forbedring af en ejendomsinvestering
 // ============================================
 
 class Renovering {

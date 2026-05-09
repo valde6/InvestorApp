@@ -1,3 +1,10 @@
+// ============================================
+// routes/sammenligning.js
+// Sammenligner to investeringscases side om side.
+// Siden viser enten bare dropdowns (ingen cases valgt)
+// eller to kolonner med nøgletal og en fælles graf hvis begge id_a og id_b er angivet i URL'en.
+// ============================================
+
 const express = require('express');
 const router = express.Router();
 const { pool, poolConnect, sql } = require('../services/db');
@@ -7,8 +14,10 @@ const Udlejning = require('../models/udlejning');
 const Renovering = require('../models/renovering');
 const Simulering = require('../models/simulering');
 
-// Hjælpefunktion — henter alt data for én case og kører simulering
-// Vi laver den som en separat funktion fordi vi skal bruge den to gange (case A og case B)
+// Hjælpefunktion der henter alt data for én case og kører simuleringsmodellen.
+// Vi har lagt det i en separat funktion fordi vi skal bruge det to gange
+// en gang for case A og en gang for case B, hvilket ville give meget gentagende kode og vi overholder DRY.
+//Ved at opdele det sådan her
 async function hentCaseMedSimulering(id) {
     const caseReq = pool.request();
     caseReq.input('id', sql.Int, id);
@@ -16,6 +25,8 @@ async function hentCaseMedSimulering(id) {
     const sagen = caseRes.recordset[0];
     if (!sagen) return null;
 
+    // Hent finansiering, driftsomkostninger, udlejning og renoveringer
+    // i separate queries, samme mønster som investeringscase-oversigt.js
     const finansReq = pool.request();
     finansReq.input('id', sql.Int, id);
     const finansRes = await finansReq.query(`SELECT * FROM Finansiering WHERE investeringscase_id = @id`);
@@ -37,15 +48,14 @@ async function hentCaseMedSimulering(id) {
     renoveringReq.input('id', sql.Int, id);
     const renoveringRes = await renoveringReq.query(`SELECT * FROM Renovering WHERE investeringscase_id = @id`);
 
-    // Opret kun finansiering-objektet hvis der faktisk er data fra databasen.
-    // Hvis finansData er undefined (ingen finansiering tilknyttet casen),
-    // sættes finansiering til null så simuleringsmodellen kan håndtere det uden at crashe.
+    //Byg model-objekter — rente_procent divideres med 100 fordi den er gemt som et procenttal (fx 4.25) men modellen forventer et decimaltal (0.0425)
+    //Skyldes at brugeren bliver bedt om at indtaste procent, så de indtaster bare i heltal
     const finansiering = finansData ? new Finansiering(
         finansData.laanebeloeb,
         finansData.rente_procent / 100,
         finansData.loebetid_aar,
         finansData.afdragsfri_periode_aar
-    ) : null; // håndter tilfælde uden finansiering
+    ) : null;
 
     const driftsbudget = new Driftsbudget();
     driftsRes.recordset.forEach(p => driftsbudget.tilfoejPost(p.beskrivelse, p.maanedlig_beloeb));
@@ -55,6 +65,7 @@ async function hentCaseMedSimulering(id) {
         ? new Udlejning(udlejningData.maanedlig_leje, udlejningData.udlejningsomkostning)
         : null;
 
+    // Konverter dato til antal år fra nu — simuleringsmodellen arbejder med relative år
     const renoveringer = renoveringRes.recordset.map(r => {
         const tidspunktAar = new Date(r.tidspunkt).getFullYear() - new Date().getFullYear();
         return new Renovering(r.beskrivelse, r.beloeb, tidspunktAar);
@@ -67,11 +78,12 @@ async function hentCaseMedSimulering(id) {
 }
 
 // GET /sammenligning
-// Viser siden med dropdowns — eller sammenligner to cases hvis id_a og id_b er valgt
+// Hvis id_a og id_b ikke er angivet i URL vises bare dropdown-formularen.
+// Når begge er valgt køres simulering for begge og siden viser resultaterne.
 router.get('/', async (req, res) => {
     await poolConnect;
     try {
-        // Hent alle cases til dropdowns
+        // Hent alle cases med tilhørende adresse til dropdown-listerne
         const alleRes = await pool.request().query(`
             SELECT i.investeringscase_id, i.navn, e.adresse
             FROM Investeringscase i
@@ -84,7 +96,6 @@ router.get('/', async (req, res) => {
         let caseA = null;
         let caseB = null;
 
-        // Hvis begge er valgt — hent data og kør simulering
         if (id_a && id_b) {
             caseA = await hentCaseMedSimulering(parseInt(id_a));
             caseB = await hentCaseMedSimulering(parseInt(id_b));
