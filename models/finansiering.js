@@ -16,24 +16,36 @@ class Finansiering {
         return this.renteProcent / 12;
     }
 
-    // Beregner månedlig ydelse (kun rente i afdragsfri periode, ellers annuitet)
-
+    // Beregner månedlig ydelse efter den afdragsfrie periode er udløbet.
+    // Den afdragsfrie periode trækkes fra løbetiden fordi hele gælden
+    // stadig skal afdrages — bare over færre år.
+    // Eksempel: 30 års lån, 5 år afdragsfrit → annuitet beregnes over 25 år
     maanedligYdelse() {
-        const r = this.renteProcent / 12; 
-        const n = this.loebetidAar * 12;
+        const r = this.renteProcent / 12;
+        const effektivLoebetid = this.loebetidAar - this.afdragsfriPeriodeAar;
+        const n = effektivLoebetid * 12;
 
-        if (r === 0) return this.laanebeloeb / n; // særtilfælde
+        if (r === 0) return this.laanebeloeb / n; // særtilfælde: rentefrit lån
 
         return this.laanebeloeb * (r / (1 - Math.pow(1 + r, -n)));
     }
 
-
-    // Beregner total renteomkostning over hele lånets løbetid
+    // Beregner total renteomkostning over hele lånets løbetid.
+    // I den afdragsfrie periode betales kun renter (gæld * månedlig rente * 12 måneder).
+    // Herefter betales annuiteten over den resterende løbetid.
     totalRenteomkostning() {
-        const n = this.loebetidAar * 12;
-        return (this.maanedligYdelse() * n) - this.laanebeloeb;
+        const r = this.renteProcent / 12;
+        const afdragsfriMaaneder = this.afdragsfriPeriodeAar * 12;
+        const effektivMaaneder = (this.loebetidAar - this.afdragsfriPeriodeAar) * 12;
+
+        // Renteomkostning i den afdragsfrie periode: fuld gæld * månedlig rente * antal måneder
+        const renteAfdragsfri = this.laanebeloeb * r * afdragsfriMaaneder;
+
+        // Renteomkostning i afdrags-perioden: total betaling minus det der faktisk afdrages
+        const renteAfdrags = (this.maanedligYdelse() * effektivMaaneder) - this.laanebeloeb;
+
+        return renteAfdragsfri + renteAfdrags;
     }
 }
 
 module.exports = Finansiering;
-

@@ -30,3 +30,18 @@ test('maanedligYdelse ved rente 0 er laanebeloeb / antal maaneder', () => {
     const forventet = 1200000 / (10 * 12); // = 10.000
     assert.strictEqual(Math.round(ydelse), Math.round(forventet));
 });
+
+// Test 4: Afdragsfri periode øger den månedlige ydelse
+// Ved 30 år løbetid og 5 afdragsfri skal annuiteten beregnes over 25 år,
+// hvilket giver en højere ydelse end hvis den beregnes over 30 år.
+// Dette sikrer at gælden faktisk er afdraget efter 30 år.
+test('maanedligYdelse er højere med afdragsfri periode end uden', () => {
+    const udenAfdragsfri = new Finansiering(2000000, 0.04, 30, 0);
+    const medAfdragsfri  = new Finansiering(2000000, 0.04, 30, 5);
+ 
+    assert.ok(
+        medAfdragsfri.maanedligYdelse() > udenAfdragsfri.maanedligYdelse(),
+        `Ydelse med afdragsfri (${medAfdragsfri.maanedligYdelse().toFixed(0)}) ` +
+        `skal være højere end uden (${udenAfdragsfri.maanedligYdelse().toFixed(0)})`
+    );
+});

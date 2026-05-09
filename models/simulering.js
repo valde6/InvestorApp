@@ -1,9 +1,7 @@
 // ============================================
 // models/Simulering.js
-// Beregner udviklingen af en investeringscase
-// over en given årrække (fx 30 år)
-// Bruger Finansiering, Driftsbudget, Udlejning
-// og Renovering til at beregne cashflow,
+// Beregner udviklingen af en investeringscase over en given årrække (fx 30 år)
+// Bruger Finansiering, Driftsbudget, Udlejning og Renovering til at beregne cashflow,
 // egenkapital og gæld år for år
 // ============================================
 

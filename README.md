@@ -1,6 +1,6 @@
 # InvestorApp
 
-Gruppe 30 — HA(it), CBS, forår 2026
+Gruppe 30, HA(it), CBS, forår 2026
 
 Webapplikation til analyse og simulering af ejendomsinvesteringer. Søg på en dansk adresse, hent BBR-data automatisk, og byg en investeringscase med køb, finansiering, renovering, drift og udlejning. Appen simulerer cashflow, gæld og egenkapital over 30 år.
 
@@ -81,12 +81,8 @@ Gå til [http://localhost:3000](http://localhost:3000)
 
 ## Tests
 
-```bash
 node --test test-models/test-driftsbudget.js
 node --test test-models/test-udlejning.js
 node --test test-models/test-renovering.js
-```
-
-## Kendte begrænsninger
-
+node --test test-models/test-finansiering.js
 
