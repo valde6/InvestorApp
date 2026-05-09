@@ -5,7 +5,7 @@
 -- ============================================
 
 -- Ejendomsprofiler
--- adresse_id er det rigtige DAWA UUID — bruges til kortvisning
+-- adresse_id er det rigtige DAWA UUID, bruges til BBR-opslag og kortvisning
 -- grundareal_m2 er NULL for lejligheder (de har ikke en selvstændig grund)
 INSERT INTO Ejendomsprofil (adresse_id, adresse, ejendomstype, byggeaar, boligareal_m2, antal_vaerelser, grundareal_m2)
 VALUES
@@ -25,14 +25,14 @@ VALUES
     (4, 'Tornagervej udlejning familie', 'Langtidsudlejning til familie i Charlottenlund',     6100000, 100000, 26000, 20000, 35000);
 
 -- Finansiering
--- rente_procent gemmes som decimaltal (0.0425 = 4,25%)
+-- rente_procent gemmes som procenttal (4.25 = 4,25%) — routes dividerer med 100 inden brug i beregningsmodellen
 INSERT INTO Finansiering (investeringscase_id, laanebeloeb, rente_procent, loebetid_aar, afdragsfri_periode_aar, laanetype)
 VALUES
-    (1, 2560000, 0.0425, 30, 0, 'Realkreditlån'),
-    (2, 2560000, 0.0450, 25, 2, 'Realkreditlån'),
-    (3, 4160000, 0.0400, 30, 5, 'Realkreditlån'),
-    (4, 2240000, 0.0500, 20, 0, 'Banklån'),
-    (5, 4880000, 0.0390, 30, 3, 'Realkreditlån');
+    (1, 2560000, 4.25, 30, 0, 'Realkreditlån'),
+    (2, 2560000, 4.50, 25, 2, 'Realkreditlån'),
+    (3, 4160000, 4.00, 30, 5, 'Realkreditlån'),
+    (4, 2240000, 5.00, 20, 0, 'Banklån'),
+    (5, 4880000, 3.90, 30, 3, 'Realkreditlån');
 
 -- Koebsomkostninger
 -- Variable ekstraomkostninger brugeren tilføjer i trin 3.1
@@ -46,7 +46,7 @@ VALUES
     (5, 'Elinstallationsrapport', 3500);
 
 -- Renoveringer
--- Engangsudgifter på et bestemt tidspunkt, bruges i simuleringsmodellen
+-- Engangsudgifter på et bestemt tidspunkt — bruges i simuleringsmodellen
 INSERT INTO Renovering (investeringscase_id, beskrivelse, beloeb, tidspunkt)
 VALUES
     (1, 'Køkken og badeværelse',    95000, '2025-06-01'),
@@ -56,7 +56,7 @@ VALUES
     (5, 'Køkken, bad og facade',   280000, '2025-07-01');
 
 -- Driftsbudgetter
--- En per investeringscase
+-- Én per investeringscase
 INSERT INTO Driftsbudget (investeringscase_id, navn, maanedlig_total)
 VALUES
     (1, 'Driftsbudget Østerbro udlejning', 4200),
@@ -87,7 +87,7 @@ VALUES
     (5, 'Vedligehold',     1800, 'Vedligehold');
 
 -- Udlejning
--- En post per investeringscase
+-- Én post per investeringscase
 INSERT INTO Udlejning (investeringscase_id, maanedlig_leje, udlejningsomkostning, beskrivelse)
 VALUES
     (1, 12500,  500, 'Langtidsudlejning til studerende'),
