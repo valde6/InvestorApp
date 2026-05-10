@@ -18,7 +18,7 @@ class Simulering {
         // driftsbudget er et Driftsbudget-objekt med løbende udgifter
         this.driftsbudget = driftsbudget;
 
-        // udlejning er et Udlejning-objekt — kan være null hvis ejendommen ikke udlejes
+        // udlejning er et Udlejning-objekt - kan være null hvis ejendommen ikke udlejes
         this.udlejning = udlejning;
 
         // renoveringer er et array af Renovering-objekter
@@ -45,7 +45,7 @@ class Simulering {
         // 0 hvis ingen finansiering er angivet
         const maanedligYdelse = this.finansiering ? this.finansiering.maanedligYdelse() : 0;
 
-        // Antal afdragsfri år — 0 hvis ingen finansiering er angivet
+        // Antal afdragsfri år - 0 hvis ingen finansiering er angivet
         const afdragsfriAar = this.finansiering ? this.finansiering.afdragsfriPeriodeAar || 0 : 0;
 
         for (let aar = 1; aar <= this.antalAar; aar++) {
@@ -57,7 +57,7 @@ class Simulering {
                 const renteDel = gaeld * r;
 
                 if (aar <= afdragsfriAar) {
-                    // I afdragsfri periode betales kun renter — gælden falder ikke
+                    // I afdragsfri periode betales kun renter - gælden falder ikke
                     // gaeld forbliver uændret
                 } else {
                     // Efter afdragsfri periode trækkes afdrag fra gælden
@@ -75,7 +75,7 @@ class Simulering {
                 : maanedligYdelse * 12;
 
             // Nettolejeindtægt = bruttoleje minus udlejningsomkostninger (0 hvis ikke udlejet)
-            // Udlejningsomkostninger er IKKE det samme som driftsudgifter —
+            // Udlejningsomkostninger er IKKE det samme som driftsudgifter -
             // driftsudgifter dækker ejendommens løbende udgifter (forsikring, ejendomsskat osv.)
             // mens udlejningsomkostninger kun vedrører selve udlejningsforholdet
             const lejeindtaegt = this.udlejning

@@ -14,14 +14,14 @@
     </header>
 
     <main>
-        <!-- BBR-data hentet via Datafordeler — byggeår, areal og værelser -->
+        <!-- BBR-data hentet via Datafordeler - byggeår, areal og værelser -->
         <section>
             <!-- Formular der opretter ejendomsprofilen når brugeren aktivt vælger det.
      BBR-data sendes med som hidden inputs så POST-routen kan gemme dem i DB -->
             <form action="/ejendomme/<%= adresseId %>/opret" method="POST">
 
                 <!-- Hidden inputs sender BBR-data med i POST-requesten uden at vise dem til brugeren.
-                Dataen er allerede hentet fra BBR og ligger i EJS-variablerne — 
+                Dataen er allerede hentet fra BBR og ligger i EJS-variablerne - 
                 vi pakker dem blot ind i formularen så routen kan gemme dem i databasen -->
                 <input type="hidden" name="adresse" value="<%= adresse %>">
                 <input type="hidden" name="ejendomstype" value="<%= bygning.byg021BygningensAnvendelse %>">
@@ -54,7 +54,7 @@
                     <p>Ingen enhedsdata tilgængelig</p>
                     <% } %>
 
-                        <!-- Grundareal vises kun hvis det er hentet — det springes over for lejligheder -->
+                        <!-- Grundareal vises kun hvis det er hentet - det springes over for lejligheder -->
                         <% if (grundareal) { %>
                             <p><strong>Grundareal:</strong>
                                 <%= grundareal %> m²

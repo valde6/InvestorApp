@@ -21,7 +21,7 @@
             </p>
             <% } %>
 
-                <!-- Knapper til at håndtere casen — placeret i en flex-container så de står på række -->
+                <!-- Knapper til at håndtere casen - placeret i en flex-container så de står på række -->
                 <div class="header-knapper">
                     <a href="/investeringscases/<%= sagen.investeringscase_id %>/rediger/koeb">
                         <button class="knap-rediger">Rediger case</button>
@@ -190,7 +190,7 @@
 
     <!-- Chart.js er et JavaScript-bibliotek til at lave diagrammer.
      I stedet for at have biblioteket liggende i projektet selv,
-     hentes det fra Cloudflares CDN — et globalt netværk af servere
+     hentes det fra Cloudflares CDN - et globalt netværk af servere
      der leverer filen hurtigt uanset hvor brugeren befinder sig. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
@@ -205,18 +205,18 @@
         //    //    Hvis man brugte escaped output i stedet, ville " blive til &quot; og JSON ville være ugyldig.
         // 4. Browseren modtager den færdige side og ser blot:
         //    const simData = [{"aar":1,...}, {"aar":2,...}];
-        //    — altså helt almindelig JavaScript. EJS-taggene eksisterer ikke mere.
+        //    - altså helt almindelig JavaScript. EJS-taggene eksisterer ikke mere.
         //
         // De røde markeringer skyldes at VS Code's JavaScript-parser ikke forstår EJS-syntaks.
         // VS Code læser filen som ren JavaScript og ser rå-output-tagget som en ugyldig operator-kombination,
         // og "simulering" som en ukendt variabel (da den kun eksisterer på serveren, ikke i browseren).
-        // Det er en falsk fejl (false positive) fra editoren — koden er 100% korrekt og
+        // Det er en falsk fejl (false positive) fra editoren - koden er 100% korrekt og
         // virker præcis som forventet når Node.js behandler filen.
         // prettier-ignore-kommentaren fortæller Prettier at lade denne del af koden uændret, da EJS-syntaksen kan forvirre formatteren og føre til utilsigtede ændringer i formateringen.
         // prettier-ignore
         const simData = <%- JSON.stringify(simulering) %>;
 
-        // Lav labels til x-aksen — ét label per år (fx "År 1", "År 2" osv.)
+        // Lav labels til x-aksen - ét label per år (fx "År 1", "År 2" osv.)
         const labels = simData.map(s => 'År ' + s.aar);
 
         // Opret et nyt linjediagram i canvas-elementet
@@ -225,11 +225,11 @@
             data: {
                 labels,
                 datasets: [
-                    // Cashflow — grøn linje
+                    // Cashflow - grøn linje
                     { label: 'Cashflow (kr.)', data: simData.map(s => s.cashflow), borderColor: '#2a7a3b', backgroundColor: 'rgba(42,122,59,0.08)', tension: 0.3 },
-                    // Gæld — rød linje
+                    // Gæld - rød linje
                     { label: 'Gæld (kr.)', data: simData.map(s => s.gaeld), borderColor: '#c0392b', backgroundColor: 'rgba(192,57,43,0.08)', tension: 0.3 },
-                    // Egenkapital — blå linje
+                    // Egenkapital - blå linje
                     { label: 'Egenkapital (kr.)', data: simData.map(s => s.egenkapital), borderColor: '#2a5caa', backgroundColor: 'rgba(42,92,170,0.08)', tension: 0.3 }
                 ]
             },

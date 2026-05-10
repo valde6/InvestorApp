@@ -8,13 +8,13 @@ class Finansiering {
         this.laanebeloeb = laanebeloeb;
 
         // renteProcent forventes som decimaltal, ikke procent
-        // fx 4% rente sendes ind som 0.04 — ikke 4
+        // fx 4% rente sendes ind som 0.04 - ikke 4
         // Konverteringen sker i route-filen inden objektet oprettes (rente_procent / 100)
         this.renteProcent = renteProcent;
         this.loebetidAar = loebetidAar;
 
 
-        // afdragsfriPeriodeAar er valgfri — default er 0 (ingen afdragsfri periode)
+        // afdragsfriPeriodeAar er valgfri - default er 0 (ingen afdragsfri periode)
         this.afdragsfriPeriodeAar = afdragsfriPeriodeAar;
     }
 
@@ -25,7 +25,7 @@ class Finansiering {
 
     // Beregner månedlig ydelse efter den afdragsfrie periode er udløbet.
     // Den afdragsfrie periode trækkes fra løbetiden fordi hele gælden
-    // stadig skal afdrages — bare over færre år.
+    // stadig skal afdrages - bare over færre år.
     // Eksempel: 30 års lån, 5 år afdragsfrit -> annuitet beregnes over 25 år
     maanedligYdelse() {
         const r = this.renteProcent / 12;

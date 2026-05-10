@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
         `);
         const profil = result.recordset[0];
 
-        // Hvis profilen ikke findes i databasen — vis 404
+        // Hvis profilen ikke findes i databasen - vis 404
         if (!profil) {
             return res.status(404).send('Profil ikke fundet');
         }

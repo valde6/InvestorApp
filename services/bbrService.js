@@ -90,7 +90,7 @@ async function findBygningViaBfe(bfeNummer) {
 
 
 // Henter alle enheder (lejligheder/boliger) tilknyttet en adresse.
-// Bruges som primært opslag — virker for alle adressetyper inkl. ejerlejligheder,
+// Bruges som primært opslag - virker for alle adressetyper inkl. ejerlejligheder,
 // fordi BBR knytter enheden direkte til adresse-ID'et via adresseIdentificerer.
 
 async function findEnhedViaAdresse(adresseId) {

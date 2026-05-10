@@ -1,7 +1,7 @@
 // ============================================
 // services/matrikelService.js
 // Henter grundareal fra DAWA's jordstykke-endpoint.
-// Ingen credentials påkrævet — åbent offentligt API.
+// Ingen credentials påkrævet - åbent offentligt API.
 // ============================================
 
 // Henter grundareal i kvadrat meter for et jordstykke via dets direkte href fra DAWA.

@@ -1,4 +1,5 @@
 // ============================================
+// public/js/investeringscase-driftsbudget.js
 // Klient-side logik for trin 3.4 (Driftsbudget)
 // Håndterer dynamisk tilføjelse og fjernelse af driftsomkostningslinjer
 // ============================================

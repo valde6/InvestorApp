@@ -13,7 +13,7 @@
     <h2>Trin 2 af 5: Finansiering & lånedetaljer</h2>
 
     <!-- action ændres dynamisk afhængigt af om vi opretter eller redigerer.
-         Samme princip som i koeb.ejs — én formular bruges til begge situationer -->
+         Samme princip som i koeb.ejs - én formular bruges til begge situationer -->
     <form
         action="<%= finansiering ? '/investeringscases/' + finansiering.investeringscase_id + '/rediger/finansiering' : '/investeringscases/ny/finansiering' %>"
         method="POST">

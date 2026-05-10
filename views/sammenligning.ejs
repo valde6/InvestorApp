@@ -22,10 +22,10 @@
                 <div style="flex: 1;">
                     <label>Case A</label>
                     <select name="id_a">
-                        <option value="">— Vælg en case —</option>
+                        <option value="">- Vælg en case -</option>
                         <% alleCases.forEach(c => { %>
                             <option value="<%= c.investeringscase_id %>" <%= id_a == c.investeringscase_id ? 'selected' : '' %>>
-                                <%= c.navn %> — <%= c.adresse %>
+                                <%= c.navn %> - <%= c.adresse %>
                             </option>
                         <% }) %>
                     </select>
@@ -34,10 +34,10 @@
                 <div style="flex: 1;">
                     <label>Case B</label>
                     <select name="id_b">
-                        <option value="">— Vælg en case —</option>
+                        <option value="">- Vælg en case -</option>
                         <% alleCases.forEach(c => { %>
                             <option value="<%= c.investeringscase_id %>" <%= id_b == c.investeringscase_id ? 'selected' : '' %>>
-                                <%= c.navn %> — <%= c.adresse %>
+                                <%= c.navn %> - <%= c.adresse %>
                             </option>
                         <% }) %>
                     </select>
@@ -99,14 +99,14 @@
             labels,
             datasets: [
                 {
-                    label: '<%= caseA.sagen.navn %> — Egenkapital',
+                    label: '<%= caseA.sagen.navn %> - Egenkapital',
                     data: dataA.map(s => s.egenkapital),
                     borderColor: '#2a5caa',
                     backgroundColor: 'rgba(42,92,170,0.08)',
                     tension: 0.3
                 },
                 {
-                    label: '<%= caseB.sagen.navn %> — Egenkapital',
+                    label: '<%= caseB.sagen.navn %> - Egenkapital',
                     data: dataB.map(s => s.egenkapital),
                     borderColor: '#c0392b',
                     backgroundColor: 'rgba(192,57,43,0.08)',

@@ -1,4 +1,5 @@
 // ============================================
+// public/js/investeringscase-udlejning.js
 // Klient-side logik for trin 3.4 (Udlejning)
 // Håndterer dynamisk tilføjelse og fjernelse af udlejningslinjer
 // ============================================

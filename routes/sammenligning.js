@@ -50,7 +50,7 @@ async function hentCaseMedSimulering(id) {
     renoveringReq.input('id', sql.Int, id);
     const renoveringRes = await renoveringReq.query(`SELECT * FROM Renovering WHERE investeringscase_id = @id`);
 
-    //Byg model-objekter — rente_procent divideres med 100 fordi den er gemt som et procenttal (fx 4.25) men modellen forventer et decimaltal (0.0425)
+    //Byg model-objekter - rente_procent divideres med 100 fordi den er gemt som et procenttal (fx 4.25) men modellen forventer et decimaltal (0.0425)
     //Skyldes at brugeren bliver bedt om at indtaste procent, så de indtaster bare i heltal
     const finansiering = finansData ? new Finansiering(
         finansData.laanebeloeb,
@@ -67,7 +67,7 @@ async function hentCaseMedSimulering(id) {
         ? new Udlejning(udlejningData.maanedlig_leje, udlejningData.udlejningsomkostning)
         : null;
 
-    // Konverter dato til antal år fra nu — simuleringsmodellen arbejder med relative år
+    // Konverter dato til antal år fra nu - simuleringsmodellen arbejder med relative år
     const renoveringer = renoveringRes.recordset.map(r => {
         const tidspunktAar = new Date(r.tidspunkt).getFullYear() - new Date().getFullYear();
         return new Renovering(r.beskrivelse, r.beloeb, tidspunktAar);

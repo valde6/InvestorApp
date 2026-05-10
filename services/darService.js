@@ -2,7 +2,7 @@
 // services/darService.js
 // Service der taler med DAR (Danmarks Adresseregister)
 // DAR bruges som mellemled når BBR ikke kan finde en bygning
-// direkte via adresse-ID — fx ved etageejendomme.
+// direkte via adresse-ID - fx ved etageejendomme.
 // DAR oversætter adresse-ID til husnummer-ID og videre til BFE-nummer,
 // som BBR kan bruge til at finde den korrekte bygning.
 // Dokumentation: https://datafordeler.dk/dataoversigt/dar-danmarks-adresseregister/

@@ -14,7 +14,7 @@ tilføjKnap.addEventListener('click', () => {
     // Lav et nyt div-element der skal indeholde den nye række
     const nyRække = document.createElement('div');
 
-    // Sæt indholdet af div'en — to input-felter og en slet-knap
+    // Sæt indholdet af div'en - to input-felter og en slet-knap
     nyRække.innerHTML = `
         <input type="text" name="ekstra_beskrivelse" placeholder="Beskrivelse" required>
         <input type="number" name="ekstra_beloeb" placeholder="Beløb (kr.)" required>

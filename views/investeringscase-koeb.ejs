@@ -26,7 +26,7 @@
         <h3>Obligatoriske udgifter</h3>
 
         <label for="ejendomspris">Ejendomspris (kr.)</label>
-        <!-- Samme princip for alle felter — value udfyldes hvis data eksisterer -->
+        <!-- Samme princip for alle felter - value udfyldes hvis data eksisterer -->
         <input type="number" id="ejendomspris" name="ejendomspris" required
             value="<%= sagen ? sagen.ejendomspris : '' %>">
 
@@ -52,7 +52,7 @@
         <div id="ekstra-udgifter">
             <!-- Vis eksisterende ekstra udgifter hvis vi redigerer.
                  typeof koebsomkostninger !== 'undefined' tjekker om variablen overhovedet
-                 er sendt med fra routen — ved oprettelse sendes den ikke med -->
+                 er sendt med fra routen - ved oprettelse sendes den ikke med -->
             <% if (typeof koebsomkostninger !== 'undefined') { %>
                 <% koebsomkostninger.forEach(k => { %>
                     <!-- Hver ekstra udgift vises som en linje med beskrivelse og beløb udfyldt -->

@@ -249,7 +249,7 @@ router.post('/ny/driftsbudget', async (req, res) => {
 
         // Gem driftsomkostninger
         if (beskrivelse) {
-            // Sørg for at det altid er et array — hvis kun én post er udfyldt
+            // Sørg for at det altid er et array - hvis kun én post er udfyldt
             // sender HTML'en en streng frem for et array, og så fejler loopet. Denne løsning tjekker om det er et array, og hvis ikke, pakker det i et array.
             const beskrivelser = Array.isArray(beskrivelse) ? beskrivelse : [beskrivelse];
             const beloeber = Array.isArray(maanedlig_beloeb) ? maanedlig_beloeb : [maanedlig_beloeb];

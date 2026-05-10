@@ -12,7 +12,7 @@ const Finansiering = require('../models/Finansiering');
 test('maanedligYdelse beregner korrekt for kendt lån', () => {
     const f = new Finansiering(1000000, 0.04, 30);
     const ydelse = f.maanedligYdelse();
-    // Forventet ca. 4774 kr — vi tjekker inden for 1 kr tolerance
+    // Forventet ca. 4774 kr - vi tjekker inden for 1 kr tolerance
     assert.ok(ydelse > 4773 && ydelse < 4775, `Forventede ~4774, fik ${ydelse.toFixed(2)}`);
 });
 

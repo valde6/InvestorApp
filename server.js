@@ -1,5 +1,5 @@
 // ============================================
-// SERVER.JS — Ejendomsinvesterings-app
+// SERVER.JS - Ejendomsinvesterings-app
 // Entry point: starter Express og samler routes
 // ============================================
 
@@ -16,10 +16,10 @@ const adresserRoutes = require('./routes/adresser');
 // Investeringscase-formularen (trin 3.1-3.5)
 const investeringscasesRoutes = require('./routes/investeringscases');
 
-// Ejendomsprofil — viser BBR-data og kort for en valgt adresse
+// Ejendomsprofil - viser BBR-data og kort for en valgt adresse
 const ejendommeRoutes = require('./routes/ejendomme');
 
-// Forsiden — viser søgefelt og tidligere ejendomsprofiler
+// Forsiden - viser søgefelt og tidligere ejendomsprofiler
 const forsideRoutes = require('./routes/forside');
 
 // Ejendomsprofiler - Viser en ejendomsprofil ud fra data i databasen der er oprettet
@@ -67,7 +67,7 @@ app.use('/investeringscase-oversigt', oversigtRoutes);
 
 // Redigering af investeringscase (trin 3.1-3.5)
 // Registreres under /investeringscases så URL-strukturen bliver
-// /investeringscases/:id/rediger/koeb — parallelt med oprettelsesflowet
+// /investeringscases/:id/rediger/koeb - parallelt med oprettelsesflowet
 // som ligger på /investeringscases/ny/koeb.
 // Express sender alle requests der starter med /investeringscases
 // videre til redigerRoutes, som derefter matcher /:id/rediger/koeb

@@ -1,4 +1,5 @@
 // ============================================
+// public/js/investeringscase-renovering.js
 // Klient-side logik for trin 3.3 (Renovering)
 // Håndterer dynamisk tilføjelse og fjernelse af renoveringslinjer
 // ============================================

@@ -15,7 +15,7 @@
         <a href="/">← Tilbage til forsiden</a>
 
         <!-- POST bruges til sletning da HTML-formularer kun understøtter GET og POST.
-     action er dynamisk — ejendomsprofil_id sættes ind af EJS -->
+     action er dynamisk - ejendomsprofil_id sættes ind af EJS -->
         <form action="/ejendomsprofiler/<%= profil.ejendomsprofil_id %>/slet" method="POST" style="display:inline;">
 
             <!-- confirm() beder brugeren bekræfte inden sletning så data ikke slettes ved et uheld.
@@ -46,7 +46,7 @@
                     <%= profil.antal_vaerelser %>
                 </p>
 
-                <!-- Grundareal vises kun hvis det er gemt — springes over for lejligheder -->
+                <!-- Grundareal vises kun hvis det er gemt - springes over for lejligheder -->
                 <% if (profil.grundareal_m2) { %>
                     <p><strong>Grundareal:</strong>
                         <%= profil.grundareal_m2 %> m²

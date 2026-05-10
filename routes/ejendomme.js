@@ -1,5 +1,5 @@
 //==================================
-//ejendomme.js
+// routes/ejendomme.js
 //Anvendes når en bruger har fundet en legitim ejendom, og har aktivt trykket på den
 //Efter de har søgt gennem sog.js, og adresser.js
 //Anvender de forskellige eksterne API service fra services, til at hente den nødvendige info
@@ -43,7 +43,7 @@ router.get('/:id', async (req, res) => {
         const adresse = await hentAdresse(adresseId);
 
         // Forsøg at hente enhed direkte via adresse-ID.
-        // Dette virker for alle adressetyper — også ejerlejligheder,
+        // Dette virker for alle adressetyper - også ejerlejligheder,
         // fordi BBR knytter enheden til adressen via adresseIdentificerer.
         const alleEnheder = await findEnhedViaAdresse(adresseId);
 
@@ -126,7 +126,7 @@ router.post('/:id/opret', async (req, res) => {
             WHERE adresse_id = @adresse_id
         `);
 
-        // Profil eksisterer allerede — send brugeren direkte derhen
+        // Profil eksisterer allerede - send brugeren direkte derhen
         if (tjekResult.recordset.length > 0) {
             const eksisterendeId = tjekResult.recordset[0].ejendomsprofil_id;
             return res.redirect('/ejendomsprofiler/' + eksisterendeId);

@@ -14,7 +14,7 @@ const { pool, poolConnect, sql } = require('../services/db');
 
 //==========================================
 //
-// TRIN 3.1 Køb — Redigering
+// TRIN 3.1 Køb - Redigering
 //
 //==========================================
 
@@ -113,7 +113,7 @@ router.post('/:id/rediger/koeb', async (req, res) => {
 
 //==========================================
 //
-// TRIN 3.2 Finansiering — Redigering
+// TRIN 3.2 Finansiering - Redigering
 //
 //==========================================
 
@@ -136,7 +136,7 @@ router.get('/:id/rediger/finansiering', async (req, res) => {
             SELECT * FROM Finansiering WHERE investeringscase_id = @id
         `);
 
-        // recordset[0] henter første række — der er kun én finansieringsrække per case
+        // recordset[0] henter første række - der er kun én finansieringsrække per case
         // || null sikrer at finansiering er null hvis der ingen data er, frem for undefined
         const finansiering = result.recordset[0] || null;
 
@@ -204,7 +204,7 @@ router.post('/:id/rediger/finansiering', async (req, res) => {
 
 //==========================================
 //
-// TRIN 3.3 Renovering — Redigering
+// TRIN 3.3 Renovering - Redigering
 //
 //==========================================
 
@@ -243,7 +243,7 @@ router.get('/:id/rediger/renovering', async (req, res) => {
 // POST /investeringscases/:id/rediger/renovering
 // Bruger slet-og-genindsæt frem for UPDATE.
 // Det er nemmere end at spore hvilke individuelle renoveringslinjer der er ændret,
-// tilføjet eller fjernet — særligt når antallet af linjer kan variere
+// tilføjet eller fjernet - særligt når antallet af linjer kan variere
 router.post('/:id/rediger/renovering', async (req, res) => {
     await poolConnect;
 
@@ -262,7 +262,7 @@ router.post('/:id/rediger/renovering', async (req, res) => {
         // Indsæt de nye/opdaterede renoveringer hvis brugeren har tilføjet nogle
         if (beskrivelse) {
 
-            // Sørg for at det altid er et array — hvis kun én linje er udfyldt
+            // Sørg for at det altid er et array - hvis kun én linje er udfyldt
             // sender HTML'en en streng frem for et array
             const beskrivelser = Array.isArray(beskrivelse) ? beskrivelse : [beskrivelse];
             const beloeber = Array.isArray(beloeb) ? beloeb : [beloeb];
@@ -295,7 +295,7 @@ router.post('/:id/rediger/renovering', async (req, res) => {
 
 //==========================================
 //
-// TRIN 3.4 Driftsbudget — Redigering
+// TRIN 3.4 Driftsbudget - Redigering
 //
 //==========================================
 
@@ -335,7 +335,7 @@ router.get('/:id/rediger/driftsbudget', async (req, res) => {
 
 // POST /investeringscases/:id/rediger/driftsbudget
 // Bruger slet-og-genindsæt ligesom renovering.
-// Sletter hele driftsbudgettet — ON DELETE CASCADE sørger automatisk for
+// Sletter hele driftsbudgettet - ON DELETE CASCADE sørger automatisk for
 // at alle tilknyttede driftsomkostninger også slettes
 router.post('/:id/rediger/driftsbudget', async (req, res) => {
     await poolConnect;
@@ -371,7 +371,7 @@ router.post('/:id/rediger/driftsbudget', async (req, res) => {
         // Indsæt de nye/opdaterede driftsomkostninger hvis brugeren har tilføjet nogle
         if (beskrivelse) {
 
-            // Sørg for at det altid er et array — hvis kun én linje er udfyldt
+            // Sørg for at det altid er et array - hvis kun én linje er udfyldt
             // sender HTML'en en streng frem for et array
             const beskrivelser = Array.isArray(beskrivelse) ? beskrivelse : [beskrivelse];
             const beloeber = Array.isArray(maanedlig_beloeb) ? maanedlig_beloeb : [maanedlig_beloeb];
@@ -407,7 +407,7 @@ router.post('/:id/rediger/driftsbudget', async (req, res) => {
 
 //==========================================
 //
-// TRIN 3.5 Udlejning — Redigering
+// TRIN 3.5 Udlejning - Redigering
 //
 //==========================================
 
@@ -467,7 +467,7 @@ router.post('/:id/rediger/udlejning', async (req, res) => {
         // og der er angivet en månedlig leje
         if (udlejes && maanedlig_leje) {
 
-            // Sørg for at det altid er et array — hvis kun én linje er udfyldt
+            // Sørg for at det altid er et array - hvis kun én linje er udfyldt
             // sender HTML'en en streng frem for et array
             const lejer = Array.isArray(maanedlig_leje) ? maanedlig_leje : [maanedlig_leje];
             const omkostninger = Array.isArray(udlejningsomkostning) ? udlejningsomkostning : [udlejningsomkostning];
@@ -492,7 +492,7 @@ router.post('/:id/rediger/udlejning', async (req, res) => {
             }
         }
 
-        // Redigeringsflowet er færdigt — send brugeren tilbage til oversigten
+        // Redigeringsflowet er færdigt - send brugeren tilbage til oversigten
         // så de kan se den opdaterede simulering med de nye værdier
         res.redirect('/investeringscase-oversigt?id=' + investeringscase_id);
 
@@ -511,7 +511,7 @@ router.post('/:id/rediger/udlejning', async (req, res) => {
 
 // POST /investeringscases/:id/slet
 // Sletter investeringscasen og alt tilknyttet data.
-// HTML-formularer understøtter kun GET og POST — derfor bruges POST til sletning
+// HTML-formularer understøtter kun GET og POST - derfor bruges POST til sletning
 // frem for DELETE som ellers ville være den semantisk korrekte HTTP-metode
 router.post('/:id/slet', async (req, res) => {
     await poolConnect;
@@ -531,7 +531,7 @@ router.post('/:id/slet', async (req, res) => {
         `);
         const ejendomsprofil_id = profilResult.recordset[0].ejendomsprofil_id;
 
-        // Slet investeringscasen — én enkelt DELETE er nok da ON DELETE CASCADE
+        // Slet investeringscasen - én enkelt DELETE er nok da ON DELETE CASCADE
         // i databasen automatisk sletter alle tilknyttede rækker i:
         // Finansiering, Koebsomkostning, Renovering, Driftsbudget, Driftsomkostning og Udlejning
         const request = pool.request();
