@@ -1,3 +1,10 @@
+// ============================================
+// test-services/test-kort.js
+// Manuelt test af kortService.
+// Kører med: node test-kort.js
+// Tjekker at byggeLuftfotoUrl returnerer en gyldig URL med de givne koordinater.
+// ============================================
+
 require('dotenv').config();
 
 const { byggeLuftfotoUrl } = require('../services/kortService');

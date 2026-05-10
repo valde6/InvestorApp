@@ -14,10 +14,12 @@ const Udlejning = require('../models/udlejning');
 const Renovering = require('../models/renovering');
 const Simulering = require('../models/simulering');
 
-// Hjælpefunktion der henter alt data for én case og kører simuleringsmodellen.
-// Vi har lagt det i en separat funktion fordi vi skal bruge det to gange
-// en gang for case A og en gang for case B, hvilket ville give meget gentagende kode og vi overholder DRY.
-//Ved at opdele det sådan her
+// Brugeren kan tilføje flere renoveringer i samme formular.
+// Når HTML-formularen sendes med flere felter af samme navn (fx flere beskrivelse-felter),
+// pakker Express dem automatisk som et array i req.body.
+// Men hvis kun ét felt er udfyldt, sender Express en simpel streng i stedet.
+// Array.isArray sikrer derfor at vi altid arbejder med et array,
+// uanset om brugeren har tilføjet én eller flere renoveringer.
 async function hentCaseMedSimulering(id) {
     const caseReq = pool.request();
     caseReq.input('id', sql.Int, id);

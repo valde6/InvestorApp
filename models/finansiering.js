@@ -6,8 +6,15 @@
 class Finansiering {
     constructor(laanebeloeb, renteProcent, loebetidAar, afdragsfriPeriodeAar = 0) {
         this.laanebeloeb = laanebeloeb;
+
+        // renteProcent forventes som decimaltal, ikke procent
+        // fx 4% rente sendes ind som 0.04 — ikke 4
+        // Konverteringen sker i route-filen inden objektet oprettes (rente_procent / 100)
         this.renteProcent = renteProcent;
         this.loebetidAar = loebetidAar;
+
+
+        // afdragsfriPeriodeAar er valgfri — default er 0 (ingen afdragsfri periode)
         this.afdragsfriPeriodeAar = afdragsfriPeriodeAar;
     }
 

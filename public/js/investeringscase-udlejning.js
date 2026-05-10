@@ -1,3 +1,8 @@
+// ============================================
+// Klient-side logik for trin 3.4 (Udlejning)
+// Håndterer dynamisk tilføjelse og fjernelse af udlejningslinjer
+// ============================================
+
 const checkbox = document.getElementById('udlejes-checkbox');
 const udlejningFelter = document.getElementById('udlejning-felter');
 const tilfoejKnap = document.getElementById('tilfoej-udlejning');

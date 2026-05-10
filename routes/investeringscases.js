@@ -174,10 +174,17 @@ router.post('/ny/renovering', async (req, res) => {
 
     try {
         if (beskrivelse) {
-            const beskrivelser = Array.isArray(beskrivelse) ? beskrivelse : [beskrivelse];
+            // Brugeren kan tilføje flere renoveringer i samme formular.
+            // Når HTML-formularen sendes med flere felter af samme navn (fx flere beskrivelse-felter),
+            // pakker Express dem automatisk som et array i req.body.
+            // Men hvis kun ét felt er udfyldt, sender Express en simpel streng i stedet.
+            // Array.isArray sikrer derfor at vi altid arbejder med et array,
+            // uanset om brugeren har tilføjet én eller flere renoveringer.
             const beloeber = Array.isArray(beloeb) ? beloeb : [beloeb];
             const tidspunkter = Array.isArray(tidspunkt) ? tidspunkt : [tidspunkt];
 
+
+            // Loop igennem hver renovering og gem dem én ad gangen
             for (let i = 0; i < beskrivelser.length; i++) {
                 const request = pool.request();
                 request.input('investeringscase_id', sql.Int, investeringscase_id);
@@ -192,6 +199,7 @@ router.post('/ny/renovering', async (req, res) => {
             }
         }
 
+          // Send brugeren videre til trin 3.4
         res.redirect('/investeringscases/ny/driftsbudget?id=' + investeringscase_id);
 
     } catch (err) {
@@ -222,7 +230,11 @@ router.post('/ny/driftsbudget', async (req, res) => {
     const { investeringscase_id, beskrivelse, maanedlig_beloeb, kategori } = req.body;
 
     try {
-        // Opret selve driftsbudgettet
+    // Driftsbudget fungerer som en "mappe" der samler alle driftsomkostningerne.
+    // Vi opretter den først og henter dens auto-genererede id via OUTPUT INSERTED,
+    // fordi vi skal bruge driftsbudget_id'et til at knytte de individuelle
+    // driftsomkostninger til det rigtige budget i næste trin.
+    // Uden dette id ved databasen ikke hvilken "mappe" omkostningerne hører til.
         const budgetRequest = pool.request();
         budgetRequest.input('investeringscase_id', sql.Int, investeringscase_id);
         budgetRequest.input('navn', sql.VarChar, 'Driftsbudget');
@@ -237,10 +249,13 @@ router.post('/ny/driftsbudget', async (req, res) => {
 
         // Gem driftsomkostninger
         if (beskrivelse) {
+            // Sørg for at det altid er et array — hvis kun én post er udfyldt
+            // sender HTML'en en streng frem for et array, og så fejler loopet. Denne løsning tjekker om det er et array, og hvis ikke, pakker det i et array.
             const beskrivelser = Array.isArray(beskrivelse) ? beskrivelse : [beskrivelse];
             const beloeber = Array.isArray(maanedlig_beloeb) ? maanedlig_beloeb : [maanedlig_beloeb];
             const kategorier = Array.isArray(kategori) ? kategori : [kategori];
 
+            // Loop igennem hver driftsomkostning og gem dem én ad gangen
             for (let i = 0; i < beskrivelser.length; i++) {
                 const request = pool.request();
                 request.input('driftsbudget_id', sql.Int, driftsbudget_id);
@@ -248,6 +263,7 @@ router.post('/ny/driftsbudget', async (req, res) => {
                 request.input('maanedlig_beloeb', sql.Decimal(15, 2), beloeber[i]);
                 request.input('kategori', sql.VarChar, kategorier[i] || null);
 
+                // || null sikrer at en tom kategori gemmes som null frem for en tom streng, så det er nemmere at håndtere i simuleringen senere (fx ved at ignorere null-kategorier i stedet for at skulle tjekke for både tom string og null)
                 await request.query(`
                     INSERT INTO Driftsomkostning (driftsbudget_id, beskrivelse, maanedlig_beloeb, kategori)
                     VALUES (@driftsbudget_id, @beskrivelse, @maanedlig_beloeb, @kategori)
@@ -255,6 +271,7 @@ router.post('/ny/driftsbudget', async (req, res) => {
             }
         }
 
+        // Send brugeren videre til trin 3.5
         res.redirect('/investeringscases/ny/udlejning?id=' + investeringscase_id);
 
     } catch (err) {

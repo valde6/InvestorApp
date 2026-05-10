@@ -1,3 +1,10 @@
+// ============================================
+// test-services/test-db.js
+// Simpelt forbindelsestest til Azure SQL databasen.
+// Kører med: node test-db.js
+// Tjekker at pool.connect() lykkes og at en simpel query returnerer et resultat.
+// ============================================
+
 const { pool, poolConnect } = require('../services/db');
 
 async function test() {

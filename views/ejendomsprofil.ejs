@@ -13,7 +13,13 @@
     <header>
         <h1>Ejendomsprofil</h1>
         <a href="/">← Tilbage til forsiden</a>
+
+        <!-- POST bruges til sletning da HTML-formularer kun understøtter GET og POST.
+     action er dynamisk — ejendomsprofil_id sættes ind af EJS -->
         <form action="/ejendomsprofiler/<%= profil.ejendomsprofil_id %>/slet" method="POST" style="display:inline;">
+
+            <!-- confirm() beder brugeren bekræfte inden sletning så data ikke slettes ved et uheld.
+         ON DELETE CASCADE i databasen sørger for at alle tilknyttede cases også slettes -->
             <button type="submit" class="knap-slet"
                 onclick="return confirm('Er du sikker? Dette sletter også alle tilknyttede investeringscases.')">
                 Slet ejendomsprofil
@@ -39,6 +45,8 @@
                 <p><strong>Antal værelser:</strong>
                     <%= profil.antal_vaerelser %>
                 </p>
+
+                <!-- Grundareal vises kun hvis det er gemt — springes over for lejligheder -->
                 <% if (profil.grundareal_m2) { %>
                     <p><strong>Grundareal:</strong>
                         <%= profil.grundareal_m2 %> m²
@@ -60,10 +68,14 @@
 
         <section>
             <h2>Investeringscases</h2>
+
+            <!-- ejendomsprofil_id sendes med i URL'en så routen ved hvilken profil den nye case skal knyttes til -->
             <a href="/investeringscases/ny/koeb?ejendomsprofil_id=<%= profil.ejendomsprofil_id %>">
                 <button>+ Opret ny investeringscase</button>
             </a>
             <% if (cases.length> 0) { %>
+
+                <!-- Loop over alle investeringscases tilknyttet denne profil -->
                 <% cases.forEach(c=> { %>
                     <div class="case-item">
                         <a href="/investeringscase-oversigt?id=<%= c.investeringscase_id %>">

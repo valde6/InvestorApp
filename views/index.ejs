@@ -16,6 +16,8 @@
     <main>
         <section class="soegning">
             <label for="adresse-input">Adresse:</label>
+
+            <!-- autocomplete="off" forhindrer browseren i at vise tidligere søgninger som dropdown -->
             <input type="text" id="adresse-input" placeholder="Skriv en adresse, fx Solbjerg Plads" autocomplete="off">
             <ul id="forslag-liste"></ul>
         </section>
@@ -24,9 +26,12 @@
         <section class="tidligere-ejendomme">
             <h2>Tidligere ejendomsprofiler</h2>
 
+            <!-- Hvis ingen ejendomsprofiler findes vises en vejledende tekst i stedet for en tom liste -->
             <% if (ejendomme.length===0) { %>
                 <p>Ingen ejendomsprofiler endnu. Søg en adresse ovenfor for at komme i gang.</p>
                 <% } else { %>
+
+                    <!-- Loop over alle ejendomsprofiler og vis dem som klikbare listepunkter -->
                     <ul class="ejendomme-liste">
                         <% ejendomme.forEach(function(ejendom) { %>
                             <li class="ejendom-item">
@@ -38,6 +43,8 @@
                                 <span>
                                     <%= ejendom.ejendomstype %>
                                 </span>
+
+                                <!-- toLocaleDateString formaterer datoen til dansk format (dd.mm.åååå) -->
                                 <span>Oprettet: <%= new Date(ejendom.oprettet_dato).toLocaleDateString('da-DK') %>
                                 </span>
                                 <span>Cases: <%= ejendom.antal_cases %></span>

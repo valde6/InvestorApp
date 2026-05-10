@@ -19,11 +19,17 @@
             <!-- Formular der opretter ejendomsprofilen når brugeren aktivt vælger det.
      BBR-data sendes med som hidden inputs så POST-routen kan gemme dem i DB -->
             <form action="/ejendomme/<%= adresseId %>/opret" method="POST">
+
+                <!-- Hidden inputs sender BBR-data med i POST-requesten uden at vise dem til brugeren.
+                Dataen er allerede hentet fra BBR og ligger i EJS-variablerne — 
+                vi pakker dem blot ind i formularen så routen kan gemme dem i databasen -->
                 <input type="hidden" name="adresse" value="<%= adresse %>">
                 <input type="hidden" name="ejendomstype" value="<%= bygning.byg021BygningensAnvendelse %>">
                 <input type="hidden" name="byggeaar" value="<%= bygning.byg026Opførelsesår %>">
                 <input type="hidden" name="boligareal_m2" value="<%= enhed?.enh026EnhedensSamledeAreal %>">
                 <input type="hidden" name="antal_vaerelser" value="<%= enhed?.enh031AntalVærelser %>">
+
+                <!-- ?? '' sikrer at grundareal sendes som tom streng frem for "null" hvis det ikke er hentet -->
                 <input type="hidden" name="grundareal_m2" value="<%= grundareal ?? '' %>">
                 <button type="submit">Opret ejendomsprofil</button>
             </form>
@@ -34,6 +40,8 @@
             <p><strong>Byggeår:</strong>
                 <%= bygning.byg026Opførelsesår %>
             </p>
+
+            <!-- enhed kan være null i sjældne edge cases selv efter filtrering i ejendomme.js -->
             <% if (enhed) { %>
                 <p><strong>Boligareal:</strong>
                     <%= enhed.enh026EnhedensSamledeAreal %> m²
@@ -45,6 +53,8 @@
                 <% } else { %>
                     <p>Ingen enhedsdata tilgængelig</p>
                     <% } %>
+
+                        <!-- Grundareal vises kun hvis det er hentet — det springes over for lejligheder -->
                         <% if (grundareal) { %>
                             <p><strong>Grundareal:</strong>
                                 <%= grundareal %> m²
