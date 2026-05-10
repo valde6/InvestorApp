@@ -11,6 +11,8 @@ class Finansiering {
         // fx 4% rente sendes ind som 0.04 - ikke 4
         // Konverteringen sker i route-filen inden objektet oprettes (rente_procent / 100)
         this.renteProcent = renteProcent;
+
+        // loebetidAar er det samlede antal år lånet løber, inkl. eventuel afdragsfri periode
         this.loebetidAar = loebetidAar;
 
 
@@ -32,6 +34,10 @@ class Finansiering {
         const effektivLoebetid = this.loebetidAar - this.afdragsfriPeriodeAar;
         const n = effektivLoebetid * 12;
 
+        // Annuitetsformel: M = P * (r / (1 - (1+r)^-n))
+        // M = månedlig ydelse, P = lånebeløb, r = månedlig rente, n = antal måneder
+        // Formlen giver en fast ydelse hvor renteandelen falder og afdragsandelen stiger over tid
+        return this.laanebeloeb * (r / (1 - Math.pow(1 + r, -n)));
         if (r === 0) return this.laanebeloeb / n; // særtilfælde: rentefrit lån (Kontant køb)
 
         return this.laanebeloeb * (r / (1 - Math.pow(1 + r, -n)));

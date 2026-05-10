@@ -31,6 +31,9 @@ async function hentAdresse(adresseId) {
     return data.adressebetegnelse;
 }
 
+// Henter adgangsadresseobjektet for et adresse-ID via DAWA.
+// Returnerer hele adgangsadresse-objektet inkl. koordinater, vejnavn, husnummer osv.
+// Bruges af kortService og bbrService som har brug for mere end bare adresseteksten.
 async function hentAdgangsadresse(adresseId) {
     const url = `${DAWA_BASE_URL}/adresser/${adresseId}`;
     const response = await fetch(url);

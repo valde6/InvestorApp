@@ -13,6 +13,8 @@ async function hentKoordinater(adresseId) {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`DAWA svarede med status ${response.status}`);
     const data = await response.json();
+    
+    // koordinater-arrayet er [lon, lat] - longitude kommer først (omvendt af mange andre formater)
     return { lon: data.adgangsadresse.vejpunkt.koordinater[0], lat: data.adgangsadresse.vejpunkt.koordinater[1] };
 }
 

@@ -92,7 +92,7 @@ router.post('/ny/koeb', async (req, res) => {
         // Send brugeren videre til trin 3.2
         res.redirect('/investeringscases/ny/finansiering?id=' + investeringscase_id); // svaret på req er at redirecte brugeren med dette specifikke id
 
-        //FEjlhåndtering
+        //Fejlhåndtering
     } catch (err) {
         console.error('Fejl ved oprettelse af investeringscase:', err);
         res.status(500).send('Der skete en fejl. Prøv igen.');
@@ -101,7 +101,7 @@ router.post('/ny/koeb', async (req, res) => {
 
 //==========================================
 //
-// TRIN 3.2 Finanseing
+// TRIN 3.2 Finansiering
 //
 //==========================================
 
@@ -129,10 +129,13 @@ router.post('/ny/finansiering', async (req, res) => {
         const request = pool.request();
         request.input('investeringscase_id', sql.Int, investeringscase_id);
         request.input('laanebeloeb', sql.Decimal(15, 2), laanebeloeb || 0);
-        request.input('rente_procent', sql.Decimal(8, 4), erLaan ? rente_procent || 0 : 0); //tjekker om erLaan er sand.
-        request.input('loebetid_aar', sql.Int, erLaan ? loebetid_aar || 0 : 0); //samme her
-        request.input('afdragsfri_periode_aar', sql.Int, erLaan ? afdragsfri_periode_aar || 0 : 0); //samme her
-        request.input('laanetype', sql.VarChar, erLaan ? laanetype || null : null); //samme her
+        // erLaan bruges som guard på alle lånefelter:
+        // Hvis lånebeløbet er 0 gemmes 0/null for alle lånedetaljer
+        // så vi ikke gemmer rente og løbetid på et lån der ikke eksisterer
+        request.input('rente_procent', sql.Decimal(8, 4), erLaan ? rente_procent || 0 : 0);
+        request.input('loebetid_aar', sql.Int, erLaan ? loebetid_aar || 0 : 0);
+        request.input('afdragsfri_periode_aar', sql.Int, erLaan ? afdragsfri_periode_aar || 0 : 0);
+        request.input('laanetype', sql.VarChar, erLaan ? laanetype || null : null);
 
 
 
@@ -199,7 +202,7 @@ router.post('/ny/renovering', async (req, res) => {
             }
         }
 
-          // Send brugeren videre til trin 3.4
+        // Send brugeren videre til trin 3.4
         res.redirect('/investeringscases/ny/driftsbudget?id=' + investeringscase_id);
 
     } catch (err) {
@@ -230,11 +233,11 @@ router.post('/ny/driftsbudget', async (req, res) => {
     const { investeringscase_id, beskrivelse, maanedlig_beloeb, kategori } = req.body;
 
     try {
-    // Driftsbudget fungerer som en "mappe" der samler alle driftsomkostningerne.
-    // Vi opretter den først og henter dens auto-genererede id via OUTPUT INSERTED,
-    // fordi vi skal bruge driftsbudget_id'et til at knytte de individuelle
-    // driftsomkostninger til det rigtige budget i næste trin.
-    // Uden dette id ved databasen ikke hvilken "mappe" omkostningerne hører til.
+        // Driftsbudget fungerer som en "mappe" der samler alle driftsomkostningerne.
+        // Vi opretter den først og henter dens auto-genererede id via OUTPUT INSERTED,
+        // fordi vi skal bruge driftsbudget_id'et til at knytte de individuelle
+        // driftsomkostninger til det rigtige budget i næste trin.
+        // Uden dette id ved databasen ikke hvilken "mappe" omkostningerne hører til.
         const budgetRequest = pool.request();
         budgetRequest.input('investeringscase_id', sql.Int, investeringscase_id);
         budgetRequest.input('navn', sql.VarChar, 'Driftsbudget');
@@ -302,7 +305,8 @@ router.post('/ny/udlejning', async (req, res) => {
     const { investeringscase_id, udlejes, maanedlig_leje, udlejningsomkostning, beskrivelse } = req.body;
 
     try {
-        // Gem kun hvis brugeren har valgt at udleje
+        // udlejes er checkbox-værdien ("ja") og maanedlig_leje sikrer at der faktisk er indtastet en leje
+        // Hvis ingen af delene er opfyldt gemmes intet i Udlejning-tabellen, og investeringscasen kan stadig simuleres som en case uden udlejning.
         if (udlejes && maanedlig_leje) {
             const lejer = Array.isArray(maanedlig_leje) ? maanedlig_leje : [maanedlig_leje];
             const omkostninger = Array.isArray(udlejningsomkostning) ? udlejningsomkostning : [udlejningsomkostning];

@@ -10,6 +10,8 @@
     <h1>Ny investeringscase</h1>
     <h2>Trin 3 af 5: Renoveringer</h2>
 
+
+    <!-- action er fast til oprettelsesrouten - redigering af renoveringer håndteres i routes/rediger.js -->
     <form action="/investeringscases/ny/renovering" method="POST">
 
 <!-- Skjult felt der sender investeringscase_id  til serveren via POST.
@@ -20,7 +22,7 @@
         <p>Tilføj de renoveringer du planlægger for ejendommen.</p>
 
         <div id="renoveringer">
-            <!-- Renoveringslinjer  her -->
+        <!-- Renoveringslinjer tilføjes her dynamisk af JavaScript i investeringscase-renovering.js -->
         </div>
 
         <button type="button" id="tilfoej-renovering">Tilføj renovering</button>
@@ -31,6 +33,7 @@
 
     </form>
 
+    <!-- Indlæser klient-side JavaScript der håndterer dynamisk tilføjelse og fjernelse af renoveringslinjer -->
     <script src="/js/investeringscase-renovering.js"></script>
 </body>
 </html>

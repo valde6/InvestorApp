@@ -18,15 +18,17 @@
         <input type="hidden" name="investeringscase_id" value="<%= investeringscase_id %>">
 
         <label>
+            <!-- Checkbox styrer om udlejningsfelterne vises - håndteres af JavaScript i investeringscase-udlejning.js -->
             <input type="checkbox" id="udlejes-checkbox" name="udlejes" value="ja">
             Ejendommen skal udlejes
         </label>
 
+        <!-- Skjult som standard - vises kun hvis brugeren sætter kryds i checkbox ovenfor -->
         <div id="udlejning-felter" style="display:none">
             <p>Tilføj udlejningsindtægter og udgifter.</p>
 
             <div id="udlejninger">
-                <!-- Udlejningslinjer indsættes her -->
+                <!-- Udlejningslinjer tilføjes her dynamisk af JavaScript i investeringscase-udlejning.js -->
             </div>
 
             <button type="button" id="tilfoej-udlejning">Tilføj udlejning</button>

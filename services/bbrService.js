@@ -47,9 +47,9 @@ function oversætAnvendelse(kode) {
     return typer[kode] || `Ukendt type (${kode})`;
 };
 
-// Henter bygninger tilknyttet et husnummer-ID.
-// Primært opslag, som virker for enfamiliehuse og de fleste ejendomme.
-
+// Primært opslag via husnummer-ID.
+// Virker for enfamiliehuse, men ikke altid for ejerlejligheder i etageejendomme.
+// Se findBygningViaBfe for fallback-løsningen.
 async function findBygninger(husnummerId) {
     const bygninger = await hentBbrData('bygning', `Husnummer=${encodeURIComponent(husnummerId)}`);
     // Tilføj læsbart ejendomstypenavn på hvert bygningsobjekt

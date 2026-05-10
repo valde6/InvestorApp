@@ -113,7 +113,7 @@ router.get('/', async (req, res) => {
             simulering: simuleringResultater,
             ejendomsprofil_id: sagen.ejendomsprofil_id
         });
-        //Fejlhåndtering
+        // Fejlhåndtering
     } catch (err) {
         console.error('Fejl ved hentning af oversigt:', err);
         res.status(500).send('Der skete en fejl. Prøv igen.');

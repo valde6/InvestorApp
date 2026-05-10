@@ -95,6 +95,8 @@
                         <%= finansiering.laanetype %>
                     </p>
                     <p><strong>Månedlig ydelse:</strong>
+                        <!-- finansieringModel er JavaScript-objektet (Finansiering-klassen) der kan kalde .maanedligYdelse()
+                        finansiering er rå databasedata (plain object) der kun bruges til at vise gemte værdier som rente_procent -->
                         <%= Number(finansieringModel.maanedligYdelse().toFixed(0)).toLocaleString('da-DK') %> kr./md.
                     </p>
                     <p><strong>Total renteomkostning:</strong>
@@ -167,6 +169,7 @@
                     <tbody>
                         <% simulering.forEach(s=> { %>
                             <tr>
+                                <!-- Cashflow-cellen farves rød hvis negativ, grøn hvis positiv via CSS-klasserne tal-negativ/tal-positiv -->
                                 <td>
                                     <%= s.aar %>
                                 </td>
@@ -214,7 +217,7 @@
         // virker præcis som forventet når Node.js behandler filen.
         // prettier-ignore-kommentaren fortæller Prettier at lade denne del af koden uændret, da EJS-syntaksen kan forvirre formatteren og føre til utilsigtede ændringer i formateringen.
         // prettier-ignore
-        const simData = <%- JSON.stringify(simulering) %>;
+        const simData = <% - JSON.stringify(simulering) %>;
 
         // Lav labels til x-aksen - ét label per år (fx "År 1", "År 2" osv.)
         const labels = simData.map(s => 'År ' + s.aar);

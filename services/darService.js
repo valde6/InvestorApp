@@ -23,7 +23,7 @@ if (!datafordelerUsername || !datafordelerPassword) {
 // Husnummer-ID'et bruges videre til at slå BFE-nummeret op,
 // som igen bruges til at finde bygningen i BBR.
 async function adresseIdTilHusnummerId(adresseId) {
-    const url = `${DAR_BASE_URL}?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&adresseId=${encodeURIComponent(adresseId)}`; 
+    const url = `${DAR_BASE_URL}?username=${datafordelerUsername}&Format=JSON&password=${datafordelerPassword}&adresseId=${encodeURIComponent(adresseId)}`;
     //EncodeURI anvendes fordi der ikke toleres mellemrum/specialtegn. Metoden erstatter specialtegn med sikre koder. f.eks. mellemrum bliver til %20
 
 
@@ -56,8 +56,9 @@ async function husnummerTilBygningBfe(husnummerId) {
 
     const data = await response.json();
 
-    // DAR returnerer ikke bfeNummer direkte, idet BFE-nummeret for ejendommen
-    // ligger som 'samletFastEjendom' inde i det første element af jordstykkeList
+    // ?. er optional chaining - returnerer undefined frem for at kaste en fejl hvis feltet ikke findes
+    // [0] henter første element i jordstykkeList-arrayet
+    // samletFastEjendom er DAR's navn for BFE-nummeret på den samlede faste ejendom
     const bfeNummer = data?.jordstykkeList?.[0]?.samletFastEjendom;
 
     if (!bfeNummer) {

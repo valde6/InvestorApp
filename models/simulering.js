@@ -54,6 +54,8 @@ class Simulering {
             for (let maaned = 1; maaned <= 12; maaned++) {
                 if (gaeld <= 0) break;
 
+                // Månedlig rentebetaling = restgæld * månedlig rente
+                // Bruges til at beregne afdragsdelen: ydelse - rente = afdrag
                 const renteDel = gaeld * r;
 
                 if (aar <= afdragsfriAar) {
@@ -93,8 +95,9 @@ class Simulering {
             // Samlet cashflow = indtægter - udgifter - ydelse - renovering
             const cashflow = lejeindtaegt - driftsudgifter - aarligYdelse - renoveringsudgifter;
 
-            // --- BEREGN EGENKAPITAL ---
-            const egenkapital = ejendomspris - gaeld;
+            // Egenkapital = ejendomspris minus restgæld
+            // Ejendomsprisen antages at være konstant (ingen prisstigning modelleres)
+            const egenkapital = ejendomspris - gaeld; const egenkapital = ejendomspris - gaeld;
 
             resultater.push({
                 aar,

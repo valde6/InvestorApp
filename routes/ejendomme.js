@@ -47,6 +47,9 @@ router.get('/:id', async (req, res) => {
         // fordi BBR knytter enheden til adressen via adresseIdentificerer.
         const alleEnheder = await findEnhedViaAdresse(adresseId);
 
+        // Forsøg at finde den enhed der matcher adresse-ID'et præcist.
+        // Fallback til første enhed hvis ingen matcher direkte - håndterer tilfælde
+        // hvor BBR returnerer enheden med et lidt anderledes adresse-ID-format
         const enhed = alleEnheder.find(e => e.adresseIdentificerer === adresseId) || alleEnheder[0];
 
         // Hent bygningen via enhedens bygnings-ID.
