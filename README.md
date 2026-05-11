@@ -29,13 +29,14 @@ cp ".env example" .env
 `.env` skal indeholde:
 
 ```
-DB_SERVER=din-server.database.windows.net
-DB_NAME=dit-databasenavn
-DB_USER=dit-brugernavn
-DB_PASSWORD=dit-password
+DB_SERVER=database-2307.database.windows.net
+DB_NAME=free-sql-db-5899869
+DB_USER=adminGroup@database-2307
+DB_PASSWORD=Gruppe30!
 
-DATAFORDELER_USERNAME=dit-brugernavn
-DATAFORDELER_PASSWORD=dit-password
+
+DATAFORDELER_USERNAME=KQNPOIDJAV 
+DATAFORDELER_PASSWORD=Gruppe30bbr!
 ```
 
 Kør `database/schema.sql` i din SQL-klient for at oprette tabellerne, og derefter `database/seed.sql` for eksempeldata.
