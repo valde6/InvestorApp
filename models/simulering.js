@@ -97,7 +97,7 @@ class Simulering {
 
             // Egenkapital = ejendomspris minus restgæld
             // Ejendomsprisen antages at være konstant (ingen prisstigning modelleres)
-            const egenkapital = ejendomspris - gaeld; const egenkapital = ejendomspris - gaeld;
+            const egenkapital = ejendomspris - gaeld;
 
             resultater.push({
                 aar,
