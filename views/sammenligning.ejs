@@ -29,8 +29,7 @@
                             <!-- alleCases er et array af alle investeringscases med navn og adresse.
                             selected sættes på den option der matcher det id brugeren allerede har valgt i URL'en -->
                             <% alleCases.forEach(c=> { %>
-                                <option value="<%= c.investeringscase_id %>" <%=id_a==c.investeringscase_id ? 'selected'
-                                    : '' %>>
+                                <option value="<%= c.investeringscase_id %>" <%=id_a==c.investeringscase_id ? 'selected': '' %>>
                                     <%= c.navn %> - <%= c.adresse %>
                                 </option>
                                 <% }) %>
@@ -42,8 +41,7 @@
                         <select name="id_b">
                             <option value="">- Vælg en case -</option>
                             <% alleCases.forEach(c=> { %>
-                                <option value="<%= c.investeringscase_id %>" <%=id_b==c.investeringscase_id ? 'selected'
-                                    : '' %>>
+                                <option value="<%= c.investeringscase_id %>" <%=id_b==c.investeringscase_id ? 'selected': '' %>>
                                     <%= c.navn %> - <%= c.adresse %>
                                 </option>
                                 <% }) %>
@@ -118,11 +116,10 @@
     <% if (caseA && caseB) { %>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
-        <!-- <%- (raw output) bruges her i stedet for <%= fordi vi indsætter JSON direkte i JavaScript.
-     <%= ville HTML-encode tegn som " og { hvilket ville ødelægge JSON-strukturen -->
         <script>
-            const dataA = <% - JSON.stringify(caseA.resultater) %>;
-            const dataB = <% - JSON.stringify(caseB.resultater) %>;
+            //Sørg for at der ikke er mellemrum i <%-. Når den gemmer konverterer den til <% -, hvilket skaber fejl i rendering af chart
+            const dataA = <%- JSON.stringify(caseA.resultater) %>;
+            const dataB = <%- JSON.stringify(caseB.resultater) %>;
             const labels = dataA.map(s => 'År ' + s.aar);
 
             new Chart(document.getElementById('sammenligningChart').getContext('2d'), {

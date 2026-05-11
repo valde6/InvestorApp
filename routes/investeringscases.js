@@ -185,7 +185,7 @@ router.post('/ny/renovering', async (req, res) => {
             // uanset om brugeren har tilføjet én eller flere renoveringer.
             const beloeber = Array.isArray(beloeb) ? beloeb : [beloeb];
             const tidspunkter = Array.isArray(tidspunkt) ? tidspunkt : [tidspunkt];
-
+            const beskrivelser = Array.isArray(beskrivelse) ? beskrivelse : [beskrivelse];
 
             // Loop igennem hver renovering og gem dem én ad gangen
             for (let i = 0; i < beskrivelser.length; i++) {
