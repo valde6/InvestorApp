@@ -34,15 +34,14 @@ class Finansiering {
         const effektivLoebetid = this.loebetidAar - this.afdragsfriPeriodeAar;
         const n = effektivLoebetid * 12;
 
+        // Særtilfælde: rentefrit lån - annuitetsformlen går i stykker ved r=0
+        // fordi nævneren bliver 0. I stedet fordeles lånet ligeligt over månederne.
+        if (r === 0) return this.laanebeloeb / n;
+
         // Annuitetsformel: M = P * (r / (1 - (1+r)^-n))
         // M = månedlig ydelse, P = lånebeløb, r = månedlig rente, n = antal måneder
-        // Formlen giver en fast ydelse hvor renteandelen falder og afdragsandelen stiger over tid
-        return this.laanebeloeb * (r / (1 - Math.pow(1 + r, -n)));
-        if (r === 0) return this.laanebeloeb / n; // særtilfælde: rentefrit lån (Kontant køb)
-
         return this.laanebeloeb * (r / (1 - Math.pow(1 + r, -n)));
     }
-
     // Beregner total renteomkostning over hele lånets løbetid.
     // I den afdragsfrie periode betales kun renter (gæld * månedlig rente * 12 måneder).
     // Herefter betales annuiteten over den resterende løbetid.
