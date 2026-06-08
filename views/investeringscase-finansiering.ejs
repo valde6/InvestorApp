@@ -31,8 +31,7 @@
 
         <!-- Denne div vises kun hvis lånebeløbet er udfyldt (styret af JavaScript).
              Ved redigering skal den vises med det samme hvis der allerede er et lånebeløb -->
-        <div id="finansiering-ekstra"
-            style="<%= finansiering && finansiering.laanebeloeb > 0 ? 'display:block' : 'display:none' %>">
+        <div id="finansiering-ekstra" style="<%= finansiering && finansiering.laanebeloeb > 0 ? 'display:block' : 'display:none' %>">
 
             <label for="rente_procent">Rente (%)</label>
             <!-- step="0.01" tillader decimaler i feltet, fx 4.25 for 4,25% rente.
